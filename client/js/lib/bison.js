@@ -20,6 +20,7 @@
    THE SOFTWARE.
 */
 
+var _BISON_REF;
 (function(undefined) {
     var chr = String.fromCharCode;
     var tok = new Array(65536);
@@ -238,15 +239,23 @@
         return dec;
     }
 
-    if (typeof window === 'undefined') {
+    var BISON = {
+        encode: encode,
+        decode: decode
+    };
+
+    if (typeof window !== 'undefined') {
+        window.BISON = BISON;
+    }
+
+    if (typeof exports !== 'undefined') {
         exports.encode = encode;
         exports.decode = decode;
-
-    } else {
-        window.BISON = {
-            encode: encode,
-            decode: decode
-        };
     }
+
+    // Expose for ESM import
+    _BISON_REF = BISON;
 })();
+
+export default _BISON_REF;
 

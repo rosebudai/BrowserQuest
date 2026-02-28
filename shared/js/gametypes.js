@@ -1,5 +1,5 @@
 
-Types = {
+var Types = {
     Messages: {
         HELLO: 0,
         WELCOME: 1,
@@ -312,6 +312,12 @@ Types.getMessageTypeAsString = function(type) {
     return typeName;
 };
 
+if(typeof window !== 'undefined') {
+    window.Types = Types;
+}
+
 if(!(typeof exports === 'undefined')) {
     module.exports = Types;
 }
+
+export default Types;
