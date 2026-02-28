@@ -1,5 +1,5 @@
-
-define(['character', 'timer'], function(Character, Timer) {
+import Character from './character.js';
+import Timer from './timer.js';
 
     var Updater = Class.extend({
         init: function(game) {
@@ -249,5 +249,4 @@ define(['character', 'timer'], function(Character, Timer) {
         }
     });
     
-    return Updater;
-});
+export default Updater;

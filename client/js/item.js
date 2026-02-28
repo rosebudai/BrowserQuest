@@ -1,5 +1,4 @@
-
-define(['entity'], function(Entity) {
+import Entity from './entity.js';
 
     var Item = Entity.extend({
         init: function(id, kind, type) {
@@ -31,6 +30,5 @@ define(['entity'], function(Entity) {
             return this.lootMessage;
         }
     });
-    
-    return Item;
-});
+
+export default Item;

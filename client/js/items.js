@@ -1,8 +1,7 @@
+import Item from './item.js';
 
-define(['item'], function(Item) {
-    
     var Items = {
-        
+
         Sword2: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.SWORD2, "weapon");
@@ -86,7 +85,7 @@ define(['item'], function(Item) {
                 this.lootMessage = "You drink a health potion";
             },
         }),
-        
+
         Cake: Item.extend({
             init: function(id) {
                 this._super(id, Types.Entities.CAKE, "object");
@@ -106,12 +105,11 @@ define(['item'], function(Item) {
                 this._super(id, Types.Entities.FIREPOTION, "object");
                 this.lootMessage = "You feel the power of Firefox!";
             },
-    
+
             onLoot: function(player) {
                 player.startInvincibility();
             },
         }),
     };
 
-    return Items;
-});
+export default Items;
