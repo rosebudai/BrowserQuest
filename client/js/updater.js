@@ -90,7 +90,9 @@ import Timer from './timer.js';
         
             if(z && z.inProgress === false) {
                 var orientation = this.game.zoningOrientation,
-                    startValue = endValue = offset = 0,
+                    offset = 0,
+                    startValue = 0,
+                    endValue = 0,
                     updateFunc = null,
                     endFunc = null;
             
