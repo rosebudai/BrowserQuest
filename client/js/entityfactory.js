@@ -1,5 +1,8 @@
-
-define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs, Warrior, Chest) {
+import Mobs from './mobs.js';
+import Items from './items.js';
+import NPCs from './npcs.js';
+import Warrior from './warrior.js';
+import Chest from './chest.js';
 
     var EntityFactory = {};
 
@@ -8,11 +11,11 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
             log.error("kind is undefined", true);
             return;
         }
-    
+
         if(!_.isFunction(EntityFactory.builders[kind])) {
             throw Error(kind + " is not a valid Entity type");
         }
-    
+
         return EntityFactory.builders[kind](id, name);
     };
 
@@ -39,7 +42,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.SPECTRE] = function(id) {
         return new Mobs.Spectre(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.DEATHKNIGHT] = function(id) {
         return new Mobs.Deathknight(id);
     };
@@ -77,7 +80,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     };
 
     //===== items ======
- 
+
     EntityFactory.builders[Types.Entities.SWORD2] = function(id) {
         return new Items.Sword2(id);
     };
@@ -125,7 +128,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.FLASK] = function(id) {
         return new Items.Flask(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.FIREPOTION] = function(id) {
         return new Items.FirePotion(id);
     };
@@ -133,7 +136,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.BURGER] = function(id) {
         return new Items.Burger(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.CAKE] = function(id) {
         return new Items.Cake(id);
     };
@@ -159,7 +162,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.VILLAGER] = function(id) {
         return new NPCs.Villager(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.CODER] = function(id) {
         return new NPCs.Coder(id);
     };
@@ -183,7 +186,7 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.PRIEST] = function(id) {
         return new NPCs.Priest(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.SORCERER] = function(id) {
         return new NPCs.Sorcerer(id);
     };
@@ -191,22 +194,21 @@ define(['mobs', 'items', 'npcs', 'warrior', 'chest'], function(Mobs, Items, NPCs
     EntityFactory.builders[Types.Entities.OCTOCAT] = function(id) {
         return new NPCs.Octocat(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.BEACHNPC] = function(id) {
         return new NPCs.BeachNpc(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.FORESTNPC] = function(id) {
         return new NPCs.ForestNpc(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.DESERTNPC] = function(id) {
         return new NPCs.DesertNpc(id);
     };
-    
+
     EntityFactory.builders[Types.Entities.LAVANPC] = function(id) {
         return new NPCs.LavaNpc(id);
     };
-    
-    return EntityFactory;
-});
+
+export default EntityFactory;

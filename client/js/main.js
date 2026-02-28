@@ -1,5 +1,6 @@
 
-define(['jquery', 'app'], function($, App) {
+import App from './app.js';
+import Game from './game.js';
     var app, game;
 
     var initApp = function() {
@@ -165,7 +166,6 @@ define(['jquery', 'app'], function($, App) {
     };
     
     var initGame = function() {
-        require(['game'], function(Game) {
             
             var canvas = document.getElementById("entities"),
         	    background = document.getElementById("background"),
@@ -402,8 +402,6 @@ define(['jquery', 'app'], function($, App) {
             if(game.renderer.tablet) {
                 $('body').addClass('tablet');
             }
-        });
     };
     
     initApp();
-});

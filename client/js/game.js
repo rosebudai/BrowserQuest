@@ -1,10 +1,26 @@
 
-define(['infomanager', 'bubble', 'renderer', 'map', 'animation', 'sprite', 'tile',
-        'warrior', 'gameclient', 'audio', 'updater', 'transition', 'pathfinder',
-        'item', 'mob', 'npc', 'player', 'character', 'chest', 'mobs', 'exceptions', 'config', '../../shared/js/gametypes'],
-function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedTile,
-         Warrior, GameClient, AudioManager, Updater, Transition, Pathfinder,
-         Item, Mob, Npc, Player, Character, Chest, Mobs, Exceptions, config) {
+import InfoManager from './infomanager.js';
+import BubbleManager from './bubble.js';
+import Renderer from './renderer.js';
+import Map from './map.js';
+import Animation from './animation.js';
+import Sprite from './sprite.js';
+import AnimatedTile from './tile.js';
+import Warrior from './warrior.js';
+import GameClient from './gameclient.js';
+import AudioManager from './audio.js';
+import Updater from './updater.js';
+import Transition from './transition.js';
+import Pathfinder from './pathfinder.js';
+import Item from './item.js';
+import Mob from './mob.js';
+import Npc from './npc.js';
+import Player from './player.js';
+import Character from './character.js';
+import Chest from './chest.js';
+import Mobs from './mobs.js';
+import Exceptions from './exceptions.js';
+import config from './config.js';
     
     var Game = Class.extend({
         init: function(app) {
@@ -2450,5 +2466,4 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
         }
     });
     
-    return Game;
-});
+    export default Game;

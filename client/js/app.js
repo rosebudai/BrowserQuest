@@ -1,5 +1,5 @@
 
-define(['jquery', 'storage'], function($, Storage) {
+import Storage from './storage.js';
 
     var App = Class.extend({
         init: function() {
@@ -530,5 +530,4 @@ define(['jquery', 'storage'], function($, Storage) {
         }
     });
 
-    return App;
-});
+    export default App;

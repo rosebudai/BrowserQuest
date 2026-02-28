@@ -1,5 +1,7 @@
 
-define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory, BISON) {
+import Player from './player.js';
+import EntityFactory from './entityfactory.js';
+import BISON from './lib/bison.js';
 
     var GameClient = Class.extend({
         init: function(host, port) {
@@ -540,5 +542,4 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         }
     });
     
-    return GameClient;
-});
+    export default GameClient;

@@ -1,6 +1,9 @@
 
-define(['camera', 'item', 'character', 'player', 'timer'], 
-function(Camera, Item, Character, Player, Timer) {
+import Camera from './camera.js';
+import Item from './item.js';
+import Character from './character.js';
+import Player from './player.js';
+import Timer from './timer.js';
 
     var Renderer = Class.extend({
         init: function(game, canvas, background, foreground) {
@@ -779,5 +782,4 @@ function(Camera, Item, Character, Player, Timer) {
         return (id % w == 0) ? w - 1 : (id % w) - 1;
     };
     
-    return Renderer;
-});
+    export default Renderer;

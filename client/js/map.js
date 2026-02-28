@@ -1,5 +1,5 @@
 
-define(['jquery', 'area'], function($, Area) {
+import Area from './area.js';
     
     var Map = Class.extend({
         init: function(loadMultiTilesheets, game) {
@@ -305,5 +305,4 @@ define(['jquery', 'area'], function($, Area) {
         }
     });
     
-    return Map;
-});
+    export default Map;
