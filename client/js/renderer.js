@@ -403,7 +403,7 @@ import Timer from './timer.js';
         
                     if(weapon) {
                         var weaponAnimData = weapon.animationData[anim.name],
-                            index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length;
+                            index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length,
                             wx = weapon.width * index * os,
                             wy = weapon.height * anim.row * os,
                             ww = weapon.width * os,
@@ -471,7 +471,7 @@ import Timer from './timer.js';
             });
             
             if(this.game.clearTarget && this.lastTargetPos) {
-                var last = this.lastTargetPos;
+                var last = this.lastTargetPos,
                     rect = this.getTargetBoundingRect(last.x, last.y);
                 
                 this.clearDirtyRect(rect);
@@ -691,7 +691,7 @@ import Timer from './timer.js';
     	        shadow = this.game.shadows["small"],
     	        sw = shadow.width * os,
     	        sh = shadow.height * os,
-    	        ox = -sprite.offsetX * os;
+    	        ox = -sprite.offsetX * os,
     	        oy = -sprite.offsetY * os;
 	    
     	    canvas.width = w;

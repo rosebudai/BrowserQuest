@@ -91,7 +91,7 @@ import LocalGameServer from './server/localgameserver.js';
 
         sendMessage: function(json) {
             var data;
-            if(this.connection.readyState === 1) {
+            if(this.connection.getReadyState() === 1) {
                 if(this.useBison) {
                     data = BISON.encode(json);
                 } else {

@@ -1858,7 +1858,7 @@ import config from './config.js';
          */
         findPath: function(character, x, y, ignoreList) {
             var self = this,
-                grid = this.pathingGrid;
+                grid = this.pathingGrid,
                 path = [],
                 isPlayer = (character === this.player);
         

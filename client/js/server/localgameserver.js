@@ -6,7 +6,6 @@ import Player from './player.js';
 var LocalGameServer = Class.extend({
     init: function() {
         this.isConnected = false;
-        this.callbacks = {};
         this.nextEntityId = 100;
 
         this.worldServer = null;
@@ -14,6 +13,12 @@ var LocalGameServer = Class.extend({
         this.playerConnection = null;
         this.connections = {};
         this.pendingMessages = [];
+
+        // Callback properties set directly by gameclient.js
+        this.onopen = null;
+        this.onmessage = null;
+        this.onerror = null;
+        this.onclose = null;
     },
 
     connect: function() {
@@ -28,12 +33,19 @@ var LocalGameServer = Class.extend({
                 self.playerConnection = self.createPlayerConnection();
                 self.isConnected = true;
 
-                if(self.callbacks.onopen) {
-                    self.callbacks.onopen();
+                if(self.onopen) {
+                    self.onopen();
                 }
 
                 self.player = new Player(self.playerConnection, self.worldServer);
                 self.worldServer.connect_callback(self.player);
+
+                // Enable delivery now that connect_callback has set up
+                // requestpos_callback (needed before HELLO is processed)
+                self.playerConnection.enableDelivery();
+
+                // Send "go" to trigger the client handshake
+                self.deliverRawToClient("go");
 
                 self.flushPendingMessages();
             });
@@ -57,11 +69,13 @@ var LocalGameServer = Class.extend({
         var self = this;
         var connectionId = '5' + this.nextEntityId++;
         var closed = false;
+        var suppressDelivery = true; // Suppress until connect_callback runs
         var connection = {
             id: connectionId,
             remoteAddress: '127.0.0.1',
             listen_callback: null,
             close_callback: null,
+            enableDelivery: function() { suppressDelivery = false; },
 
             listen: function(callback) {
                 this.listen_callback = callback;
@@ -72,11 +86,15 @@ var LocalGameServer = Class.extend({
             },
 
             send: function(message) {
-                self.deliverToClient(message);
+                if(!suppressDelivery) {
+                    self.deliverToClient(message);
+                }
             },
 
             sendUTF8: function(data) {
-                self.deliverRawToClient(data);
+                if(!suppressDelivery) {
+                    self.deliverRawToClient(data);
+                }
             },
 
             sendUTF: function(data) {
@@ -96,8 +114,8 @@ var LocalGameServer = Class.extend({
 
                 self.removeConnection(this.id);
 
-                if(self.callbacks.onclose) {
-                    self.callbacks.onclose();
+                if(self.onclose) {
+                    self.onclose();
                 }
             },
 
@@ -123,8 +141,8 @@ var LocalGameServer = Class.extend({
         try {
             message = JSON.parse(data);
         } catch (e) {
-            if(this.callbacks.onerror) {
-                this.callbacks.onerror(e);
+            if(this.onerror) {
+                this.onerror(e);
             }
             return;
         }
@@ -151,8 +169,8 @@ var LocalGameServer = Class.extend({
             this.playerConnection.close();
         } else {
             this.isConnected = false;
-            if(this.callbacks.onclose) {
-                this.callbacks.onclose();
+            if(this.onclose) {
+                this.onclose();
             }
         }
     },
@@ -169,22 +187,19 @@ var LocalGameServer = Class.extend({
         return this.connections[id];
     },
 
-    set onopen(fn) { this.callbacks.onopen = fn; },
-    set onmessage(fn) { this.callbacks.onmessage = fn; },
-    set onerror(fn) { this.callbacks.onerror = fn; },
-    set onclose(fn) { this.callbacks.onclose = fn; },
-
-    get readyState() { return this.isConnected ? 1 : 0; },
+    getReadyState: function() {
+        return this.isConnected ? 1 : 0;
+    },
 
     deliverToClient: function(message) {
-        if(this.callbacks.onmessage) {
-            this.callbacks.onmessage({ data: JSON.stringify(message) });
+        if(this.onmessage) {
+            this.onmessage({ data: JSON.stringify(message) });
         }
     },
 
     deliverRawToClient: function(data) {
-        if(this.callbacks.onmessage) {
-            this.callbacks.onmessage({ data: data });
+        if(this.onmessage) {
+            this.onmessage({ data: data });
         }
     }
 });

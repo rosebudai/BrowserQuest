@@ -56,7 +56,7 @@ var Player = Character.extend({
                 self.orientation = Utils.randomOrientation();
                 self.updateHitPoints();
                 self.updatePosition();
-                
+
                 self.server.addPlayer(self);
                 self.server.enter_callback(self);
 

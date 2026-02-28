@@ -64,8 +64,6 @@ Class.extend = function extend(prop) {
 
 window.Class = Class;
 
-if(!(typeof exports === 'undefined')) {
-    exports.Class = Class;
+if(typeof window !== 'undefined') {
+    window.Class = Class;
 }
-
-export default Class;

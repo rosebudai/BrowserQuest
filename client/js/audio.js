@@ -69,8 +69,8 @@ import Area from './area.js';
                 sound = document.createElement('audio'),
                 self = this;
 
-            sound.addEventListener('canplaythrough', function (e) {
-                this.removeEventListener('canplaythrough', arguments.callee, false);
+            sound.addEventListener('canplaythrough', function onCanPlay(e) {
+                this.removeEventListener('canplaythrough', onCanPlay, false);
                 log.debug(path + " is ready to play.");
                 if(loaded_callback) {
                     loaded_callback();
@@ -188,7 +188,7 @@ import Area from './area.js';
             if(music && !music.sound.fadingOut) {
                 this.clearFadeIn(music);
                 music.sound.fadingOut = setInterval(function() {
-                    var step = 0.02;
+                    var step = 0.02,
                         volume = music.sound.volume - step;
 
                     if(self.enabled && volume >= step) {
@@ -207,7 +207,7 @@ import Area from './area.js';
             if(music && !music.sound.fadingIn) {
                 this.clearFadeOut(music);
                 music.sound.fadingIn = setInterval(function() {
-                    var step = 0.01;
+                    var step = 0.01,
                         volume = music.sound.volume + step;
 
                     if(self.enabled && volume < 1 - step) {

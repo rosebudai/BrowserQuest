@@ -1,4 +1,5 @@
 import Utils from "./utils.js";
+import Mob from "./mob.js";
 
 /* Uses global Class */
 var Area = Class.extend({
