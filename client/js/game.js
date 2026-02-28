@@ -5,6 +5,7 @@ import Renderer from './renderer.js';
 import Map from './map.js';
 import Animation from './animation.js';
 import Sprite from './sprite.js';
+import loadSprites from './sprites.js';
 import AnimatedTile from './tile.js';
 import Warrior from './warrior.js';
 import GameClient from './gameclient.js';
@@ -71,6 +72,8 @@ import config from './config.js';
             this.cursors = {};
 
             this.sprites = {};
+            this.spriteData = null;
+            this.spriteDataPromise = null;
         
             // tile animation
             this.animatedTiles = null;
@@ -88,9 +91,16 @@ import config from './config.js';
         },
     
         setup: function($bubbleContainer, canvas, background, foreground, input) {
-    		this.setBubbleManager(new BubbleManager($bubbleContainer));
-    		this.setRenderer(new Renderer(this, canvas, background, foreground));
-    		this.setChatInput(input);
+     		this.setBubbleManager(new BubbleManager($bubbleContainer));
+     		this.setRenderer(new Renderer(this, canvas, background, foreground));
+     		this.setChatInput(input);
+
+            var self = this;
+            this.spriteDataPromise = loadSprites().then(function(data) {
+                self.spriteData = data;
+                log.info("Sprite data loaded.");
+                return data;
+            });
         },
         
         setStorage: function(storage) {
@@ -333,11 +343,11 @@ import config from './config.js';
     
         loadSprite: function(name) {
             if(this.renderer.upscaledRendering) {
-                this.spritesets[0][name] = new Sprite(name, 1);
+                this.spritesets[0][name] = new Sprite(name, 1, this.spriteData);
             } else {
-                this.spritesets[1][name] = new Sprite(name, 2);
+                this.spritesets[1][name] = new Sprite(name, 2, this.spriteData);
                 if(!this.renderer.mobile && !this.renderer.tablet) {
-                    this.spritesets[2][name] = new Sprite(name, 3);
+                    this.spritesets[2][name] = new Sprite(name, 3, this.spriteData);
                 }
             }
         },
@@ -644,48 +654,63 @@ import config from './config.js';
 
         run: function(started_callback) {
             var self = this;
-        
-            this.loadSprites();
-            this.setUpdater(new Updater(this));
-            this.camera = this.renderer.camera;
-        
-            this.setSpriteScale(this.renderer.scale);
-        
-        	var wait = setInterval(function() {
-                if(self.map.isLoaded && self.spritesLoaded()) {
-                    self.ready = true;
-                    log.debug('All sprites loaded.');
-                            
-                    self.loadAudio();
-                    
-                    self.initMusicAreas();
-                    self.initAchievements();
-                    self.initCursors();
-                    self.initAnimations();
-                    self.initShadows();
-                    self.initHurtSprites();
-                
-                    if(!self.renderer.mobile
-                    && !self.renderer.tablet 
-                    && self.renderer.upscaledRendering) {
-                        self.initSilhouettes();
+
+            var startGame = function() {
+                self.loadSprites();
+                self.setUpdater(new Updater(self));
+                self.camera = self.renderer.camera;
+
+                self.setSpriteScale(self.renderer.scale);
+
+	            var wait = setInterval(function() {
+                    if(self.map.isLoaded && self.spritesLoaded()) {
+                        self.ready = true;
+                        log.debug('All sprites loaded.');
+
+                        self.loadAudio();
+
+                        self.initMusicAreas();
+                        self.initAchievements();
+                        self.initCursors();
+                        self.initAnimations();
+                        self.initShadows();
+                        self.initHurtSprites();
+
+                        if(!self.renderer.mobile
+                        && !self.renderer.tablet
+                        && self.renderer.upscaledRendering) {
+                            self.initSilhouettes();
+                        }
+
+                        self.initEntityGrid();
+                        self.initItemGrid();
+                        self.initPathingGrid();
+                        self.initRenderingGrid();
+
+                        self.setPathfinder(new Pathfinder(self.map.width, self.map.height));
+
+                        self.initPlayer();
+                        self.setCursor("hand");
+
+                        self.connect(started_callback);
+
+                        clearInterval(wait);
                     }
-            
-                    self.initEntityGrid();
-                    self.initItemGrid();
-                    self.initPathingGrid();
-                    self.initRenderingGrid();
-                
-                    self.setPathfinder(new Pathfinder(self.map.width, self.map.height));
-            
-                    self.initPlayer();
-                    self.setCursor("hand");
-                    
-                    self.connect(started_callback);
-                
-                    clearInterval(wait);
-                }
-        	}, 100);
+	            }, 100);
+            };
+
+            if(this.spriteData) {
+                startGame();
+            } else {
+                (this.spriteDataPromise || loadSprites().then(function(data) {
+                    self.spriteData = data;
+                    log.info("Sprite data loaded.");
+                    return data;
+                })).then(function(data) {
+                    self.spriteData = data;
+                    startGame();
+                });
+            }
         },
     
         tick: function() {
