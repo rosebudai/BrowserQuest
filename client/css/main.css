@@ -210,7 +210,7 @@ footer, header, hgroup, menu, nav, section {
     #authors div a:hover, #credits h1 a:hover {color:#93C1FF;}
     #seb {clear:both;}
 
-    #portrait {display:none;}
+    #portrait {display:none !important;}
 
     #about .link a:hover {color:#d83939;}
 
@@ -264,7 +264,7 @@ footer, header, hgroup, menu, nav, section {
 
 /* States & Transitions */
 
-    #intro {-moz-transition:0.4s opacity linear;-webkit-transition:0.4s opacity linear;-o-transition:0.4s opacity linear;-ms-transition:0.4s opacity linear;transition:0.4s opacity linear;}
+    #intro {position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:200;-moz-transition:0.4s opacity linear;-webkit-transition:0.4s opacity linear;-o-transition:0.4s opacity linear;-ms-transition:0.4s opacity linear;transition:0.4s opacity linear;}
     #mask, #logo, #parchment {opacity:0;}
     .intro #logo, .intro #parchment {opacity:1;}
 
@@ -1184,22 +1184,7 @@ footer, header, hgroup, menu, nav, section {
         #bubbles {overflow:hidden;}
 	}
 
-	@media screen and (max-width: 800px) and (orientation: portrait) {
-        #portrait {display:block;height:300px;width:300px;position:absolute;top:55%; left:50%; margin:-150px 0 0 -150px;}
-        #parchment {display:none;}
-        #container, .game #container {display:none;}
-        
-        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
-        #portrait p {color:#eee;font-family:'GraphicPixel', sans-serif;font-size:20px;text-align:center;}
-        
-        #tilt {height:120px;width:132px;background-position:-710px -82px;background-size:844px;margin:25px auto 0 auto;}
-    }
-    
-    @media screen and (max-width: 640px) and (orientation: portrait) {
-        #portrait {display:block;height:300px;width:300px;position:absolute;top:70%; left:50%; margin:-150px 0 0 -150px;}
-        
-        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
-    }
+	/* Portrait orientation media queries removed — portrait mode is now supported */
 
 /* Tablet mode */
 
