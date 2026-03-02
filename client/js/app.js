@@ -507,7 +507,8 @@ import Storage from './storage.js';
                     var newScale = this.game.renderer.getScaleFactor();
                     this.game.renderer.rescale(newScale);
                 }
-            } 
+            }
+            this.center();
         }
     });
 

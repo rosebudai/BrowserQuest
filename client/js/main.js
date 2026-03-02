@@ -160,7 +160,17 @@ import Game from './game.js';
             $('#resize-check').bind("transitionend", app.resizeUi.bind(app));
             $('#resize-check').bind("webkitTransitionEnd", app.resizeUi.bind(app));
             $('#resize-check').bind("oTransitionEnd", app.resizeUi.bind(app));
-        
+
+            var resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    if(app) {
+                        app.resizeUi();
+                    }
+                }, 100);
+            });
+
             log.info("App initialized.");
         
             initGame();
