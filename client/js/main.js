@@ -141,7 +141,9 @@ import Game from './game.js';
     		if(data.hasAlreadyPlayed) {
     		    if(data.player.name && data.player.name !== "") {
 		            $('#playername').html(data.player.name);
-    		        $('#playerimage').attr('src', data.player.image);
+    		        if(data.player.image) {
+    		            $('#playerimage').attr('src', data.player.image).show();
+    		        }
     		    }
     		}
     		
