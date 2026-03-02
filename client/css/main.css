@@ -1080,8 +1080,8 @@ footer, header, hgroup, menu, nav, section {
 		
 		#parchment, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon {background-size:422px auto;}
         #parchment {background:none;}
-        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
-        #parchment {width:100%;height:auto;position:absolute;left:0;top:125px;margin-left:0;margin-top:0;font-size:10px;text-align:center;z-index:2;color:#eee;}
+        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
+        #parchment {width:100%;height:auto;position:absolute;left:0;top:140px;margin-left:0;margin-top:0;font-size:10px;text-align:center;z-index:2;color:#eee;}
         #parchment h1 {margin-top:0px;font-weight:normal;}
         #instructions h1 {margin-top:15px;font-size:14px;}
         .left-ornament, .right-ornament {height:12px;width:31px;display:inline-block;margin:0 10px;position:relative;top:3px;}
@@ -1090,7 +1090,7 @@ footer, header, hgroup, menu, nav, section {
         #character {height:21px;width:12px;margin:0 auto;background-position:-354px -12px;margin-top:15px;position:relative;display:none;}
         #character div {height:21px;width:12px;position:absolute;top:0;left:0;background-position:-366px -12px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
-        #parchment input {margin-top:10px; padding-bottom:5px; border-bottom:1px dashed #b2af9b; font-size:20px;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;color:#eee;}
+        #parchment input {margin-top:10px; padding-bottom:5px; border-bottom:1px dashed #b2af9b; font-size:20px;width:80%;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;color:#eee;}
         .button {height:54px;width:204px;background-position:-500px -952px;margin:20px auto 0 auto;position:relative;background-size:844px;}
         .play div {height:54px;width:204px;background-position:-458px -512px; background-size:844px;}
         .play div:active {background-position:0px -1398px;}
@@ -1184,7 +1184,13 @@ footer, header, hgroup, menu, nav, section {
         #bubbles {overflow:hidden;}
 	}
 
-	/* Portrait orientation media queries removed — portrait mode is now supported */
+	/* Narrow mobile screens — scale parchment to fit */
+	@media screen and (max-width: 450px) {
+		#parchment, #loadcharacter, #confirmation, #error {
+			transform: scale(0.85);
+			transform-origin: center top;
+		}
+	}
 
 /* Tablet mode */
 
