@@ -11,14 +11,19 @@ var Camera = Class.extend({
     },
 
     rescale: function() {
-        var factor = this.renderer.mobile ? 1 : 2;
+        var scale = this.renderer.scale;
+        var tilesize = this.renderer.tilesize;
 
-        this.gridW = 15 * factor;
-        this.gridH = 7 * factor;
+        // Calculate grid to fill viewport
+        this.gridW = Math.ceil(window.innerWidth / (tilesize * scale));
+        this.gridH = Math.ceil(window.innerHeight / (tilesize * scale));
+
+        // Ensure odd numbers for proper centering on player
+        if(this.gridW % 2 === 0) this.gridW += 1;
+        if(this.gridH % 2 === 0) this.gridH += 1;
 
         log.debug("---------");
-        log.debug("Factor:"+factor);
-        log.debug("W:"+this.gridW + " H:" + this.gridH);
+        log.debug("%.gridW:" + this.gridW + " gridH:" + this.gridH + " scale:" + scale);
     },
 
     setPosition: function(x, y) {
