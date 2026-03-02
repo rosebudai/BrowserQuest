@@ -6,6 +6,7 @@ import Game from './game.js';
     var initApp = function() {
         $(document).ready(function() {
         	app = new App();
+        	window.__app = app;
             app.center();
         
             if(Detect.isWindows()) {
@@ -185,6 +186,7 @@ import Game from './game.js';
         	    input = document.getElementById("chatinput");
 
     		game = new Game(app);
+    		window.__game = game;
     		game.setup('#bubbles', canvas, background, foreground, input);
     		game.setStorage(app.storage);
     		app.setGame(game);
