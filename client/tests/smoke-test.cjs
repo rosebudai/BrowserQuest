@@ -343,6 +343,25 @@ const path = require('path');
       `Canvas: ${viewportInfo.canvasWidth}x${viewportInfo.canvasHeight}, Viewport: ${viewportInfo.viewportWidth}x${viewportInfo.viewportHeight}`);
     await screenshot('08-viewport');
 
+    // STEP 8: Status bar visible
+    const barInfo = await page.evaluate(() => {
+      const bar = document.getElementById('bar-container');
+      const rect = bar.getBoundingClientRect();
+      const style = window.getComputedStyle(bar);
+      return {
+        height: rect.height,
+        width: rect.width,
+        top: rect.top,
+        bottom: rect.bottom,
+        position: style.position,
+        viewportHeight: window.innerHeight,
+        isVisible: rect.height > 0 && rect.bottom <= window.innerHeight && rect.top >= 0,
+      };
+    });
+    const barOk = barInfo.isVisible && barInfo.height > 0;
+    logStep('Status Bar', barOk,
+      `${barInfo.width}x${barInfo.height} at y=${Math.round(barInfo.top)}, position:${barInfo.position}`);
+
   } catch (err) {
     console.error('\x1b[31mFATAL ERROR:\x1b[0m', err.message);
     await screenshot('error-state');
@@ -364,7 +383,7 @@ const path = require('path');
   await browser.close();
 
   // Exit code: 0 if all must-have steps passed
-  const mustHaveSteps = ['Game loads', 'Game starts', 'Player spawned', 'Movement', 'Death & Respawn', 'Viewport'];
+  const mustHaveSteps = ['Game loads', 'Game starts', 'Player spawned', 'Movement', 'Death & Respawn', 'Viewport', 'Status Bar'];
   const allMustHavePassed = mustHaveSteps.every(name => {
     const r = results.find(r => r.name === name);
     return r && r.passed;
