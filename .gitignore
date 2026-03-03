@@ -1,4 +1,5 @@
 node_modules
+package-lock.json
 client-build
 build.txt
 config_build.json
