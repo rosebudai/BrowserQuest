@@ -7,31 +7,65 @@ var Camera = Class.extend({
         this.gridX = 0;
         this.gridY = 0;
         this.offset = 0.5;
+        this.mapWidth = null;
+        this.mapHeight = null;
         this.rescale();
     },
 
     rescale: function() {
-        var factor = this.renderer.mobile ? 1 : 2;
+        var renderer = this.renderer,
+            scale = renderer.scale,
+            tilesize = renderer.tilesize;
 
-        this.gridW = 15 * factor;
-        this.gridH = 7 * factor;
+        var borderPad = 5 * scale,
+            barHeight = 17 * scale,
+            availW = window.innerWidth - 2 * borderPad,
+            availH = window.innerHeight - 2 * borderPad - barHeight;
+
+        var gridW = Math.floor(availW / (tilesize * scale));
+        var gridH = Math.floor(availH / (tilesize * scale));
+
+        // Ensure odd
+        if (gridW % 2 === 0) { gridW -= 1; }
+        if (gridH % 2 === 0) { gridH -= 1; }
+
+        // Enforce minimums
+        this.gridW = Math.max(gridW, 15);
+        this.gridH = Math.max(gridH, 7);
 
         log.debug("---------");
-        log.debug("Factor:"+factor);
-        log.debug("W:"+this.gridW + " H:" + this.gridH);
+        log.debug("Scale:" + scale);
+        log.debug("W:" + this.gridW + " H:" + this.gridH);
+    },
+
+    setMapBounds: function(mapWidth, mapHeight) {
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
     },
 
     setPosition: function(x, y) {
         this.x = x;
         this.y = y;
 
-        this.gridX = Math.floor( x / 16 );
-        this.gridY = Math.floor( y / 16 );
+        if (this.mapWidth !== null && this.mapHeight !== null) {
+            var maxX = (this.mapWidth - this.gridW) * 16,
+                maxY = (this.mapHeight - this.gridH) * 16;
+            this.x = Math.max(0, Math.min(this.x, maxX));
+            this.y = Math.max(0, Math.min(this.y, maxY));
+        }
+
+        this.gridX = Math.floor(this.x / 16);
+        this.gridY = Math.floor(this.y / 16);
     },
 
     setGridPosition: function(x, y) {
         this.gridX = x;
         this.gridY = y;
+
+        if (this.mapWidth !== null && this.mapHeight !== null) {
+            this.gridX = Math.max(0, Math.min(this.gridX, this.mapWidth - this.gridW));
+            this.gridY = Math.max(0, Math.min(this.gridY, this.mapHeight - this.gridH));
+        }
 
         this.x = this.gridX * 16;
         this.y = this.gridY * 16;
