@@ -136,6 +136,7 @@ import config from './config.js';
                 log.info("Map loaded.");
                 var tilesetIndex = self.renderer.upscaledRendering ? 0 : self.renderer.scale - 1;
                 self.renderer.setTileset(self.map.tilesets[tilesetIndex]);
+                self.renderer.camera.setMapBounds(self.map.width, self.map.height);
         	});
         },
     
@@ -2338,6 +2339,9 @@ import config from './config.js';
     
                 this.renderer.rescale(newScale);
                 this.camera = this.renderer.camera;
+                if(this.map && this.map.width) {
+                    this.camera.setMapBounds(this.map.width, this.map.height);
+                }
                 this.camera.setPosition(x, y);
 
                 this.renderer.renderStaticCanvases();
