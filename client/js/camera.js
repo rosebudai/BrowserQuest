@@ -9,6 +9,7 @@ var Camera = Class.extend({
         this.offset = 0.5;
         this.mapWidth = null;
         this.mapHeight = null;
+        this.activeZone = null;
         this.rescale();
     },
 
@@ -43,11 +44,32 @@ var Camera = Class.extend({
         this.mapHeight = mapHeight;
     },
 
+    setActiveZone: function(zone) {
+        this.activeZone = zone || null;
+    },
+
     setPosition: function(x, y) {
         this.x = x;
         this.y = y;
 
-        if (this.mapWidth !== null && this.mapHeight !== null) {
+        var zone = this.activeZone;
+        if (zone) {
+            // Zone-aware clamping (per axis)
+            if (this.gridW >= zone.width) {
+                this.x = (zone.x - (this.gridW - zone.width) / 2) * 16;
+            } else {
+                var minX = zone.x * 16,
+                    maxX = (zone.x + zone.width - this.gridW) * 16;
+                this.x = Math.max(minX, Math.min(this.x, maxX));
+            }
+            if (this.gridH >= zone.height) {
+                this.y = (zone.y - (this.gridH - zone.height) / 2) * 16;
+            } else {
+                var minY = zone.y * 16,
+                    maxY = (zone.y + zone.height - this.gridH) * 16;
+                this.y = Math.max(minY, Math.min(this.y, maxY));
+            }
+        } else if (this.mapWidth !== null && this.mapHeight !== null) {
             var maxX = (this.mapWidth - this.gridW) * 16,
                 maxY = (this.mapHeight - this.gridH) * 16;
             this.x = Math.max(0, Math.min(this.x, maxX));
@@ -62,7 +84,19 @@ var Camera = Class.extend({
         this.gridX = x;
         this.gridY = y;
 
-        if (this.mapWidth !== null && this.mapHeight !== null) {
+        var zone = this.activeZone;
+        if (zone) {
+            if (this.gridW >= zone.width) {
+                this.gridX = Math.floor(zone.x - (this.gridW - zone.width) / 2);
+            } else {
+                this.gridX = Math.max(zone.x, Math.min(this.gridX, zone.x + zone.width - this.gridW));
+            }
+            if (this.gridH >= zone.height) {
+                this.gridY = Math.floor(zone.y - (this.gridH - zone.height) / 2);
+            } else {
+                this.gridY = Math.max(zone.y, Math.min(this.gridY, zone.y + zone.height - this.gridH));
+            }
+        } else if (this.mapWidth !== null && this.mapHeight !== null) {
             this.gridX = Math.max(0, Math.min(this.gridX, this.mapWidth - this.gridW));
             this.gridY = Math.max(0, Math.min(this.gridY, this.mapHeight - this.gridH));
         }

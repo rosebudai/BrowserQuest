@@ -319,5 +319,3 @@ if(typeof window !== 'undefined') {
 if(!(typeof exports === 'undefined')) {
     module.exports = Types;
 }
-
-export default Types;

@@ -821,8 +821,9 @@ import config from './config.js';
                 self.player.setMaxHitPoints(hp);
             
                 self.updateBars();
-                self.resetCamera();
                 self.activeCameraZone = self.map.getCameraZone(self.player);
+                self.camera.setActiveZone(self.activeCameraZone);
+                self.resetCamera();
                 self.updatePlateauMode();
                 self.audioManager.updateMusic();
             
@@ -999,6 +1000,7 @@ import config from './config.js';
                         self.client.sendTeleport(dest.x, dest.y);
 
                         self.activeCameraZone = self.map.getCameraZone(self.player);
+                        self.camera.setActiveZone(self.activeCameraZone);
 
                         if(self.renderer.mobile && dest.cameraX && dest.cameraY) {
                             self.camera.setGridPosition(dest.cameraX, dest.cameraY);
@@ -2213,6 +2215,7 @@ import config from './config.js';
         endZoning: function() {
             this.currentZoning = null;
             this.activeCameraZone = this.map.getCameraZone(this.player);
+            this.camera.setActiveZone(this.activeCameraZone);
             this.resetZone();
             this.zoningQueue.shift();
             
