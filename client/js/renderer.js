@@ -107,6 +107,12 @@ import Timer from './timer.js';
             this.forecanvas.height = this.canvas.height;
             log.debug("#foreground set to "+this.forecanvas.width+" x "+this.forecanvas.height);
 
+            var canvasDiv = document.getElementById('canvas');
+            if(canvasDiv) {
+                canvasDiv.style.width = this.canvas.width + 'px';
+                canvasDiv.style.height = this.canvas.height + 'px';
+                canvasDiv.style.position = 'relative';
+            }
             var bubblesEl = document.getElementById('bubbles');
             if(bubblesEl) {
                 bubblesEl.style.width = this.canvas.width + 'px';
