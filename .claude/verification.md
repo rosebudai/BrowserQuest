@@ -106,6 +106,40 @@ These scenarios are designed for agent-driven verification using Playwright MCP.
 - Playwright MCP browser available
 - Game loaded and player in the village (complete Tier 1 or manually start the game)
 
+### Viewport Testing
+
+**Every Tier 2 scenario must be run at two viewports** to catch responsive layout issues (especially the status bar, which uses `position:absolute;bottom:0` and can clip or disappear at certain sizes).
+
+| Viewport | Dimensions | CSS Breakpoint | Game Scale | Status Bar Width |
+|----------|-----------|----------------|------------|-----------------|
+| **Desktop** | `1920x1080` | `min-width: 1501px` | 3 | 1440px |
+| **Mobile** | `390x844` | `max-width: 600px` | 1 | 480px |
+
+Use `browser_resize` to switch viewports between runs:
+
+```
+browser_resize(width: 1920, height: 1080)  // Desktop
+browser_resize(width: 390, height: 844)    // Mobile
+```
+
+After resizing, **reload the page** (`browser_navigate` to the same URL) so the game recalculates its canvas size and camera grid. The game reads `window.innerWidth` / `window.innerHeight` at init to compute `camera.gridW` and `camera.gridH`.
+
+**Screenshot naming with viewport suffix:**
+```
+scenario-{N}-{step-name}-desktop.png
+scenario-{N}-{step-name}-mobile.png
+```
+
+**Viewport-specific judge criteria:**
+
+| Criterion | Desktop (1920x1080) | Mobile (390x844) |
+|-----------|-------------------|-----------------|
+| **Status bar** | Full 1440px bar visible at bottom, not clipped | 480px bar visible, may be scaled down but must be within viewport |
+| **Canvas fill** | Canvas fills viewport, no large empty borders | Canvas fills viewport in portrait orientation |
+| **Player sprite** | Clearly visible at scale 3 (larger sprites) | Visible but smaller at scale 1 |
+| **UI readability** | All text and icons easily readable | Text may be small but still legible |
+| **Intro screen** | Centered parchment with name input and Play button | Parchment should fit within mobile width, input usable |
+
 ### Screenshot Naming Convention
 
 All screenshots follow the pattern:
@@ -515,6 +549,27 @@ for (const a of targets) {
 return results;
 ```
 
+### Verify Status Bar Visibility
+
+Check that the status bar is visible and within the viewport bounds. This is critical after viewport resizes.
+
+```javascript
+const bar = document.getElementById('bar-container');
+const rect = bar.getBoundingClientRect();
+const style = window.getComputedStyle(bar);
+return {
+  height: rect.height,
+  width: rect.width,
+  top: rect.top,
+  bottom: rect.bottom,
+  position: style.position,
+  viewportHeight: window.innerHeight,
+  viewportWidth: window.innerWidth,
+  isVisible: rect.height > 0 && rect.bottom <= window.innerHeight && rect.top >= 0,
+  isClipped: rect.bottom > window.innerHeight,
+};
+```
+
 ### Check If Game Is Running
 
 Quick health check before starting any scenario.
@@ -580,6 +635,17 @@ Visual verification criteria for screenshot evaluation. Use these with the `visu
 
 - **Pass:** Terrain visibly different from the village center — forest tiles, darker ground, fewer buildings, more trees. Player at the edge of the map or in a transition zone.
 - **Fail:** Still clearly in the village center. No terrain change visible.
+
+#### Status Bar (Viewport-Sensitive)
+
+- **Pass (Desktop):** Full-width status bar visible at the very bottom of the viewport. HP bar, equipment icons, and player count all rendered. Bar does not extend below the viewport.
+- **Pass (Mobile):** Status bar visible at bottom, scaled to mobile width. May be narrower but all core elements (HP bar, icons) still present. Not clipped by viewport edge.
+- **Fail:** Status bar invisible, clipped below viewport bottom (`rect.bottom > window.innerHeight`), or overlapping game content. Bar height is 0.
+
+#### Mobile Layout
+
+- **Pass:** Game fills the mobile viewport. Intro screen fits within width (no horizontal scroll needed). Name input and Play button are tappable size. Status bar doesn't overflow.
+- **Fail:** Horizontal overflow requiring scroll. UI elements too small to interact with. Canvas doesn't resize to mobile dimensions. Intro parchment extends beyond screen edges.
 
 ### Confidence Levels
 
