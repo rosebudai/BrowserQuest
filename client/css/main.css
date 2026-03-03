@@ -282,7 +282,7 @@ footer, header, hgroup, menu, nav, section {
     .game.credits .parchment-left, .game.death .parchment-left, .game.about .parchment-left {left:0%;}
     .game.credits .parchment-right, .game.death .parchment-right, .game.about .parchment-right {right:0%;}
 
-    #container {z-index:100;background:rgba(0,0,0,0.2);-moz-transition:1s opacity linear 0.5s;-webkit-transition:1s opacity linear 0.5s;-o-transition:1s opacity linear 0.5s;-ms-transition:1s opacity linear 0.5s;transition:1s opacity linear 0.5s;}
+    #container {z-index:100;background:rgba(0,0,0,0.2);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);-moz-transition:1s opacity linear 0.5s;-webkit-transition:1s opacity linear 0.5s;-o-transition:1s opacity linear 0.5s;-ms-transition:1s opacity linear 0.5s;transition:1s opacity linear 0.5s;}
     .intro #container {opacity:0;pointer-events:none;}
     .game #container {opacity:1;}
 
@@ -452,9 +452,9 @@ footer, header, hgroup, menu, nav, section {
         .button.delete {background-position:-687px -153px;}
         .button.delete:active {background-position:0 -2178px;}
         
-		#container {width:1470px;margin:0 auto;position:absolute;top:50%;margin-top:-378px;left:50%;margin-left:-735px;}
-		#canvasborder {padding:15px;background:url('../img/3/border.png') no-repeat;}
-		#canvas {width:100%;height:672px;}
+		#container {}
+		#canvasborder {padding:15px;background:url('../img/3/border.png') no-repeat;background-size:100% 100%;position:relative;}
+		canvas {display:block;}
 		#fade {width:1440px;height:672px;top:15px;left:15px;}
 		
 		#instructions {height:516px;width:1251px;background-position:0 -1581px;margin-left:-624px;margin-top:-279px;color:#373737;}
@@ -488,12 +488,12 @@ footer, header, hgroup, menu, nav, section {
 		
 		
 		/*Bubbles*/
-		#bubbles {width:1440px;height:672px;margin-bottom:-672px;position:relative;top:-672px;pointer-events:none;}
+		#bubbles {position:absolute;top:15px;left:15px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:12px 0}
 	    .bubble p {font-family:"GraphicPixel"; font-size:18px;line-height:24px;}
-	    
+
 	    /*GUI Bar*/
-	    #bar-container {height:51px;top:-3px;background-size:1440px;}
+	    #bar-container {height:51px;background-size:1440px;}
 
 		#healthbar {height:39px;background-position:0 -51px;width:306px;top:9px;background-size:1440px;z-index:20;}
 		#hitpoints {width:0px;height:33px;top:12px;left:33px;z-index:10;position:absolute;}
@@ -612,10 +612,10 @@ footer, header, hgroup, menu, nav, section {
         #error p {width:70%;margin:40px auto 0;}
         .button.delete {background-position:-458px -102px;}
         .button.delete:active {background-position:0 -1452px;}
-        
-		#container {width:980px;margin:0 auto;position:absolute;top:50%;margin-top:-252px;left:50%;margin-left:-490px;}
-		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;}
-		#canvas {width:100%;height:448px;}
+
+		#container {}
+		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;background-size:100% 100%;position:relative;}
+		canvas {display:block;}
 		#fade {width:960px;height:448px;top:10px;left:10px;}
 
 		#instructions {height:344px;width:834px;background-position:0 -1054px;margin-left:-416px;margin-top:-186px;color:#373737;}
@@ -628,11 +628,11 @@ footer, header, hgroup, menu, nav, section {
         #instructions p {text-align:center;font-family:'GraphicPixel';font-size:20px;clear:left;margin-top:20px;}
 
         #playerimage {height: 64px; width: 64px;}
-        
+
         .close {height:32px;width:32px;top:-8px;right:-10px;background-position:-708px -252px;}
         .close:hover {background-position:-740px -252px;}
         .close:active {background-position:-772px -252px;}
-        
+
         .ribbon {width:36px;right:20px;top:8px;}
         .ribbon .top {width:100%;height:12px;background-position:-762px -344px;}
         .ribbon .bottom {width:100%;height:44px;background-position:-762px -370px;}
@@ -640,20 +640,20 @@ footer, header, hgroup, menu, nav, section {
         .ribbon:hover .bottom {background-position:-798px -370px;}
         #createcharacter .ribbon {right:20px;top:8px;}
         #loadcharacter .ribbon {right:99px;top:-8px;}
-        
+
         /*Death & Respawn*/
         #death p {font-size:20px;margin-top:90px;}
         #death p em {margin-top:30px;}
 		#respawn {width:250px;height:102px;margin:40px auto 0 auto;background-position: 0 -952px;}
 		#respawn:active {background-position:-250px -952px;}
-		
+
 		/*Bubbles*/
-		#bubbles {width:960px;height:448px;margin-bottom:-448px;position:relative;top:-448px;pointer-events:none;}
+		#bubbles {position:absolute;top:10px;left:10px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:0;line-height:35px;}
 	    .bubble p {font-family:"GraphicPixel"; font-size:14px;}
-	    
+
 	    /*GUI Bar*/
-		#bar-container {height:34px;top:-2px;background-size:960px;}
+		#bar-container {height:34px;background-size:960px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
@@ -690,7 +690,7 @@ footer, header, hgroup, menu, nav, section {
 		#chatbox {height:32px;width:788px;background-size:960px;background-position:0 -64px;margin-left:-394px;bottom:12px;}
 		#chatbox.active {bottom:44px;}
 		#chatbox input {font-size:20px;color:#eee;background:none;width:90%;border:0;margin-left:2%;padding:7px 0;}
-		
+
 		/*Credits*/
         #credits, #death, #about {width:844px;height:364px;margin-left:-422px;margin-top:-182px;font-size:20px;}
         .parchment-left, .parchment-right, .parchment-middle {background-size:844px;}
@@ -715,7 +715,7 @@ footer, header, hgroup, menu, nav, section {
         #note {float:left;background-position:-802px -224px;height:22px;width:20px;}
         #close-credits {margin:20px auto 0 auto;text-align:center;clear:both;font-size:14px;}
         #sharing {width:202px;}
-        
+
         /*About*/
         #about h1 span.title {max-width:400px;display:inline-block;line-height:24px;margin-top:-90px;position:relative;}
         #close-about {margin:153px auto 0 auto;text-align:center;clear:both;font-size:14px;color:#373737;}
@@ -729,16 +729,16 @@ footer, header, hgroup, menu, nav, section {
         #about .link {clear:both;font-size:14px;margin:20px 0;display:block;text-align:left;line-height:10px;}
         #about .link a {color:#2e7fdd;text-decoration:none;}
         #about .link .ext-link {height:12px;width:12px;background-position:-798px -344px;display:block;float:left;margin-right:7px;}
-        
+
         .animate .parchment-middle {-moz-animation:parchmiddle2 1s ease 1;-webkit-animation:parchmiddle2 1s ease 1;-o-animation:parchmiddle2 1s ease 1;-ms-animation:parchmiddle2 1s ease 1;}
 
         .game .parchment-middle {background-position: -422px -588px;}
         .game.credits .parchment-middle, .game.death .parchment-middle, .game.about .parchment-middle {width:692px;margin-left:-346px;background-position: -76px -588px;}
-        
+
 	    footer {font-size:16px;}
         #resize-check {height:2px;}
 	}
-	
+
 	@media screen and (max-height: 870px) {
 
 	    .upscaled #logo, .upscaled #logosparks, .upscaled .left-ornament, .upscaled .right-ornament, .upscaled #character, .upscaled #character div, .upscaled .button, .upscaled .button div, .upscaled #respawn, .upscaled #scroll, .upscaled #instructions, .upscaled .icon, .upscaled #tilt, .upscaled .parchment-left, .upscaled .parchment-middle, .upscaled .parchment-right, .upscaled .avatar, .upscaled .facebook, .upscaled .twitter, .upscaled .close, .upscaled .ribbon .top, .upscaled .ribbon .bottom, .upscaled #about .img, .upscaled .ext-link {background-image:url('../img/2/spritesheet.png');}
@@ -773,10 +773,10 @@ footer, header, hgroup, menu, nav, section {
         #error p {width:70%;margin:40px auto 0;}
         .button.delete {background-position:-458px -102px;}
         .button.delete:active {background-position:0 -1452px;}
-        
-		#container {width:980px;margin:0 auto;position:absolute;top:50%;margin-top:-252px;left:50%;margin-left:-490px;}
-		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;}
-		#canvas {width:100%;height:448px;}
+
+		#container {}
+		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;background-size:100% 100%;position:relative;}
+		canvas {display:block;}
 		#fade {width:960px;height:448px;top:10px;left:10px;}
 
 		#instructions {height:344px;width:834px;background-position:0 -1054px;margin-left:-416px;margin-top:-186px;color:#373737;}
@@ -789,11 +789,11 @@ footer, header, hgroup, menu, nav, section {
         #instructions p {text-align:center;font-family:'GraphicPixel';font-size:20px;clear:left;margin-top:20px;}
 
         #playerimage {height: 64px; width: 64px;}
-        
+
         .close {height:32px;width:32px;top:-8px;right:-10px;background-position:-708px -252px;}
         .close:hover {background-position:-740px -252px;}
         .close:active {background-position:-772px -252px;}
-        
+
         .ribbon {width:36px;right:20px;top:8px;}
         .ribbon .top {width:100%;height:12px;background-position:-762px -344px;}
         .ribbon .bottom {width:100%;height:44px;background-position:-762px -370px;}
@@ -801,20 +801,20 @@ footer, header, hgroup, menu, nav, section {
         .ribbon:hover .bottom {background-position:-798px -370px;}
         #createcharacter .ribbon {right:20px;top:8px;}
         #loadcharacter .ribbon {right:99px;top:-8px;}
-        
+
         /*Death & Respawn*/
         #death p {font-size:20px;margin-top:90px;}
         #death p em {margin-top:30px;}
 		#respawn {width:250px;height:102px;margin:40px auto 0 auto;background-position: 0 -952px;}
 		#respawn:active {background-position:-250px -952px;}
-		
+
         /*Bubbles*/
-		#bubbles {width:960px;height:448px;margin-bottom:-448px;position:relative;top:-448px;pointer-events:none;}
+		#bubbles {position:absolute;top:10px;left:10px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:0;}
 	    .bubble p {font-family:"GraphicPixel"; font-size:14px;line-height:35px;}
-	    
+
 	    /*GUI Bar*/
-		#bar-container {height:34px;top:-2px;background-size:960px;}
+		#bar-container {height:34px;background-size:960px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
@@ -930,10 +930,10 @@ footer, header, hgroup, menu, nav, section {
         #error p {width:70%;margin:40px auto 0;}
         .button.delete {background-position:-229px -51px;}
         .button.delete:active {background-position:0 -726px;}
-        
-		#container {width:490px;margin:0 auto;position:absolute;top:50%;margin-top:-126px;left:50%;margin-left:-245px;}
-		#canvasborder {padding:5px;background:url('../img/1/border.png') no-repeat;}
-		#canvas {width:100%;height:224px;}
+
+		#container {}
+		#canvasborder {padding:5px;background:url('../img/1/border.png') no-repeat;background-size:100% 100%;position:relative;}
+		canvas {display:block;}
 		#fade {width:480px;height:224px;top:5px;left:5px;}
 		
 		#instructions {height:172px;width:417px;background-position:0 -527px;margin-left:-208px;margin-top:-93px;color:#373737;}
@@ -968,12 +968,12 @@ footer, header, hgroup, menu, nav, section {
 		#respawn:active {background-position:-125px -476px;}
 		
 		/*Bubbles*/
-		#bubbles {width:480px;height:224px;margin-bottom:-224px;position:relative;top:-224px;pointer-events:none;}
+		#bubbles {position:absolute;top:5px;left:5px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:0;line-height:35px;}
 	    .bubble p {font-family:"GraphicPixel"; font-size:10px;}
-	    
+
 	    /*GUI Bar*/
-	    #bar-container {height:17px;top:-1px;background-size:480px;}
+	    #bar-container {height:17px;background-size:480px;}
 
 		#healthbar {height:13px;background-position:0 -17px;width:102px;top:3px;background-size:480px;z-index:20;}
 		#hitpoints {width:0px;height:11px;top:4px;left:11px;z-index:10;position:absolute;}
@@ -1079,8 +1079,8 @@ footer, header, hgroup, menu, nav, section {
         body.intro {background:-webkit-gradient(radial, center center, 120, center center, 400, from(rgba(0,0,0,0)), to(rgba(0,0,0,1))), url('../img/1/wood.png') repeat, #000; background-size:auto, 128px;}
         body {background:#000;}
         #logosparks {-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;display:none;}
-		#container {height:258px;width:480px;position:relative;left:50%;top:50%;margin:-128px auto 0 -240px;}
-		#canvasborder {background:none;padding:0;}
+		#container {position:relative;}
+		#canvasborder {background:none;padding:0;position:relative;}
 		
 		#parchment, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon {background-size:422px auto;}
         #parchment {background:none;}
@@ -1133,7 +1133,7 @@ footer, header, hgroup, menu, nav, section {
 		#playerimage {display:none;}
 		
 		/*GUI Bar*/
-		#bar-container {height:34px;top:-2px;background-size:960px;background-position:0 -96px;}
+		#bar-container {height:34px;background-size:960px;background-position:0 -96px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
