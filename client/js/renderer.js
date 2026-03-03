@@ -128,7 +128,32 @@ import Timer from './timer.js';
             }
             var barEl = document.getElementById('bar-container');
             if(barEl) {
-                barEl.style.width = this.canvas.width + 'px';
+                var cw = this.canvas.width;
+                var s = this.scale;
+                var spriteW = 480 * s;
+                var offset = (cw - spriteW) / 2;
+
+                barEl.style.width = cw + 'px';
+                barEl.style.backgroundColor = '#373737';
+                barEl.style.backgroundPosition = offset + 'px 0';
+
+                // Shift all fixed-position child elements right by offset
+                // so they align with the centered sprite.
+                // Clear inline left first so getComputedStyle reads the
+                // stylesheet value (avoids cumulative offset on re-rescale).
+                var fixedElements = [
+                    'healthbar', 'hitpoints', 'weapon', 'armor',
+                    'playercount', 'chatbutton', 'achievementsbutton',
+                    'helpbutton', 'mutebutton'
+                ];
+                for(var i = 0; i < fixedElements.length; i++) {
+                    var el = document.getElementById(fixedElements[i]);
+                    if(el) {
+                        el.style.left = '';
+                        var cssLeft = parseInt(window.getComputedStyle(el).left, 10) || 0;
+                        el.style.left = (cssLeft + offset) + 'px';
+                    }
+                }
             }
         },
     
