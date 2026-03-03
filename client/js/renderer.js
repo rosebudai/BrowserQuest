@@ -106,6 +106,16 @@ import Timer from './timer.js';
             this.forecanvas.width = this.canvas.width;
             this.forecanvas.height = this.canvas.height;
             log.debug("#foreground set to "+this.forecanvas.width+" x "+this.forecanvas.height);
+
+            var bubblesEl = document.getElementById('bubbles');
+            if(bubblesEl) {
+                bubblesEl.style.width = this.canvas.width + 'px';
+                bubblesEl.style.height = this.canvas.height + 'px';
+            }
+            var barEl = document.getElementById('bar-container');
+            if(barEl) {
+                barEl.style.width = this.canvas.width + 'px';
+            }
         },
     
         initFPS: function() {
