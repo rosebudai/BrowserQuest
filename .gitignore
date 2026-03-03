@@ -7,5 +7,6 @@ config_local*
 *.swp
 dist/
 rosebud/
-.claude/specs/
+.claude/
+!.claude/verification.md
 .playwright-mcp/
