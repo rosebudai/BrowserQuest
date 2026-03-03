@@ -88,6 +88,7 @@ import Area from './area.js';
             
             this.doors = this._getDoors(map);
             this.checkpoints = this._getCheckpoints(map);
+            this.cameraZones = this._getCameraZones(map);
         },
     
         _getDoors: function(map) {
@@ -301,6 +302,21 @@ import Area from './area.js';
         getCurrentCheckpoint: function(entity) {
             return _.detect(this.checkpoints, function(checkpoint) {
                 return checkpoint.contains(entity);
+            });
+        },
+
+        _getCameraZones: function(map) {
+            var zones = [];
+            _.each(map.cameraZones, function(zone) {
+                var area = new Area(zone.x, zone.y, zone.w, zone.h);
+                zones.push(area);
+            });
+            return zones;
+        },
+
+        getCameraZone: function(entity) {
+            return _.detect(this.cameraZones, function(zone) {
+                return zone.contains(entity);
             });
         }
     });

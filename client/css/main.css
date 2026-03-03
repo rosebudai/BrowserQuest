@@ -147,8 +147,8 @@ footer, header, hgroup, menu, nav, section {
 
     #mask {height:100%;width:100%;position:fixed;top:0;left:0;background:rgba(20,20,20,1);opacity:1;z-index:20;-moz-transition:0.5s opacity linear;-webkit-transition:0.5s opacity linear;-o-transition:0.5s opacity linear;-ms-transition:0.5s opacity linear;transition:0.5s opacity linear;pointer-events:none;}
 
-    #bar-container {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:relative;width:100%;z-index:10;}
-    #healthbar {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;}
+    #bar-container {background:url('../img/1/barsheet.png');background-repeat:no-repeat;image-rendering:-moz-crisp-edges;position:relative;width:100%;z-index:10;}
+    #healthbar {background:url('../img/1/barsheet.png');background-repeat:no-repeat;image-rendering:-moz-crisp-edges;position:absolute;}
 	#hitpoints {background:#d83939;-moz-transition:.5s width ease;-webkit-transition:.5s width ease;-o-transition:.5s width ease;-ms-transition:.5s width ease;transition:.5s width ease;}
     #hitpoints.white {-moz-animation:flash 0.5s linear 1;-webkit-animation:flash 0.5s linear 1;-o-animation:flash 0.5s linear 1;-ms-animation:flash 0.5s linear 1;animation:flash 0.5s linear 1;}
 	#hitpoints.invincible {-moz-animation:invincible 0.3s steps(3, end) alternate infinite;-webkit-animation:invincible 0.3s steps(3, end) alternate infinite;-o-animation:invincible 0.3s steps(3, end) alternate infinite;-ms-animation:invincible 0.3s steps(3, end) alternate infinite;}
@@ -161,13 +161,13 @@ footer, header, hgroup, menu, nav, section {
     
     #playercount {font-family:'GraphicPixel';color:#e3e3e3;position:absolute;}
     #playercount:hover {cursor:pointer;color:#FCE045;}
-    #population {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;font-family:'GraphicPixel';color:#fff;text-align:center;opacity:0;pointer-events:none;-moz-transition:0.2s opacity linear, 0.2s height ease;-webkit-transition:0.2s opacity linear, 0.2s height ease;-o-transition:0.2s opacity linear, 0.2s height ease;-ms-transition:0.2s opacity linear, 0.2s height ease;transition:0.2s opacity linear, 0.2s height ease;height:0;overflow:hidden;}
+    #population {background:url('../img/1/barsheet.png');background-repeat:no-repeat;image-rendering:-moz-crisp-edges;position:absolute;font-family:'GraphicPixel';color:#fff;text-align:center;opacity:0;pointer-events:none;-moz-transition:0.2s opacity linear, 0.2s height ease;-webkit-transition:0.2s opacity linear, 0.2s height ease;-o-transition:0.2s opacity linear, 0.2s height ease;-ms-transition:0.2s opacity linear, 0.2s height ease;transition:0.2s opacity linear, 0.2s height ease;height:0;overflow:hidden;}
     #population span:nth-child(1) {color:#FCE045;}
     #population.visible {opacity:1;pointer-events:auto;}
     
-    .barbutton {background:url('../img/1/barsheet.png');image-rendering:-moz-crispt-edges;position:absolute;}
+    .barbutton {background:url('../img/1/barsheet.png');background-repeat:no-repeat;image-rendering:-moz-crispt-edges;position:absolute;}
     
-    #chatbox {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;left:50%;z-index:5;-moz-transition:0.2s bottom ease;-webkit-transition:0.2s bottom ease;-o-transition:0.2s bottom ease;-ms-transition:0.2s bottom ease;transition:0.2s bottom ease;}
+    #chatbox {background:url('../img/1/barsheet.png');background-repeat:no-repeat;image-rendering:-moz-crisp-edges;position:absolute;left:50%;z-index:5;-moz-transition:0.2s bottom ease;-webkit-transition:0.2s bottom ease;-o-transition:0.2s bottom ease;-ms-transition:0.2s bottom ease;transition:0.2s bottom ease;}
     .bubble p {-moz-user-select:none;-webkit-user-select:none;}
     
     #instructions {position:absolute;top:50%;left:50%;z-index:1000;font-family:'GraphicPixel';pointer-events:none;opacity:0;-moz-transition:0.25s opacity linear;-webkit-transition:0.4s top ease, 0.4s opacity linear;-o-transition:0.4s top ease, 0.4s opacity linear;-ms-transition:0.4s top ease, 0.4s opacity linear;transition:0.4s top ease, 0.4s opacity linear;}

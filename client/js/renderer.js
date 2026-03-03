@@ -107,6 +107,14 @@ import Timer from './timer.js';
             this.forecanvas.height = this.canvas.height;
             log.debug("#foreground set to "+this.forecanvas.width+" x "+this.forecanvas.height);
 
+            var borderPad = this.scale * 5;
+
+            var canvasBorderEl = document.getElementById('canvasborder');
+            if(canvasBorderEl) {
+                var bgW = this.canvas.width + 2 * borderPad;
+                var bgH = this.canvas.height + 2 * borderPad;
+                canvasBorderEl.style.backgroundSize = bgW + 'px ' + bgH + 'px';
+            }
             var canvasDiv = document.getElementById('canvas');
             if(canvasDiv) {
                 canvasDiv.style.width = this.canvas.width + 'px';
@@ -723,13 +731,21 @@ import Timer from './timer.js';
     
         renderStaticCanvases: function() {
             this.background.save();
+                if(this.game.activeCameraZone) {
+                    this.background.fillStyle = '#000';
+                    this.background.fillRect(0, 0, this.background.canvas.width, this.background.canvas.height);
+                }
                 this.setCameraView(this.background);
                 this.drawTerrain();
             this.background.restore();
-        
+
             if(this.mobile || this.tablet) {
                 this.clearScreen(this.foreground);
                 this.foreground.save();
+                    if(this.game.activeCameraZone) {
+                        this.foreground.fillStyle = '#000';
+                        this.foreground.fillRect(0, 0, this.foreground.canvas.width, this.foreground.canvas.height);
+                    }
                     this.setCameraView(this.foreground);
                     this.drawHighTiles(this.foreground);
                 this.foreground.restore();

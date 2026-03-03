@@ -166,6 +166,7 @@ import Storage from './storage.js';
 
         showChat: function() {
             if(this.game.started) {
+                this.hideWindows();
                 $('#chatbox').addClass('active');
                 $('#chatinput').focus();
                 $('#chatbutton').addClass('active');
@@ -181,17 +182,31 @@ import Storage from './storage.js';
         },
 
         toggleInstructions: function() {
+            this.hideChat();
             if($('#achievements').hasClass('active')) {
         	    this.toggleAchievements();
         	    $('#achievementsbutton').removeClass('active');
+        	}
+        	if($('body').hasClass('credits')) {
+        	    this.closeInGameCredits();
+        	}
+        	if($('body').hasClass('about')) {
+        	    this.closeInGameAbout();
         	}
             $('#instructions').toggleClass('active');
         },
 
         toggleAchievements: function() {
+            this.hideChat();
         	if($('#instructions').hasClass('active')) {
         	    this.toggleInstructions();
         	    $('#helpbutton').removeClass('active');
+        	}
+        	if($('body').hasClass('credits')) {
+        	    this.closeInGameCredits();
+        	}
+        	if($('body').hasClass('about')) {
+        	    this.closeInGameAbout();
         	}
             this.resetPage();
             $('#achievements').toggleClass('active');
@@ -337,10 +352,19 @@ import Storage from './storage.js';
             var currentState = $('#parchment').attr('class');
 
             if(this.game.started) {
+                this.hideChat();
+                if($('#achievements').hasClass('active')) {
+                    this.toggleAchievements();
+                    $('#achievementsbutton').removeClass('active');
+                }
+                if($('#instructions').hasClass('active')) {
+                    this.toggleInstructions();
+                    $('#helpbutton').removeClass('active');
+                }
                 $('#parchment').removeClass().addClass('credits');
-                
+
                 $('body').toggleClass('credits');
-                    
+
                 if(!this.game.player) {
                     $('body').toggleClass('death');
                 }
@@ -364,6 +388,14 @@ import Storage from './storage.js';
             var currentState = $('#parchment').attr('class');
 
             if(this.game.started) {
+                this.hideChat();
+                if($('#achievements').hasClass('active')) {
+                    this.toggleAchievements();
+                    $('#achievementsbutton').removeClass('active');
+                }
+                if($('#instructions').hasClass('active')) {
+                    this.toggleInstructions();
+                }
                 $('#parchment').removeClass().addClass('about');
                 $('body').toggleClass('about');
                 if(!this.game.player) {

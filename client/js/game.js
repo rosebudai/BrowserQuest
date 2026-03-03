@@ -68,6 +68,7 @@ import config from './config.js';
         
             // zoning
             this.currentZoning = null;
+            this.activeCameraZone = null;
         
             this.cursors = {};
 
@@ -365,7 +366,9 @@ import config from './config.js';
                     entity.sprite = null;
                     entity.setSprite(self.sprites[entity.getSpriteName()]);
                 });
-                this.initHurtSprites();
+                if(this.spritesLoaded()) {
+                    this.initHurtSprites();
+                }
                 this.initShadows();
                 this.initCursors();
             }
@@ -819,6 +822,7 @@ import config from './config.js';
             
                 self.updateBars();
                 self.resetCamera();
+                self.activeCameraZone = self.map.getCameraZone(self.player);
                 self.updatePlateauMode();
                 self.audioManager.updateMusic();
             
@@ -993,7 +997,9 @@ import config from './config.js';
                         self.player.nextGridY = dest.y;
                         self.player.turnTo(dest.orientation);
                         self.client.sendTeleport(dest.x, dest.y);
-                        
+
+                        self.activeCameraZone = self.map.getCameraZone(self.player);
+
                         if(self.renderer.mobile && dest.cameraX && dest.cameraY) {
                             self.camera.setGridPosition(dest.cameraX, dest.cameraY);
                             self.resetZone();
@@ -1719,10 +1725,14 @@ import config from './config.js';
          */    
         forEachVisibleTileIndex: function(callback, extra) {
             var m = this.map;
-        
+            var zone = this.activeCameraZone;
+
             this.camera.forEachVisiblePosition(function(x, y) {
                 if(!m.isOutOfBounds(x, y)) {
-                    callback(m.GridPositionToTileIndex(x, y) - 1);
+                    if(!zone || (x >= zone.x && x < zone.x + zone.width
+                                 && y >= zone.y && y < zone.y + zone.height)) {
+                        callback(m.GridPositionToTileIndex(x, y) - 1);
+                    }
                 }
             }, extra);
         },
@@ -2202,6 +2212,7 @@ import config from './config.js';
     
         endZoning: function() {
             this.currentZoning = null;
+            this.activeCameraZone = this.map.getCameraZone(this.player);
             this.resetZone();
             this.zoningQueue.shift();
             

@@ -335,11 +335,11 @@ import Game from './game.js';
                     $chat = $('#chatinput');
 
                 if(key === 13) {
-                    if($chat.attr('value') !== '') {
+                    if($chat.val() !== '') {
                         if(game.player) {
-                            game.say($chat.attr('value'));
+                            game.say($chat.val());
                         }
-                        $chat.attr('value', '');
+                        $chat.val('');
                         app.hideChat();
                         $('#foreground').focus();
                         return false;
