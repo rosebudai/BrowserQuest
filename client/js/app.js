@@ -508,7 +508,6 @@ import Storage from './storage.js';
                     this.game.renderer.rescale(newScale);
                 }
             }
-            this.center();
         }
     });
 

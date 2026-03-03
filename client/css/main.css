@@ -91,7 +91,7 @@ footer, header, hgroup, menu, nav, section {
     html {-webkit-text-size-adjust: 100%}
 	html, body {height:100%;}
 	
-	body {padding:0;margin:0;background:#111;overflow:hidden;image-rendering:-moz-crisp-edges; image-rendering:-webkit-optimize-contrast;}
+	body {padding:0;margin:0;background:#111;overflow:hidden;image-rendering:-moz-crisp-edges; image-rendering:-webkit-optimize-contrast;border-top:2px solid #707070;}
 	
 	canvas { position:absolute;image-rendering:optimizeSpeed;}
 	#background { background:url('../img/common/loading.png') no-repeat center center, #000;}
@@ -130,6 +130,8 @@ footer, header, hgroup, menu, nav, section {
         
     #logo, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon, #tilt, .parchment-left, .parchment-middle, .parchment-right, .avatar, .facebook, .twitter, .close, #note, .ribbon .top, .ribbon .bottom, #about .img, .ext-link {background:url('../img/1/spritesheet.png');image-rendering:-moz-crisp-edges; image-rendering:-webkit-optimize-contrast;}
     
+    #moztab {height:49px;width:118px;position:fixed;top:0;right:15%;background:url('../img/1/spritesheet.png') no-repeat -229px -204px;display:block;}
+
     #vignetting {height:100%;width:100%;position:absolute;top:0;left:0;pointer-events:none;}
     #logosparks {display:block;position:absolute;top:0;left:0;}
     #parchment, #parchment input {font-family:'GraphicPixel';}
@@ -145,7 +147,7 @@ footer, header, hgroup, menu, nav, section {
 
     #mask {height:100%;width:100%;position:fixed;top:0;left:0;background:rgba(20,20,20,1);opacity:1;z-index:20;-moz-transition:0.5s opacity linear;-webkit-transition:0.5s opacity linear;-o-transition:0.5s opacity linear;-ms-transition:0.5s opacity linear;transition:0.5s opacity linear;pointer-events:none;}
 
-    #bar-container {background:url('../img/1/barsheet.png') no-repeat;image-rendering:-moz-crisp-edges;position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:10;}
+    #bar-container {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:relative;width:100%;z-index:10;}
     #healthbar {background:url('../img/1/barsheet.png');image-rendering:-moz-crisp-edges;position:absolute;}
 	#hitpoints {background:#d83939;-moz-transition:.5s width ease;-webkit-transition:.5s width ease;-o-transition:.5s width ease;-ms-transition:.5s width ease;transition:.5s width ease;}
     #hitpoints.white {-moz-animation:flash 0.5s linear 1;-webkit-animation:flash 0.5s linear 1;-o-animation:flash 0.5s linear 1;-ms-animation:flash 0.5s linear 1;animation:flash 0.5s linear 1;}
@@ -210,11 +212,11 @@ footer, header, hgroup, menu, nav, section {
     #authors div a:hover, #credits h1 a:hover {color:#93C1FF;}
     #seb {clear:both;}
 
-    #portrait {display:none !important;}
+    #portrait {display:none;}
 
     #about .link a:hover {color:#d83939;}
 
-    footer {font-family:'GraphicPixel';position:absolute;bottom:5%;left:0;text-align:center;width:100%;color:#c6c0a3;-moz-transition:0.2s opacity linear;-webkit-transition:0.2s opacity linear;-o-transition:0.2s opacity linear;-ms-transition:0.2s opacity linear;transition:0.2s opacity linear;display:none;}
+    footer {font-family:'GraphicPixel';position:absolute;bottom:5%;left:0;text-align:center;width:100%;color:#c6c0a3;-moz-transition:0.2s opacity linear;-webkit-transition:0.2s opacity linear;-o-transition:0.2s opacity linear;-ms-transition:0.2s opacity linear;transition:0.2s opacity linear;}
     .upscaled.game footer {color:#8a8a8a;}
     
     .intro footer {opacity:1;}
@@ -264,7 +266,7 @@ footer, header, hgroup, menu, nav, section {
 
 /* States & Transitions */
 
-    #intro {position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:200;-moz-transition:0.4s opacity linear;-webkit-transition:0.4s opacity linear;-o-transition:0.4s opacity linear;-ms-transition:0.4s opacity linear;transition:0.4s opacity linear;}
+    #intro {-moz-transition:0.4s opacity linear;-webkit-transition:0.4s opacity linear;-o-transition:0.4s opacity linear;-ms-transition:0.4s opacity linear;transition:0.4s opacity linear;}
     #mask, #logo, #parchment {opacity:0;}
     .intro #logo, .intro #parchment {opacity:1;}
 
@@ -280,10 +282,9 @@ footer, header, hgroup, menu, nav, section {
     .game.credits .parchment-left, .game.death .parchment-left, .game.about .parchment-left {left:0%;}
     .game.credits .parchment-right, .game.death .parchment-right, .game.about .parchment-right {right:0%;}
 
-    #container {position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:100;background:rgba(0,0,0,0.2);-moz-transition:1s opacity linear 0.5s;-webkit-transition:1s opacity linear 0.5s;-o-transition:1s opacity linear 0.5s;-ms-transition:1s opacity linear 0.5s;transition:1s opacity linear 0.5s;}
+    #container {z-index:100;background:rgba(0,0,0,0.2);-moz-transition:1s opacity linear 0.5s;-webkit-transition:1s opacity linear 0.5s;-o-transition:1s opacity linear 0.5s;-ms-transition:1s opacity linear 0.5s;transition:1s opacity linear 0.5s;}
     .intro #container {opacity:0;pointer-events:none;}
     .game #container {opacity:1;}
-    .game #intro {pointer-events:none;}
 
     #logo, #parchment {-moz-transition:0.5s opacity linear;-webkit-transition:0.5s opacity linear;-o-transition:0.5s opacity linear;-ms-transition:0.5s opacity linear;transition:0.5s opacity linear;}
 
@@ -451,9 +452,9 @@ footer, header, hgroup, menu, nav, section {
         .button.delete {background-position:-687px -153px;}
         .button.delete:active {background-position:0 -2178px;}
         
-		#container {}
-		#canvasborder {width:100%;height:100%;padding:0;}
-		#canvas {width:100%;height:100%;}
+		#container {width:1470px;margin:0 auto;position:absolute;top:50%;margin-top:-378px;left:50%;margin-left:-735px;}
+		#canvasborder {padding:15px;background:url('../img/3/border.png') no-repeat;}
+		#canvas {width:100%;height:672px;}
 		#fade {width:1440px;height:672px;top:15px;left:15px;}
 		
 		#instructions {height:516px;width:1251px;background-position:0 -1581px;margin-left:-624px;margin-top:-279px;color:#373737;}
@@ -492,7 +493,7 @@ footer, header, hgroup, menu, nav, section {
 	    .bubble p {font-family:"GraphicPixel"; font-size:18px;line-height:24px;}
 	    
 	    /*GUI Bar*/
-	    #bar-container {height:51px;width:1440px;background-size:1440px;}
+	    #bar-container {height:51px;top:-3px;background-size:1440px;}
 
 		#healthbar {height:39px;background-position:0 -51px;width:306px;top:9px;background-size:1440px;z-index:20;}
 		#hitpoints {width:0px;height:33px;top:12px;left:33px;z-index:10;position:absolute;}
@@ -612,9 +613,9 @@ footer, header, hgroup, menu, nav, section {
         .button.delete {background-position:-458px -102px;}
         .button.delete:active {background-position:0 -1452px;}
         
-		#container {}
-		#canvasborder {width:100%;height:100%;padding:0;}
-		#canvas {width:100%;height:100%;}
+		#container {width:980px;margin:0 auto;position:absolute;top:50%;margin-top:-252px;left:50%;margin-left:-490px;}
+		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;}
+		#canvas {width:100%;height:448px;}
 		#fade {width:960px;height:448px;top:10px;left:10px;}
 
 		#instructions {height:344px;width:834px;background-position:0 -1054px;margin-left:-416px;margin-top:-186px;color:#373737;}
@@ -627,11 +628,11 @@ footer, header, hgroup, menu, nav, section {
         #instructions p {text-align:center;font-family:'GraphicPixel';font-size:20px;clear:left;margin-top:20px;}
 
         #playerimage {height: 64px; width: 64px;}
-
+        
         .close {height:32px;width:32px;top:-8px;right:-10px;background-position:-708px -252px;}
         .close:hover {background-position:-740px -252px;}
         .close:active {background-position:-772px -252px;}
-
+        
         .ribbon {width:36px;right:20px;top:8px;}
         .ribbon .top {width:100%;height:12px;background-position:-762px -344px;}
         .ribbon .bottom {width:100%;height:44px;background-position:-762px -370px;}
@@ -639,20 +640,20 @@ footer, header, hgroup, menu, nav, section {
         .ribbon:hover .bottom {background-position:-798px -370px;}
         #createcharacter .ribbon {right:20px;top:8px;}
         #loadcharacter .ribbon {right:99px;top:-8px;}
-
+        
         /*Death & Respawn*/
         #death p {font-size:20px;margin-top:90px;}
         #death p em {margin-top:30px;}
 		#respawn {width:250px;height:102px;margin:40px auto 0 auto;background-position: 0 -952px;}
 		#respawn:active {background-position:-250px -952px;}
-
+		
 		/*Bubbles*/
 		#bubbles {width:960px;height:448px;margin-bottom:-448px;position:relative;top:-448px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:0;line-height:35px;}
 	    .bubble p {font-family:"GraphicPixel"; font-size:14px;}
-
+	    
 	    /*GUI Bar*/
-		#bar-container {height:34px;width:960px;background-size:960px;}
+		#bar-container {height:34px;top:-2px;background-size:960px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
@@ -773,9 +774,9 @@ footer, header, hgroup, menu, nav, section {
         .button.delete {background-position:-458px -102px;}
         .button.delete:active {background-position:0 -1452px;}
         
-		#container {}
-		#canvasborder {width:100%;height:100%;padding:0;}
-		#canvas {width:100%;height:100%;}
+		#container {width:980px;margin:0 auto;position:absolute;top:50%;margin-top:-252px;left:50%;margin-left:-490px;}
+		#canvasborder {padding:10px;background:url('../img/2/border.png') no-repeat;}
+		#canvas {width:100%;height:448px;}
 		#fade {width:960px;height:448px;top:10px;left:10px;}
 
 		#instructions {height:344px;width:834px;background-position:0 -1054px;margin-left:-416px;margin-top:-186px;color:#373737;}
@@ -788,11 +789,11 @@ footer, header, hgroup, menu, nav, section {
         #instructions p {text-align:center;font-family:'GraphicPixel';font-size:20px;clear:left;margin-top:20px;}
 
         #playerimage {height: 64px; width: 64px;}
-
+        
         .close {height:32px;width:32px;top:-8px;right:-10px;background-position:-708px -252px;}
         .close:hover {background-position:-740px -252px;}
         .close:active {background-position:-772px -252px;}
-
+        
         .ribbon {width:36px;right:20px;top:8px;}
         .ribbon .top {width:100%;height:12px;background-position:-762px -344px;}
         .ribbon .bottom {width:100%;height:44px;background-position:-762px -370px;}
@@ -800,20 +801,20 @@ footer, header, hgroup, menu, nav, section {
         .ribbon:hover .bottom {background-position:-798px -370px;}
         #createcharacter .ribbon {right:20px;top:8px;}
         #loadcharacter .ribbon {right:99px;top:-8px;}
-
+        
         /*Death & Respawn*/
         #death p {font-size:20px;margin-top:90px;}
         #death p em {margin-top:30px;}
 		#respawn {width:250px;height:102px;margin:40px auto 0 auto;background-position: 0 -952px;}
 		#respawn:active {background-position:-250px -952px;}
-
+		
         /*Bubbles*/
 		#bubbles {width:960px;height:448px;margin-bottom:-448px;position:relative;top:-448px;pointer-events:none;}
 		p {font-family:arial, sans-serif;font-size:12px;margin:0;padding:0;}
 	    .bubble p {font-family:"GraphicPixel"; font-size:14px;line-height:35px;}
-
+	    
 	    /*GUI Bar*/
-		#bar-container {height:34px;width:960px;background-size:960px;}
+		#bar-container {height:34px;top:-2px;background-size:960px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
@@ -930,9 +931,9 @@ footer, header, hgroup, menu, nav, section {
         .button.delete {background-position:-229px -51px;}
         .button.delete:active {background-position:0 -726px;}
         
-		#container {}
-		#canvasborder {width:100%;height:100%;padding:0;}
-		#canvas {width:100%;height:100%;}
+		#container {width:490px;margin:0 auto;position:absolute;top:50%;margin-top:-126px;left:50%;margin-left:-245px;}
+		#canvasborder {padding:5px;background:url('../img/1/border.png') no-repeat;}
+		#canvas {width:100%;height:224px;}
 		#fade {width:480px;height:224px;top:5px;left:5px;}
 		
 		#instructions {height:172px;width:417px;background-position:0 -527px;margin-left:-208px;margin-top:-93px;color:#373737;}
@@ -972,7 +973,7 @@ footer, header, hgroup, menu, nav, section {
 	    .bubble p {font-family:"GraphicPixel"; font-size:10px;}
 	    
 	    /*GUI Bar*/
-	    #bar-container {height:17px;width:480px;background-size:480px;}
+	    #bar-container {height:17px;top:-1px;background-size:480px;}
 
 		#healthbar {height:13px;background-position:0 -17px;width:102px;top:3px;background-size:480px;z-index:20;}
 		#hitpoints {width:0px;height:11px;top:4px;left:11px;z-index:10;position:absolute;}
@@ -1058,6 +1059,7 @@ footer, header, hgroup, menu, nav, section {
 
 	@media screen and (max-width: 800px) {
 
+        body {border-top:0px;}
         .intro #container, .game #logo, .game #parchment {display:none;}
         .game.about #parchment {display:block;left:50%;background:url('../img/1/spritesheet.png') no-repeat 0 -527px;height:172px;width:417px;top:50%;margin-left:-208px;margin-top:-98px;position:absolute;}
         .game.about .parchment-middle {top:50%;left:50%;color:#000;position:absolute;}
@@ -1072,17 +1074,18 @@ footer, header, hgroup, menu, nav, section {
 		.ribbon {display:none;}
         
         canvas {image-rendering:optimizeSpeed;}
+        #moztab {display:none;}
         body.intro {background:-moz-radial-gradient(rgba(0,0,0,0) 40%,rgba(0,0,0,1) 125%), url('../img/1/wood.png') repeat, #000; background-size:auto, 128px;}
         body.intro {background:-webkit-gradient(radial, center center, 120, center center, 400, from(rgba(0,0,0,0)), to(rgba(0,0,0,1))), url('../img/1/wood.png') repeat, #000; background-size:auto, 128px;}
         body {background:#000;}
         #logosparks {-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;display:none;}
-		#container {}
-		#canvasborder {width:100%;height:100%;padding:0;}
+		#container {height:258px;width:480px;position:relative;left:50%;top:50%;margin:-128px auto 0 -240px;}
+		#canvasborder {background:none;padding:0;}
 		
 		#parchment, #logosparks, .left-ornament, .right-ornament, #character, #character div, .button, .button div, #respawn, #scroll, #instructions, .icon {background-size:422px auto;}
         #parchment {background:none;}
-        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
-        #parchment {width:100%;height:auto;position:absolute;left:0;top:140px;margin-left:0;margin-top:0;font-size:10px;text-align:center;z-index:2;color:#eee;}
+        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
+        #parchment {width:100%;height:auto;position:absolute;left:0;top:125px;margin-left:0;margin-top:0;font-size:10px;text-align:center;z-index:2;color:#eee;}
         #parchment h1 {margin-top:0px;font-weight:normal;}
         #instructions h1 {margin-top:15px;font-size:14px;}
         .left-ornament, .right-ornament {height:12px;width:31px;display:inline-block;margin:0 10px;position:relative;top:3px;}
@@ -1091,7 +1094,7 @@ footer, header, hgroup, menu, nav, section {
         #character {height:21px;width:12px;margin:0 auto;background-position:-354px -12px;margin-top:15px;position:relative;display:none;}
         #character div {height:21px;width:12px;position:absolute;top:0;left:0;background-position:-366px -12px;opacity:1;}
         #character.disabled div {opacity:0;pointer-events:none;}
-        #parchment input {margin-top:10px; padding-bottom:5px; border-bottom:1px dashed #b2af9b; font-size:20px;width:80%;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;color:#eee;}
+        #parchment input {margin-top:10px; padding-bottom:5px; border-bottom:1px dashed #b2af9b; font-size:20px;-moz-animation:none;-webkit-animation:none;-o-animation:none;-ms-animation:none;color:#eee;}
         .button {height:54px;width:204px;background-position:-500px -952px;margin:20px auto 0 auto;position:relative;background-size:844px;}
         .play div {height:54px;width:204px;background-position:-458px -512px; background-size:844px;}
         .play div:active {background-position:0px -1398px;}
@@ -1130,7 +1133,7 @@ footer, header, hgroup, menu, nav, section {
 		#playerimage {display:none;}
 		
 		/*GUI Bar*/
-		#bar-container {height:34px;width:960px;background-size:960px;background-position:0 -96px;}
+		#bar-container {height:34px;top:-2px;background-size:960px;background-position:0 -96px;}
 
 		#healthbar {height:26px;background-position:0 -34px;width:204px;top:6px;background-size:960px;z-index:20;}
 		#hitpoints {width:0px;height:22px;top:8px;left:22px;z-index:10;position:absolute;}
@@ -1185,13 +1188,22 @@ footer, header, hgroup, menu, nav, section {
         #bubbles {overflow:hidden;}
 	}
 
-	/* Narrow mobile screens — scale parchment to fit */
-	@media screen and (max-width: 450px) {
-		#parchment, #loadcharacter, #confirmation, #error {
-			transform: scale(0.85);
-			transform-origin: center top;
-		}
-	}
+	@media screen and (max-width: 800px) and (orientation: portrait) {
+        #portrait {display:block;height:300px;width:300px;position:absolute;top:55%; left:50%; margin:-150px 0 0 -150px;}
+        #parchment {display:none;}
+        #container, .game #container {display:none;}
+        
+        #logo {height:84px;width:458px;position:absolute;top:10%;left:50%;margin-left:-229px;z-index:3;background-size:844px;}
+        #portrait p {color:#eee;font-family:'GraphicPixel', sans-serif;font-size:20px;text-align:center;}
+        
+        #tilt {height:120px;width:132px;background-position:-710px -82px;background-size:844px;margin:25px auto 0 auto;}
+    }
+    
+    @media screen and (max-width: 640px) and (orientation: portrait) {
+        #portrait {display:block;height:300px;width:300px;position:absolute;top:70%; left:50%; margin:-150px 0 0 -150px;}
+        
+        #logo {height:42px;width:229px;position:absolute;top:10%;left:50%;margin-left:-114px;z-index:3;background-size:422px;}
+    }
 
 /* Tablet mode */
 
