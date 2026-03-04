@@ -153,7 +153,6 @@ var WorldServer = Class.extend({
             
             // Populate all mob "roaming" areas
             try {
-                console.log('[WorldServer] Phase 1: Populating mob areas (' + (self.map.mobAreas ? self.map.mobAreas.length : 0) + ' areas)');
                 _.each(self.map.mobAreas, function(a) {
                     var area = new MobArea(a.id, a.nb, a.type, a.x, a.y, a.width, a.height, self);
                     area.spawnMobs();
@@ -161,51 +160,45 @@ var WorldServer = Class.extend({
 
                     self.mobAreas.push(area);
                 });
-                console.log('[WorldServer] Phase 1 complete: ' + self.mobAreas.length + ' mob areas populated');
             } catch(e) {
-                console.error('[WorldServer] Phase 1 FAILED (mob area population):', e.message, e.stack);
+                console.error('[WorldServer] Mob area population failed:', e.message, e.stack);
             }
 
             // Create all chest areas
             try {
-                console.log('[WorldServer] Phase 2: Creating chest areas (' + (self.map.chestAreas ? self.map.chestAreas.length : 0) + ' areas)');
                 _.each(self.map.chestAreas, function(a) {
                     var area = new ChestArea(a.id, a.x, a.y, a.w, a.h, a.tx, a.ty, a.i, self);
                     self.chestAreas.push(area);
                     area.onEmpty(self.handleEmptyChestArea.bind(self, area));
                 });
-                console.log('[WorldServer] Phase 2 complete: ' + self.chestAreas.length + ' chest areas created');
             } catch(e) {
-                console.error('[WorldServer] Phase 2 FAILED (chest area creation):', e.message, e.stack);
+                console.error('[WorldServer] Chest area creation failed:', e.message, e.stack);
             }
 
             // Spawn static chests
             try {
-                console.log('[WorldServer] Phase 3: Spawning static chests (' + (self.map.staticChests ? self.map.staticChests.length : 0) + ' chests)');
                 _.each(self.map.staticChests, function(chest) {
                     var c = self.createChest(chest.x, chest.y, chest.i);
                     self.addStaticItem(c);
                 });
-                console.log('[WorldServer] Phase 3 complete');
             } catch(e) {
-                console.error('[WorldServer] Phase 3 FAILED (static chest spawning):', e.message, e.stack);
+                console.error('[WorldServer] Static chest spawning failed:', e.message, e.stack);
             }
 
             // Spawn static entities
             try {
-                console.log('[WorldServer] Phase 4: Spawning static entities (' + Object.keys(self.map.staticEntities || {}).length + ' entities)');
                 self.spawnStaticEntities();
-                console.log('[WorldServer] Phase 4 complete');
             } catch(e) {
-                console.error('[WorldServer] Phase 4 FAILED (static entity spawning):', e.message, e.stack);
+                console.error('[WorldServer] Static entity spawning failed:', e.message, e.stack);
             }
 
-            console.log('[WorldServer] Population complete: ' +
+            log.info('World populated: ' +
                 Object.keys(self.mobs).length + ' mobs, ' +
                 Object.keys(self.npcs).length + ' npcs, ' +
                 Object.keys(self.items).length + ' items, ' +
-                Object.keys(self.entities).length + ' total entities, ' +
-                self.mobAreas.length + ' mob areas');
+                Object.keys(self.entities).length + ' total entities');
+
+            self.populationComplete = true;
 
             // Set maximum number of entities contained in each chest area
             _.each(self.chestAreas, function(area) {

@@ -30,7 +30,7 @@ var Map = Class.extend({
         this.staticEntities = map.staticEntities;
         this.isLoaded = true;
 
-        console.log('[ServerMap] Loaded: ' +
+        log.info('Map loaded: ' +
             (this.mobAreas ? this.mobAreas.length : 0) + ' mob areas, ' +
             Object.keys(this.staticEntities || {}).length + ' static entities');
 
