@@ -56,6 +56,7 @@ var LocalGameServer = Class.extend({
         var self = this;
         var checkReady = function() {
             if(self.worldServer && self.worldServer.map && self.worldServer.map.isLoaded && self.worldServer.zoneGroupsReady) {
+                console.log('[LocalGameServer] World ready, connecting player');
                 callback();
                 return;
             }

@@ -29,7 +29,11 @@ var Map = Class.extend({
         this.staticChests = map.staticChests;
         this.staticEntities = map.staticEntities;
         this.isLoaded = true;
-        
+
+        console.log('[ServerMap] Loaded: ' +
+            (this.mobAreas ? this.mobAreas.length : 0) + ' mob areas, ' +
+            Object.keys(this.staticEntities || {}).length + ' static entities');
+
         // zone groups
     	this.zoneWidth = 28;
     	this.zoneHeight = 12;
