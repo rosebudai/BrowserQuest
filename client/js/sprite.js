@@ -1,4 +1,6 @@
 import Animation from './animation.js';
+import { resolveSprite } from './asset-resolver.js';
+import { manifest } from './asset-resolver.js';
 
     var Sprite = Class.extend({
         init: function(name, scale, spriteData) {
@@ -12,7 +14,8 @@ import Animation from './animation.js';
 
         loadJSON: function(data) {
     		this.id = data.id;
-    		this.filepath = "img/" + this.scale + "/" + this.id + ".png";
+    		this.rawFilepath = manifest.sprites[this.id] && manifest.sprites[this.id][this.scale];
+    		this.filepath = this.rawFilepath ? resolveSprite(this.id, this.scale) : ("img/" + this.scale + "/" + this.id + ".png");
     		this.animationData = data.animations;
     		this.width = data.width;
     		this.height = data.height;
@@ -34,15 +37,15 @@ import Animation from './animation.js';
                 }
         	};
 
-        	var resolved = window.__resolveAsset ? window.__resolveAsset(this.filepath) : this.filepath;
-        	if(resolved !== this.filepath) {
+        	if(this.rawFilepath && this.filepath !== this.rawFilepath) {
+        	    // Resolved path differs from raw manifest path — cross-origin asset
         	    // Fetch as blob to get same-origin URL (avoids canvas taint from cross-origin redirects)
-        	    fetch(resolved).then(function(r) { return r.blob(); }).then(function(b) {
+        	    fetch(this.filepath).then(function(r) { return r.blob(); }).then(function(b) {
         	        self.image.src = URL.createObjectURL(b);
         	    }).catch(function(err) {
-        	        log.debug("Blob fetch failed for " + resolved + " - " + (err && err.message || err) + ", falling back to crossOrigin");
+        	        log.debug("Blob fetch failed for " + self.filepath + " - " + (err && err.message || err) + ", falling back to crossOrigin");
         	        self.image.crossOrigin = 'anonymous';
-        	        self.image.src = resolved;
+        	        self.image.src = self.filepath;
         	    });
         	} else {
         	    this.image.src = this.filepath;

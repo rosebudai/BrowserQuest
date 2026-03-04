@@ -1,5 +1,6 @@
 
 import Storage from './storage.js';
+import { resolveSprite } from './asset-resolver.js';
 
     var App = Class.extend({
         init: function() {
@@ -228,8 +229,7 @@ import Storage from './storage.js';
         initEquipmentIcons: function() {
             var scale = this.game.renderer.getScaleFactor();
             var getIconPath = function(spriteName) {
-                    var path = 'img/'+ scale +'/item-' + spriteName + '.png';
-                    return window.__resolveAsset ? window.__resolveAsset(path) : path;
+                    return resolveSprite('item-' + spriteName, scale);
                 },
                 weapon = this.game.player.getWeaponName(),
                 armor = this.game.player.getSpriteName(),
