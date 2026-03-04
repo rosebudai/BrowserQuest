@@ -2172,7 +2172,24 @@ import config from './config.js';
     
         startZoningFrom: function(x, y) {
             this.zoningOrientation = this.getZoningOrientation(x, y);
-        
+
+            // If camera is at the edge of the active zone in the zoning direction,
+            // clear both the camera clamp and the tile-rendering filter so the
+            // camera can scroll out and tiles outside the zone become visible.
+            // endZoning() will re-check and re-apply if the player is still in a zone.
+            var zone = this.camera.activeZone;
+            if(zone) {
+                var o = this.zoningOrientation,
+                    c = this.camera;
+                if((o === Types.Orientations.UP && c.gridY <= zone.y) ||
+                   (o === Types.Orientations.DOWN && c.gridY + c.gridH >= zone.y + zone.height) ||
+                   (o === Types.Orientations.LEFT && c.gridX <= zone.x) ||
+                   (o === Types.Orientations.RIGHT && c.gridX + c.gridW >= zone.x + zone.width)) {
+                    this.activeCameraZone = null;
+                    c.setActiveZone(null);
+                }
+            }
+
             if(this.renderer.mobile || this.renderer.tablet) {
                 var z = this.zoningOrientation,
                     c = this.camera,
@@ -2215,6 +2232,17 @@ import config from './config.js';
         endZoning: function() {
             this.currentZoning = null;
             this.activeCameraZone = this.map.getCameraZone(this.player);
+
+            // Don't re-apply zone if camera has scrolled outside it —
+            // this happens when the player exits a zone via the boundary.
+            if(this.activeCameraZone) {
+                var z = this.activeCameraZone, c = this.camera;
+                if(c.gridX < z.x || c.gridX + c.gridW > z.x + z.width ||
+                   c.gridY < z.y || c.gridY + c.gridH > z.y + z.height) {
+                    this.activeCameraZone = null;
+                }
+            }
+
             this.camera.setActiveZone(this.activeCameraZone);
             this.resetZone();
             this.zoningQueue.shift();
