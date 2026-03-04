@@ -228,7 +228,8 @@ import Storage from './storage.js';
         initEquipmentIcons: function() {
             var scale = this.game.renderer.getScaleFactor();
             var getIconPath = function(spriteName) {
-                    return 'img/'+ scale +'/item-' + spriteName + '.png';
+                    var path = 'img/'+ scale +'/item-' + spriteName + '.png';
+                    return window.__resolveAsset ? window.__resolveAsset(path) : path;
                 },
                 weapon = this.game.player.getWeaponName(),
                 armor = this.game.player.getSpriteName(),

@@ -26,8 +26,6 @@ import Animation from './animation.js';
         	var self = this;
 
         	this.image = new Image();
-        	this.image.src = this.filepath;
-
         	this.image.onload = function() {
         		self.isLoaded = true;
 
@@ -35,6 +33,20 @@ import Animation from './animation.js';
                     self.onload_func();
                 }
         	};
+
+        	var resolved = window.__resolveAsset ? window.__resolveAsset(this.filepath) : this.filepath;
+        	if(resolved !== this.filepath) {
+        	    // Fetch as blob to get same-origin URL (avoids canvas taint from cross-origin redirects)
+        	    fetch(resolved).then(function(r) { return r.blob(); }).then(function(b) {
+        	        self.image.src = URL.createObjectURL(b);
+        	    }).catch(function(err) {
+        	        log.debug("Blob fetch failed for " + resolved + " - " + (err && err.message || err) + ", falling back to crossOrigin");
+        	        self.image.crossOrigin = 'anonymous';
+        	        self.image.src = resolved;
+        	    });
+        	} else {
+        	    this.image.src = this.filepath;
+        	}
         },
 
         createAnimations: function() {
@@ -68,8 +80,6 @@ import Animation from './animation.js';
         	        data[i] = 255;
         	        data[i+1] = data[i+2] = 75;
         	    }
-        	    spriteData.data = data;
-
         	    ctx.putImageData(spriteData, 0, 0);
 
         	    this.whiteSprite = {
@@ -81,7 +91,7 @@ import Animation from './animation.js';
             	    height: this.height
             	};
     	    } catch(e) {
-    	        log.error("Error getting image data for sprite : "+this.name);
+    	        log.debug("Error getting image data for sprite : "+this.name+" - "+e.message);
     	    }
         },
 
@@ -98,6 +108,8 @@ import Animation from './animation.js';
 
     	    canvas.width = width;
     	    canvas.height = height;
+
+    	    try {
     	    ctx.drawImage(this.image, 0, 0, width, height);
     	    data = ctx.getImageData(0, 0, width, height).data;
     	    finalData = ctx.getImageData(0, 0, width, height);
@@ -150,7 +162,6 @@ import Animation from './animation.js';
     	        }
     	    }
 
-    	    finalData.data = fdata;
     	    ctx.putImageData(finalData, 0, 0);
 
     	    this.silhouetteSprite = {
@@ -161,6 +172,9 @@ import Animation from './animation.js';
         	    width: this.width,
         	    height: this.height
         	};
+    	    } catch(e) {
+    	        log.debug("Error getting silhouette data for sprite : "+this.name+" - "+e.message);
+    	    }
     	}
     });
 

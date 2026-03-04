@@ -751,7 +751,7 @@ import config from './config.js';
                 return this.entities[id];
             }
             else {
-                log.error("Unknown entity id : " + id, true);
+                log.debug("Unknown entity id : " + id);
             }
         },
 

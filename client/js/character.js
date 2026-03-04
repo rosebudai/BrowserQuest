@@ -419,7 +419,7 @@ import Timer from './timer.js';
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
             } else {
-                log.error(this.id + " is not attacked by " + character.id);
+                log.debug(this.id + " is not attacked by " + character.id);
             }
         },
 
