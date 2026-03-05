@@ -30,7 +30,7 @@ const Storage = Class.extend({
     },
 
     hasLocalStorage: function() {
-        return Modernizr.localstorage;
+        try { localStorage.setItem('__test', '__test'); localStorage.removeItem('__test'); return true; } catch(e) { return false; }
     },
 
     save: function() {

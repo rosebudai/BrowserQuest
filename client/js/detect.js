@@ -1,6 +1,5 @@
 
 const Detect = {};
-window.Detect = Detect;
 
 Detect.supportsWebSocket = function() {
     return window.WebSocket || window.MozWebSocket;
@@ -29,7 +28,8 @@ Detect.isChromeOnWindows = function() {
 };
 
 Detect.canPlayMP3 = function() {
-    return Modernizr.audio.mp3;
+    var a = document.createElement('audio');
+    return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/^no$/, ''));
 };
 
 Detect.isSafari = function() {
@@ -39,3 +39,5 @@ Detect.isSafari = function() {
 Detect.isOpera = function() {
     return Detect.userAgentContains('Opera');
 };
+
+export default Detect;

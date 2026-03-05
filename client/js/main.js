@@ -3,6 +3,7 @@ import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import { TRANSITIONEND } from './util.js';
+import Detect from './detect.js';
 import App from './app.js';
 import Game from './game.js';
     let app, game;

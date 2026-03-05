@@ -12,8 +12,6 @@
         <meta property="og:description" content="An HTML5 adventure game">
         <link rel="stylesheet" href="css/main.css" type="text/css">
         <link rel="stylesheet" href="css/achievements.css" type="text/css">
-        <script src="js/lib/modernizr.js" type="text/javascript"></script>
-        <script src="js/detect.js" type="text/javascript"></script>
         <title>BrowserQuest</title>
 	</head>
 	<body class="intro">
@@ -287,10 +285,10 @@
         <div id="resize-check"></div>
 
         <script type="text/javascript">
-            const ctx = document.querySelector('canvas').getContext('2d'),
+            var ctx = document.querySelector('canvas').getContext('2d'),
                 parchment = document.getElementById("parchment");
 
-            if(!Detect.supportsWebSocket()) {
+            if(!(window.WebSocket || window.MozWebSocket)) {
                 parchment.className = "error";
             }
 
@@ -298,14 +296,18 @@
                 document.querySelector('body').className += ' upscaled';
             }
 
-            if(!Modernizr.localstorage) {
-                const alert = document.createElement("div");
-                    alert.className = 'alert';
-                    alertMsg = document.createTextNode("You need to enable cookies/localStorage to play BrowserQuest");
-                    alert.appendChild(alertMsg);
+            var hasLS = (function() {
+                try { localStorage.setItem('__test', '__test'); localStorage.removeItem('__test'); return true; } catch(e) { return false; }
+            })();
 
-                target = document.getElementById("intro");
-                document.body.insertBefore(alert, target);
+            if(!hasLS) {
+                var alertDiv = document.createElement("div");
+                    alertDiv.className = 'alert';
+                    var alertMsg = document.createTextNode("You need to enable cookies/localStorage to play BrowserQuest");
+                    alertDiv.appendChild(alertMsg);
+
+                var target = document.getElementById("intro");
+                document.body.insertBefore(alertDiv, target);
             } else if(localStorage && localStorage.data) {
                 parchment.className = "loadcharacter";
             }

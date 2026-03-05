@@ -3,6 +3,7 @@ import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import Camera from './camera.js';
+import Detect from './detect.js';
 import Item from './item.js';
 import Character from './character.js';
 import Player from './player.js';
