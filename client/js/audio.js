@@ -1,4 +1,5 @@
 import Area from './area.js';
+import { resolveSound, resolveMusic } from './asset-resolver.js';
 
     var AudioManager = Class.extend({
         init: function(game) {
@@ -64,9 +65,8 @@ import Area from './area.js';
             }
         },
 
-        load: function (basePath, name, loaded_callback, channels) {
-            var path = basePath + name + "." + this.extension,
-                sound = document.createElement('audio'),
+        load: function (path, name, loaded_callback, channels) {
+            var sound = document.createElement('audio'),
                 self = this;
 
             sound.addEventListener('canplaythrough', function onCanPlay(e) {
@@ -79,6 +79,9 @@ import Area from './area.js';
             sound.addEventListener('error', function (e) {
                 log.error("Error: "+ path +" could not be loaded.");
                 self.sounds[name] = null;
+                if(loaded_callback) {
+                    loaded_callback();
+                }
             }, false);
 
             sound.preload = "auto";
@@ -93,11 +96,11 @@ import Area from './area.js';
         },
 
         loadSound: function(name, handleLoaded) {
-            this.load("audio/sounds/", name, handleLoaded, 4);
+            this.load(resolveSound(name) + "." + this.extension, name, handleLoaded, 4);
         },
 
         loadMusic: function(name, handleLoaded) {
-            this.load("audio/music/", name, handleLoaded, 1);
+            this.load(resolveMusic(name), name, handleLoaded, 1);
             var music = this.sounds[name][0];
             music.loop = true;
             music.addEventListener('ended', function() { music.play() }, false);
