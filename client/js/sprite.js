@@ -15,7 +15,7 @@ import { manifest } from './asset-resolver.js';
         loadJSON: function(data) {
     		this.id = data.id;
     		this.rawFilepath = manifest.sprites[this.id] && manifest.sprites[this.id][this.scale];
-    		this.filepath = this.rawFilepath ? resolveSprite(this.id, this.scale) : ("img/" + this.scale + "/" + this.id + ".png");
+    		this.filepath = resolveSprite(this.id, this.scale);
     		this.animationData = data.animations;
     		this.width = data.width;
     		this.height = data.height;

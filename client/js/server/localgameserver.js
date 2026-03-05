@@ -1,6 +1,7 @@
 import WorldServer from './worldserver.js';
 import ServerMap from './map.js';
 import Player from './player.js';
+import { resolveMap } from '../asset-resolver.js';
 
 /* Uses global Class */
 var LocalGameServer = Class.extend({
@@ -23,11 +24,11 @@ var LocalGameServer = Class.extend({
 
     connect: function() {
         var self = this;
-        var map = new ServerMap('maps/world_server.json');
+        var map = new ServerMap(resolveMap('worldServer'));
 
         map.ready(function() {
             self.worldServer = new WorldServer('local-1', 1, self);
-            self.worldServer.run('maps/world_server.json');
+            self.worldServer.run(resolveMap('worldServer'));
 
             self.waitForWorldReady(function() {
                 self.playerConnection = self.createPlayerConnection();
