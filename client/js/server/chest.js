@@ -2,16 +2,16 @@ import Types from '../gametypes.js';
 import Item from "./item.js";
 import Utils from "./utils.js";
 
-const Chest = Item.extend({
-    init: function(id, x, y) {
-        this._super(id, Types.Entities.CHEST, x, y);
-    },
-    
-    setItems: function(items) {
+class Chest extends Item {
+    constructor(id, x, y) {
+        super(id, Types.Entities.CHEST, x, y);
+    }
+
+    setItems(items) {
         this.items = items;
-    },
-    
-    getRandomItem: function() {
+    }
+
+    getRandomItem() {
         const nbItems = this.items.length;
         let item = null;
 
@@ -20,6 +20,6 @@ const Chest = Item.extend({
         }
         return item;
     }
-});
+}
 
 export default Chest;

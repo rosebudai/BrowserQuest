@@ -1,47 +1,46 @@
-import { Class } from '../lib/class.js';
 import Messages from "./message.js";
 import Utils from "./utils.js";
 
-const Entity = Class.extend({
-    init: function(id, type, kind, x, y) {
+class Entity {
+    constructor(id, type, kind, x, y) {
         this.id = parseInt(id);
         this.type = type;
         this.kind = kind;
         this.x = x;
         this.y = y;
-    },
+    }
     
-    destroy: function() {
+    destroy() {
 
-    },
+    }
     
-    _getBaseState: function() {
+    _getBaseState() {
         return [
             parseInt(this.id),
             this.kind,
             this.x,
             this.y
         ];
-    },
+    }
     
-    getState: function() {
+    getState() {
         return this._getBaseState();
-    },
+    }
     
-    spawn: function() {
+    spawn() {
         return new Messages.Spawn(this);
-    },
+    }
     
-    despawn: function() {
+    despawn() {
         return new Messages.Despawn(this.id);
-    },
+    }
     
-    setPosition: function(x, y) {
+    setPosition(x, y) {
         this.x = x;
         this.y = y;
-    },
+    }
     
-    getPositionNextTo: function(entity) {
+    getPositionNextTo(entity) {
         let pos = null;
         if(entity) {
             pos = {};
@@ -62,6 +61,7 @@ const Entity = Class.extend({
         }
         return pos;
     }
-});
+
+}
 
 export default Entity;

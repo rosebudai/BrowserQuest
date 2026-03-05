@@ -1,47 +1,46 @@
-import { Class } from './lib/class.js';
 import Timer from './timer.js';
 
-    const Bubble = Class.extend({
-        init: function(id, element, time) {
+    class Bubble {
+        constructor(id, element, time) {
             this.id = id;
             this.element = element;
             this.timer = new Timer(5000, time);
-        },
+        }
 
-        isOver: function(time) {
+        isOver(time) {
             if(this.timer.isOver(time)) {
                 return true;
             }
             return false;
-        },
+        }
 
-        destroy: function() {
+        destroy() {
             if(this.element && this.element.parentNode) {
                 this.element.parentNode.removeChild(this.element);
             }
-        },
+        }
 
-        reset: function(time) {
+        reset(time) {
             this.timer.lastTime = time;
         }
-    });
+    }
 
-    const BubbleManager = Class.extend({
-        init: function(container) {
+    class BubbleManager {
+        constructor(container) {
             this.container = typeof container === 'string'
                 ? document.querySelector(container)
                 : container;
             this.bubbles = {};
-        },
+        }
 
-        getBubbleById: function(id) {
+        getBubbleById(id) {
             if(id in this.bubbles) {
                 return this.bubbles[id];
             }
             return null;
-        },
+        }
 
-        create: function(id, message, time) {
+        create(id, message, time) {
             if(this.bubbles[id]) {
                 this.bubbles[id].reset(time);
                 const existing = document.getElementById(id);
@@ -59,9 +58,9 @@ import Timer from './timer.js';
 
                 this.bubbles[id] = new Bubble(id, el, time);
             }
-        },
+        }
 
-        update: function(time) {
+        update(time) {
             const self = this, bubblesToDelete = [];
 
             for(const bubble of Object.values(this.bubbles)) {
@@ -74,9 +73,9 @@ import Timer from './timer.js';
             bubblesToDelete.forEach(function(id) {
                 delete self.bubbles[id];
             });
-        },
+        }
 
-        clean: function() {
+        clean() {
             const self = this, bubblesToDelete = [];
 
             for(const bubble of Object.values(this.bubbles)) {
@@ -89,22 +88,22 @@ import Timer from './timer.js';
             });
 
             this.bubbles = {};
-        },
+        }
 
-        destroyBubble: function(id) {
+        destroyBubble(id) {
             const bubble = this.getBubbleById(id);
 
             if(bubble) {
                 bubble.destroy();
                 delete this.bubbles[id];
             }
-        },
+        }
 
-        forEachBubble: function(callback) {
+        forEachBubble(callback) {
             for(const bubble of Object.values(this.bubbles)) {
                 callback(bubble);
             }
         }
-    });
+    }
 
 export default BubbleManager;

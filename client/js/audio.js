@@ -1,11 +1,10 @@
-import { Class } from './lib/class.js';
 import log from './lib/log.js';
 import Area from './area.js';
 import Detect from './detect.js';
 import { resolveSound, resolveMusic } from './asset-resolver.js';
 
-    const AudioManager = Class.extend({
-        init: function(game) {
+    class AudioManager {
+        constructor(game) {
             const self = this;
 
             this.enabled = true;
@@ -49,9 +48,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             } else {
                 this.enabled = false; // Disable audio on Safari Windows
             }
-        },
+        }
 
-        toggle: function() {
+        toggle() {
             if(this.enabled) {
                 this.enabled = false;
 
@@ -66,9 +65,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 }
                 this.updateMusic();
             }
-        },
+        }
 
-        load: function (path, name, loaded_callback, channels) {
+        load(path, name, loaded_callback, channels) {
             const sound = document.createElement('audio'), self = this;
 
             sound.addEventListener('canplaythrough', function onCanPlay(e) {
@@ -95,17 +94,17 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             for(let _t = 0; _t < channels - 1; _t++) {
                 self.sounds[name].push(sound.cloneNode(true));
             }
-        },
+        }
 
-        loadSound: function(name, handleLoaded) {
+        loadSound(name, handleLoaded) {
             let path = resolveSound(name);
             if(this.extension !== "mp3") {
                 path = path.replace(".mp3", "." + this.extension);
             }
             this.load(path, name, handleLoaded, 4);
-        },
+        }
 
-        loadMusic: function(name, handleLoaded) {
+        loadMusic(name, handleLoaded) {
             let path = resolveMusic(name);
             if(this.extension !== "mp3") {
                 path = path.replace(".mp3", "." + this.extension);
@@ -114,9 +113,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             const music = this.sounds[name][0];
             music.loop = true;
             music.addEventListener('ended', function() { music.play() }, false);
-        },
+        }
 
-        getSound: function(name) {
+        getSound(name) {
             if(!this.sounds[name]) {
                 return null;
             }
@@ -129,22 +128,22 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 sound = this.sounds[name][0];
             }
             return sound;
-        },
+        }
 
-        playSound: function(name) {
+        playSound(name) {
             const sound = this.enabled && this.getSound(name);
             if(sound) {
                 sound.play();
             }
-        },
+        }
 
-        addArea: function(x, y, width, height, musicName) {
+        addArea(x, y, width, height, musicName) {
             const area = new Area(x, y, width, height);
             area.musicName = musicName;
             this.areas.push(area);
-        },
+        }
 
-        getSurroundingMusic: function(entity) {
+        getSurroundingMusic(entity) {
             let music = null;
 
             const area = this.areas.find(function(area) {
@@ -155,9 +154,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 music = { sound: this.getSound(area.musicName), name: area.musicName };
             }
             return music;
-        },
+        }
 
-        updateMusic: function() {
+        updateMusic() {
             if(this.enabled) {
                 const music = this.getSurroundingMusic(this.game.player);
 
@@ -172,13 +171,13 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                     this.fadeOutCurrentMusic();
                 }
             }
-        },
+        }
 
-        isCurrentMusic: function(music) {
+        isCurrentMusic(music) {
             return this.currentMusic && (music.name === this.currentMusic.name);
-        },
+        }
 
-        playMusic: function(music) {
+        playMusic(music) {
             if(this.enabled && music && music.sound) {
                 if(music.sound.fadingOut) {
                     this.fadeInMusic(music);
@@ -188,16 +187,16 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 }
                 this.currentMusic = music;
             }
-        },
+        }
 
-        resetMusic: function(music) {
+        resetMusic(music) {
             if(music && music.sound && music.sound.readyState > 0) {
                 music.sound.pause();
                 music.sound.currentTime = 0;
             }
-        },
+        }
 
-        fadeOutMusic: function(music, ended_callback) {
+        fadeOutMusic(music, ended_callback) {
             const self = this;
             if(music && !music.sound.fadingOut) {
                 this.clearFadeIn(music);
@@ -213,9 +212,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                     }
                 }, 50);
             }
-        },
+        }
 
-        fadeInMusic: function(music) {
+        fadeInMusic(music) {
             const self = this;
             if(music && !music.sound.fadingIn) {
                 this.clearFadeOut(music);
@@ -230,23 +229,23 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                     }
                 }, 30);
             }
-        },
+        }
 
-        clearFadeOut: function(music) {
+        clearFadeOut(music) {
             if(music.sound.fadingOut) {
                 clearInterval(music.sound.fadingOut);
                 music.sound.fadingOut = null;
             }
-        },
+        }
 
-        clearFadeIn: function(music) {
+        clearFadeIn(music) {
             if(music.sound.fadingIn) {
                 clearInterval(music.sound.fadingIn);
                 music.sound.fadingIn = null;
             }
-        },
+        }
 
-        fadeOutCurrentMusic : function() {
+        fadeOutCurrentMusic() {
             const self = this;
             if(this.currentMusic) {
                 this.fadeOutMusic(this.currentMusic, function(music) {
@@ -255,6 +254,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 this.currentMusic = null;
             }
         }
-    });
+    
+    }
 
 export default AudioManager;

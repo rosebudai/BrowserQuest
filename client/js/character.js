@@ -1,36 +1,33 @@
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import Entity from './entity.js';
 import Transition from './transition.js';
 import Timer from './timer.js';
 
-    const Character = Entity.extend({
-        init: function(id, kind) {
-    	    const self = this;
+    class Character extends Entity {
+        constructor(id, kind) {
+            super(id, kind);
 
-            this._super(id, kind);
+            // Position and orientation
+            this.nextGridX = -1;
+            this.nextGridY = -1;
+            this.orientation = Types.Orientations.DOWN;
 
-    		// Position and orientation
-    		this.nextGridX = -1;
-    		this.nextGridY = -1;
-    		this.orientation = Types.Orientations.DOWN;
-
-    		// Speeds
+            // Speeds
             this.atkSpeed = 50;
-    		this.moveSpeed = 120;
-    		this.walkSpeed = 100;
-    		this.idleSpeed = 450;
-    		this.setAttackRate(800);
+            this.moveSpeed = 120;
+            this.walkSpeed = 100;
+            this.idleSpeed = 450;
+            this.setAttackRate(800);
 
             // Pathing
-    		this.movement = new Transition();
-    		this.path = null;
-    		this.newDestination = null;
-    		this.adjacentTiles = {};
+            this.movement = new Transition();
+            this.path = null;
+            this.newDestination = null;
+            this.adjacentTiles = {};
 
-    		// Combat
-    		this.target = null;
+            // Combat
+            this.target = null;
             this.unconfirmedTarget = null;
             this.attackers = {};
 
@@ -42,75 +39,75 @@ import Timer from './timer.js';
             this.isDead = false;
             this.attackingMode = false;
             this.followingMode = false;
-    	},
+        }
 
-    	clean: function() {
-    	    this.forEachAttacker(function(attacker) {
+        clean() {
+            this.forEachAttacker(function(attacker) {
                 attacker.disengage();
                 attacker.idle();
             });
-    	},
+        }
 
-    	setMaxHitPoints: function(hp) {
-    	    this.maxHitPoints = hp;
-    	    this.hitPoints = hp;
-    	},
+        setMaxHitPoints(hp) {
+            this.maxHitPoints = hp;
+            this.hitPoints = hp;
+        }
 
-    	setDefaultAnimation: function() {
-    		this.idle();
-    	},
+        setDefaultAnimation() {
+            this.idle();
+        }
 
-    	hasWeapon: function() {
-    	    return false;
-    	},
+        hasWeapon() {
+            return false;
+        }
 
-    	hasShadow: function() {
-    	    return true;
-    	},
+        hasShadow() {
+            return true;
+        }
 
-    	animate: function(animation, speed, count, onEndCount) {
-    	    const oriented = ['atk', 'walk', 'idle'], o = this.orientation;
+        animate(animation, speed, count, onEndCount) {
+            const oriented = ['atk', 'walk', 'idle'], o = this.orientation;
 
             if(!(this.currentAnimation && this.currentAnimation.name === "death")) { // don't change animation if the character is dying
-            	this.flipSpriteX = false;
-        	    this.flipSpriteY = false;
+                this.flipSpriteX = false;
+                this.flipSpriteY = false;
 
-        	    if(oriented.indexOf(animation) >= 0) {
-        	        animation += "_" + (o === Types.Orientations.LEFT ? "right" : Types.getOrientationAsString(o));
-        	        this.flipSpriteX = (this.orientation === Types.Orientations.LEFT) ? true : false;
-        	    }
+                if(oriented.indexOf(animation) >= 0) {
+                    animation += "_" + (o === Types.Orientations.LEFT ? "right" : Types.getOrientationAsString(o));
+                    this.flipSpriteX = (this.orientation === Types.Orientations.LEFT) ? true : false;
+                }
 
-        		this.setAnimation(animation, speed, count, onEndCount);
-        	}
-    	},
+                this.setAnimation(animation, speed, count, onEndCount);
+            }
+        }
 
-        turnTo: function(orientation) {
+        turnTo(orientation) {
             this.orientation = orientation;
             this.idle();
-        },
+        }
 
-    	setOrientation: function(orientation) {
-    	    if(orientation) {
-    	        this.orientation = orientation;
-    	    }
-    	},
+        setOrientation(orientation) {
+            if(orientation) {
+                this.orientation = orientation;
+            }
+        }
 
-    	idle: function(orientation) {
-    	    this.setOrientation(orientation);
-    	    this.animate("idle", this.idleSpeed);
-    	},
+        idle(orientation) {
+            this.setOrientation(orientation);
+            this.animate("idle", this.idleSpeed);
+        }
 
-    	hit: function(orientation) {
-    	    this.setOrientation(orientation);
-    	    this.animate("atk", this.atkSpeed, 1);
-    	},
+        hit(orientation) {
+            this.setOrientation(orientation);
+            this.animate("atk", this.atkSpeed, 1);
+        }
 
-    	walk: function(orientation) {
-    	    this.setOrientation(orientation);
-    	    this.animate("walk", this.walkSpeed);
-    	},
+        walk(orientation) {
+            this.setOrientation(orientation);
+            this.animate("walk", this.walkSpeed);
+        }
 
-        moveTo_: function(x, y, callback) {
+        moveTo_(x, y, callback) {
             this.destination = { gridX: x, gridY: y };
             this.adjacentTiles = {};
 
@@ -122,33 +119,33 @@ import Timer from './timer.js';
 
                 this.followPath(path);
             }
-        },
+        }
 
-        requestPathfindingTo: function(x, y) {
+        requestPathfindingTo(x, y) {
             if(this.request_path_callback) {
                 return this.request_path_callback(x, y);
             } else {
                 log.debug(this.id + " couldn't request pathfinding to "+x+", "+y);
                 return [];
             }
-        },
+        }
 
-        onRequestPath: function(callback) {
+        onRequestPath(callback) {
             this.request_path_callback = callback;
-        },
+        }
 
-        onStartPathing: function(callback) {
+        onStartPathing(callback) {
             this.start_pathing_callback = callback;
-        },
+        }
 
-        onStopPathing: function(callback) {
+        onStopPathing(callback) {
             this.stop_pathing_callback = callback;
-        },
+        }
 
-    	followPath: function(path) {
-    		if(path.length > 1) { // Length of 1 means the player has clicked on himself
-    			this.path = path;
-    			this.step = 0;
+        followPath(path) {
+            if(path.length > 1) { // Length of 1 means the player has clicked on himself
+                this.path = path;
+                this.step = 0;
 
                 if(this.followingMode) { // following a character
                     path.pop();
@@ -158,43 +155,43 @@ import Timer from './timer.js';
                     this.start_pathing_callback(path);
                 }
                 this.nextStep();
-    		}
-    	},
+            }
+        }
 
-    	continueTo: function(x, y) {
-    		this.newDestination = { x: x, y: y };
-    	},
+        continueTo(x, y) {
+            this.newDestination = { x: x, y: y };
+        }
 
-    	updateMovement: function() {
-    		const p = this.path, i = this.step;
+        updateMovement() {
+            const p = this.path, i = this.step;
 
-    		if(p[i][0] < p[i-1][0]) {
-    			this.walk(Types.Orientations.LEFT);
-    		}
-    		if(p[i][0] > p[i-1][0]) {
-    			this.walk(Types.Orientations.RIGHT);
-    		}
-    		if(p[i][1] < p[i-1][1]) {
-    			this.walk(Types.Orientations.UP);
-    		}
-    		if(p[i][1] > p[i-1][1]) {
-    			this.walk(Types.Orientations.DOWN);
-    		}
-    	},
+            if(p[i][0] < p[i-1][0]) {
+                this.walk(Types.Orientations.LEFT);
+            }
+            if(p[i][0] > p[i-1][0]) {
+                this.walk(Types.Orientations.RIGHT);
+            }
+            if(p[i][1] < p[i-1][1]) {
+                this.walk(Types.Orientations.UP);
+            }
+            if(p[i][1] > p[i-1][1]) {
+                this.walk(Types.Orientations.DOWN);
+            }
+        }
 
-    	updatePositionOnGrid: function() {
-    		this.setGridPosition(this.path[this.step][0], this.path[this.step][1]);
-    	},
+        updatePositionOnGrid() {
+            this.setGridPosition(this.path[this.step][0], this.path[this.step][1]);
+        }
 
-    	nextStep: function() {
+        nextStep() {
             let stop = false, x, y, path;
 
-    		if(this.isMoving()) {
-    		    if(this.before_step_callback) {
+            if(this.isMoving()) {
+                if(this.before_step_callback) {
                     this.before_step_callback();
                 }
 
-    		    this.updatePositionOnGrid();
+                this.updatePositionOnGrid();
                 this.checkAggro();
 
                 if(this.interrupted) { // if Character.stop() has been called
@@ -211,60 +208,60 @@ import Timer from './timer.js';
                         this.step_callback();
                     }
 
-        			if(this.hasChangedItsPath()) {
-        				x = this.newDestination.x;
-        				y = this.newDestination.y;
-        				path = this.requestPathfindingTo(x, y);
+                    if(this.hasChangedItsPath()) {
+                        x = this.newDestination.x;
+                        y = this.newDestination.y;
+                        path = this.requestPathfindingTo(x, y);
 
                         this.newDestination = null;
-        				if(path.length < 2) {
+                        if(path.length < 2) {
                             stop = true;
                         }
                         else {
                             this.followPath(path);
                         }
-        			}
-        			else if(this.hasNextStep()) {
-        				this.step += 1;
-        				this.updateMovement();
-        			}
+                    }
+                    else if(this.hasNextStep()) {
+                        this.step += 1;
+                        this.updateMovement();
+                    }
                     else {
                         stop = true;
                     }
                 }
 
-    		    if(stop) { // Path is complete or has been interrupted
-    		        this.path = null;
-        			this.idle();
+                if(stop) { // Path is complete or has been interrupted
+                    this.path = null;
+                    this.idle();
 
                     if(this.stop_pathing_callback) {
                         this.stop_pathing_callback(this.gridX, this.gridY);
                     }
-        		}
-        	}
-    	},
+                }
+            }
+        }
 
-        onBeforeStep: function(callback) {
+        onBeforeStep(callback) {
             this.before_step_callback = callback;
-        },
+        }
 
-        onStep: function(callback) {
+        onStep(callback) {
             this.step_callback = callback;
-        },
+        }
 
-    	isMoving: function() {
-    		return !(this.path === null);
-    	},
+        isMoving() {
+            return !(this.path === null);
+        }
 
-    	hasNextStep: function() {
-    		return (this.path.length - 1 > this.step);
-    	},
+        hasNextStep() {
+            return (this.path.length - 1 > this.step);
+        }
 
-    	hasChangedItsPath: function() {
-    		return !(this.newDestination === null);
-        },
+        hasChangedItsPath() {
+            return !(this.newDestination === null);
+        }
 
-        isNear: function(character, distance) {
+        isNear(character, distance) {
             let dx, dy, near = false;
 
             dx = Math.abs(this.gridX - character.gridX);
@@ -274,46 +271,46 @@ import Timer from './timer.js';
                 near = true;
             }
             return near;
-        },
+        }
 
-        onAggro: function(callback) {
+        onAggro(callback) {
             this.aggro_callback = callback;
-        },
+        }
 
-        onCheckAggro: function(callback) {
+        onCheckAggro(callback) {
             this.checkaggro_callback = callback;
-        },
+        }
 
-        checkAggro: function() {
+        checkAggro() {
             if(this.checkaggro_callback) {
                 this.checkaggro_callback();
             }
-        },
+        }
 
-        aggro: function(character) {
+        aggro(character) {
             if(this.aggro_callback) {
                 this.aggro_callback(character);
             }
-        },
+        }
 
-        onDeath: function(callback) {
+        onDeath(callback) {
             this.death_callback = callback;
-        },
+        }
 
         /**
          * Changes the character's orientation so that it is facing its target.
          */
-        lookAtTarget: function() {
+        lookAtTarget() {
             if(this.target) {
                 this.turnTo(this.getOrientationTo(this.target));
             }
-        },
+        }
 
         /**
          *
          */
-        go: function(x, y) {
-    	    if(this.isAttacking()) {
+        go(x, y) {
+            if(this.isAttacking()) {
                 this.disengage();
             }
             else if(this.followingMode) {
@@ -321,49 +318,49 @@ import Timer from './timer.js';
                 this.target = null;
             }
             this.moveTo_(x, y);
-        },
+        }
 
         /**
          * Makes the character follow another one.
          */
-        follow: function(entity) {
+        follow(entity) {
             if(entity) {
                 this.followingMode = true;
                 this.moveTo_(entity.gridX, entity.gridY);
             }
-        },
+        }
 
         /**
-    	 * Stops a moving character.
-    	 */
-    	stop: function() {
-    	    if(this.isMoving()) {
+         * Stops a moving character.
+         */
+        stop() {
+            if(this.isMoving()) {
                 this.interrupted = true;
-    	    }
-    	},
+            }
+        }
 
         /**
          * Makes the character attack another character. Same as Character.follow but with an auto-attacking behavior.
          * @see Character.follow
          */
-        engage: function(character) {
+        engage(character) {
             this.attackingMode = true;
             this.setTarget(character);
             this.follow(character);
-        },
+        }
 
-        disengage: function() {
+        disengage() {
             this.attackingMode = false;
             this.followingMode = false;
             this.removeTarget();
-        },
+        }
 
         /**
          * Returns true if the character is currently attacking.
          */
-        isAttacking: function() {
+        isAttacking() {
             return this.attackingMode;
-        },
+        }
 
         /**
          * Gets the right orientation to face a target character from the current position.
@@ -378,7 +375,7 @@ import Timer from './timer.js';
          * @param {Character} character The character to face.
          * @returns {String} The orientation.
          */
-        getOrientationTo: function(character) {
+        getOrientationTo(character) {
             if(this.gridX < character.gridX) {
                 return Types.Orientations.RIGHT;
             } else if(this.gridX > character.gridX) {
@@ -388,56 +385,56 @@ import Timer from './timer.js';
             } else {
                 return Types.Orientations.DOWN;
             }
-        },
+        }
 
         /**
          * Returns true if this character is currently attacked by a given character.
          * @param {Character} character The attacking character.
          * @returns {Boolean} Whether this is an attacker of this character.
          */
-        isAttackedBy: function(character) {
+        isAttackedBy(character) {
             return (character.id in this.attackers);
-        },
+        }
 
         /**
         * Registers a character as a current attacker of this one.
         * @param {Character} character The attacking character.
         */
-        addAttacker: function(character) {
+        addAttacker(character) {
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
             } else {
                 log.debug(this.id + " is already attacked by " + character.id);
             }
-        },
+        }
 
         /**
         * Unregisters a character as a current attacker of this one.
         * @param {Character} character The attacking character.
         */
-        removeAttacker: function(character) {
+        removeAttacker(character) {
             if(this.isAttackedBy(character)) {
                 delete this.attackers[character.id];
             } else {
                 log.debug(this.id + " is not attacked by " + character.id);
             }
-        },
+        }
 
         /**
          * Loops through all the characters currently attacking this one.
          * @param {Function} callback Function which must accept one character argument.
          */
-        forEachAttacker: function(callback) {
+        forEachAttacker(callback) {
             for(const attacker of Object.values(this.attackers)) {
                 callback(attacker);
             }
-        },
+        }
 
         /**
          * Sets this character's attack target. It can only have one target at any time.
          * @param {Character} character The target character.
          */
-        setTarget: function(character) {
+        setTarget(character) {
             if(this.target !== character) { // If it's not already set as the target
                 if(this.hasTarget()) {
                     this.removeTarget(); // Cleanly remove the previous one
@@ -447,12 +444,12 @@ import Timer from './timer.js';
             } else {
                 log.debug(character.id + " is already the target of " + this.id);
             }
-        },
+        }
 
         /**
          * Removes the current attack target.
          */
-        removeTarget: function() {
+        removeTarget() {
             const self = this;
 
             if(this.target) {
@@ -461,15 +458,15 @@ import Timer from './timer.js';
                 }
                 this.target = null;
             }
-        },
+        }
 
         /**
          * Returns true if this character has a current attack target.
          * @returns {Boolean} Whether this character has a target.
          */
-        hasTarget: function() {
+        hasTarget() {
             return !(this.target === null);
-        },
+        }
 
         /**
          * Marks this character as waiting to attack a target.
@@ -478,75 +475,75 @@ import Timer from './timer.js';
          *
          * @param {Character} character The target character
          */
-        waitToAttack: function(character) {
+        waitToAttack(character) {
             this.unconfirmedTarget = character;
-        },
+        }
 
         /**
          * Returns true if this character is currently waiting to attack the target character.
          * @param {Character} character The target character.
          * @returns {Boolean} Whether this character is waiting to attack.
          */
-        isWaitingToAttack: function(character) {
+        isWaitingToAttack(character) {
             return (this.unconfirmedTarget === character);
-        },
+        }
 
         /**
          *
          */
-        canAttack: function(time) {
+        canAttack(time) {
             if(this.canReachTarget() && this.attackCooldown.isOver(time)) {
                 return true;
             }
             return false;
-        },
+        }
 
-        canReachTarget: function() {
+        canReachTarget() {
             if(this.hasTarget() && this.isAdjacentNonDiagonal(this.target)) {
                 return true;
             }
             return false;
-        },
+        }
 
         /**
          *
          */
-    	die: function() {
-    	    this.removeTarget();
-    	    this.isDead = true;
+        die() {
+            this.removeTarget();
+            this.isDead = true;
 
-    	    if(this.death_callback) {
-    	        this.death_callback();
-    	    }
-    	},
+            if(this.death_callback) {
+                this.death_callback();
+            }
+        }
 
-    	onHasMoved: function(callback) {
-    	    this.hasmoved_callback = callback;
-    	},
+        onHasMoved(callback) {
+            this.hasmoved_callback = callback;
+        }
 
-    	hasMoved: function() {
-    	    this.setDirty();
-    	    if(this.hasmoved_callback) {
-    	        this.hasmoved_callback(this);
-    	    }
-    	},
+        hasMoved() {
+            this.setDirty();
+            if(this.hasmoved_callback) {
+                this.hasmoved_callback(this);
+            }
+        }
 
-    	hurt: function() {
+        hurt() {
             const self = this;
 
             this.stopHurting();
             this.sprite = this.hurtSprite;
             this.hurting = setTimeout(this.stopHurting.bind(this), 75);
-        },
+        }
 
-        stopHurting: function() {
+        stopHurting() {
             this.sprite = this.normalSprite;
             clearTimeout(this.hurting);
-        },
+        }
 
-        setAttackRate: function(rate) {
+        setAttackRate(rate) {
             this.attackCooldown = new Timer(rate);
         }
-    });
+    }
 
 export default Character;

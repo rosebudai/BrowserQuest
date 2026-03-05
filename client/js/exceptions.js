@@ -1,12 +1,11 @@
-import { Class } from './lib/class.js';
+class LootException {
+    constructor(message) {
+        this.message = message;
+    }
+}
 
 const Exceptions = {
-
-    LootException: Class.extend({
-        init: function(message) {
-            this.message = message;
-        }
-    })
+    LootException: LootException
 };
 
 export default Exceptions;

@@ -1,35 +1,35 @@
 import Types from './gametypes.js';
 import Entity from './entity.js';
 
-    const Item = Entity.extend({
-        init: function(id, kind, type) {
-    	    this._super(id, kind);
+class Item extends Entity {
+    constructor(id, kind, type) {
+        super(id, kind);
 
-            this.itemKind = Types.getKindAsString(kind);
-    	    this.type = type;
-    	    this.wasDropped = false;
-        },
+        this.itemKind = Types.getKindAsString(kind);
+        this.type = type;
+        this.wasDropped = false;
+    }
 
-        hasShadow: function() {
-            return true;
-        },
+    hasShadow() {
+        return true;
+    }
 
-        onLoot: function(player) {
-            if(this.type === "weapon") {
-                player.switchWeapon(this.itemKind);
-            }
-            else if(this.type === "armor") {
-                player.armorloot_callback(this.itemKind);
-            }
-        },
-
-        getSpriteName: function() {
-            return "item-"+ this.itemKind;
-        },
-
-        getLootMessage: function() {
-            return this.lootMessage;
+    onLoot(player) {
+        if(this.type === "weapon") {
+            player.switchWeapon(this.itemKind);
         }
-    });
+        else if(this.type === "armor") {
+            player.armorloot_callback(this.itemKind);
+        }
+    }
+
+    getSpriteName() {
+        return "item-"+ this.itemKind;
+    }
+
+    getLootMessage() {
+        return this.lootMessage;
+    }
+}
 
 export default Item;

@@ -1,9 +1,8 @@
-import { Class } from '../lib/class.js';
 import Utils from "./utils.js";
 import Mob from "./mob.js";
 
-const Area = Class.extend({
-    init: function(id, x, y, width, height, world) {
+class Area {
+    constructor(id, x, y, width, height, world) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -12,9 +11,9 @@ const Area = Class.extend({
         this.world = world;
         this.entities = [];
         this.hasCompletelyRespawned = true;
-    },
+    }
     
-    _getRandomPositionInsideArea: function() {
+    _getRandomPositionInsideArea() {
         const pos = {};
         let valid = false;
 
@@ -24,9 +23,9 @@ const Area = Class.extend({
             valid = this.world.isValidPosition(pos.x, pos.y);
         }
         return pos;
-    },
+    }
     
-    removeFromArea: function(entity) {
+    removeFromArea(entity) {
         const i = this.entities.map(function(e) { return e.id; }).indexOf(entity.id);
         this.entities.splice(i, 1);
         
@@ -34,9 +33,9 @@ const Area = Class.extend({
             this.hasCompletelyRespawned = false;
             this.empty_callback();
         }
-    },
+    }
     
-    addToArea: function(entity) {
+    addToArea(entity) {
         if(entity) {
             this.entities.push(entity);
             entity.area = this;
@@ -48,23 +47,24 @@ const Area = Class.extend({
         if(this.isFull()) {
             this.hasCompletelyRespawned = true;
         }
-    },
+    }
     
-    setNumberOfEntities: function(nb) {
+    setNumberOfEntities(nb) {
         this.nbEntities = nb;
-    },
+    }
     
-    isEmpty: function() {
+    isEmpty() {
         return !this.entities.some(function(entity) { return !entity.isDead });
-    },
+    }
     
-    isFull: function() {
+    isFull() {
         return !this.isEmpty() && (this.nbEntities === this.entities.length);
-    },
+    }
     
-    onEmpty: function(callback) {
+    onEmpty(callback) {
         this.empty_callback = callback;
     }
-});
+
+}
 
 export default Area;

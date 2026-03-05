@@ -1,13 +1,11 @@
-
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import Player from './player.js';
 import EntityFactory from './entityfactory.js';
 import LocalGameServer from './server/localgameserver.js';
 
-    const GameClient = Class.extend({
-        init: function(host, port) {
+    class GameClient {
+        constructor(host, port) {
             this.connection = null;
             this.host = host;
             this.port = port;
@@ -38,17 +36,17 @@ import LocalGameServer from './server/localgameserver.js';
             this.handlers[Types.Messages.BLINK] = this.receiveBlink;
         
             this.enable();
-        },
+        }
     
-        enable: function() {
+        enable() {
             this.isListening = true;
-        },
+        }
     
-        disable: function() {
+        disable() {
             this.isListening = false;
-        },
+        }
         
-        connect: function(dispatcherMode) {
+        connect(dispatcherMode) {
             const self = this;
             
             log.info("Starting local game server...");
@@ -88,17 +86,17 @@ import LocalGameServer from './server/localgameserver.js';
             };
             
             this.connection.connect();
-        },
+        }
 
-        sendMessage: function(json) {
+        sendMessage(json) {
             let data;
             if(this.connection.getReadyState() === 1) {
                 data = JSON.stringify(json);
                 this.connection.send(data);
             }
-        },
+        }
 
-        receiveMessage: function(message) {
+        receiveMessage(message) {
             let data, action;
         
             if(this.isListening) {
@@ -116,9 +114,9 @@ import LocalGameServer from './server/localgameserver.js';
                     }
                 }
             }
-        },
+        }
     
-        receiveAction: function(data) {
+        receiveAction(data) {
             const action = data[0];
             if(this.handlers[action] && typeof this.handlers[action] === 'function') {
                 this.handlers[action].call(this, data);
@@ -126,49 +124,49 @@ import LocalGameServer from './server/localgameserver.js';
             else {
                 log.error("Unknown action : " + action);
             }
-        },
+        }
     
-        receiveActionBatch: function(actions) {
+        receiveActionBatch(actions) {
             const self = this;
 
             actions.forEach(function(action) {
                 self.receiveAction(action);
             });
-        },
+        }
     
-        receiveWelcome: function(data) {
+        receiveWelcome(data) {
             const id = data[1], name = data[2], x = data[3], y = data[4], hp = data[5];
         
             if(this.welcome_callback) {
                 this.welcome_callback(id, name, x, y, hp);
             }
-        },
+        }
     
-        receiveMove: function(data) {
+        receiveMove(data) {
             const id = data[1], x = data[2], y = data[3];
         
             if(this.move_callback) {
                 this.move_callback(id, x, y);
             }
-        },
+        }
     
-        receiveLootMove: function(data) {
+        receiveLootMove(data) {
             const id = data[1], item = data[2];
         
             if(this.lootmove_callback) {
                 this.lootmove_callback(id, item);
             }
-        },
+        }
     
-        receiveAttack: function(data) {
+        receiveAttack(data) {
             const attacker = data[1], target = data[2];
         
             if(this.attack_callback) {
                 this.attack_callback(attacker, target);
             }
-        },
+        }
     
-        receiveSpawn: function(data) {
+        receiveSpawn(data) {
             const id = data[1], kind = data[2], x = data[3], y = data[4];
         
             if(Types.isItem(kind)) {
@@ -213,17 +211,17 @@ import LocalGameServer from './server/localgameserver.js';
                     this.spawn_character_callback(character, x, y, orientation, target);
                 }
             }
-        },
+        }
     
-        receiveDespawn: function(data) {
+        receiveDespawn(data) {
             const id = data[1];
         
             if(this.despawn_callback) {
                 this.despawn_callback(id);
             }
-        },
+        }
     
-        receiveHealth: function(data) {
+        receiveHealth(data) {
             const points = data[1];
             let isRegen = false;
 
@@ -234,25 +232,25 @@ import LocalGameServer from './server/localgameserver.js';
             if(this.health_callback) {
                 this.health_callback(points, isRegen);
             }
-        },
+        }
     
-        receiveChat: function(data) {
+        receiveChat(data) {
             const id = data[1], text = data[2];
         
             if(this.chat_callback) {
                 this.chat_callback(id, text);
             }
-        },
+        }
     
-        receiveEquipItem: function(data) {
+        receiveEquipItem(data) {
             const id = data[1], itemKind = data[2];
         
             if(this.equip_callback) {
                 this.equip_callback(id, itemKind);
             }
-        },
+        }
     
-        receiveDrop: function(data) {
+        receiveDrop(data) {
             const mobId = data[1], id = data[2], kind = data[3];
         
             const item = EntityFactory.createEntity(kind, id);
@@ -262,238 +260,239 @@ import LocalGameServer from './server/localgameserver.js';
             if(this.drop_callback) {
                 this.drop_callback(item, mobId);
             }
-        },
+        }
     
-        receiveTeleport: function(data) {
+        receiveTeleport(data) {
             const id = data[1], x = data[2], y = data[3];
         
             if(this.teleport_callback) {
                 this.teleport_callback(id, x, y);
             }
-        },
+        }
     
-        receiveDamage: function(data) {
+        receiveDamage(data) {
             const id = data[1], dmg = data[2];
         
             if(this.dmg_callback) {
                 this.dmg_callback(id, dmg);
             }
-        },
+        }
     
-        receivePopulation: function(data) {
+        receivePopulation(data) {
             const worldPlayers = data[1], totalPlayers = data[2];
         
             if(this.population_callback) {
                 this.population_callback(worldPlayers, totalPlayers);
             }
-        },
+        }
     
-        receiveKill: function(data) {
+        receiveKill(data) {
             const mobKind = data[1];
         
             if(this.kill_callback) {
                 this.kill_callback(mobKind);
             }
-        },
+        }
     
-        receiveList: function(data) {
+        receiveList(data) {
             data.shift();
         
             if(this.list_callback) {
                 this.list_callback(data);
             }
-        },
+        }
     
-        receiveDestroy: function(data) {
+        receiveDestroy(data) {
             const id = data[1];
         
             if(this.destroy_callback) {
                 this.destroy_callback(id);
             }
-        },
+        }
     
-        receiveHitPoints: function(data) {
+        receiveHitPoints(data) {
             const maxHp = data[1];
         
             if(this.hp_callback) {
                 this.hp_callback(maxHp);
             }
-        },
+        }
     
-        receiveBlink: function(data) {
+        receiveBlink(data) {
             const id = data[1];
         
             if(this.blink_callback) {
                 this.blink_callback(id);
             }
-        },
+        }
         
-        onDispatched: function(callback) {
+        onDispatched(callback) {
             this.dispatched_callback = callback;
-        },
+        }
 
-        onConnected: function(callback) {
+        onConnected(callback) {
             this.connected_callback = callback;
-        },
+        }
         
-        onDisconnected: function(callback) {
+        onDisconnected(callback) {
             this.disconnected_callback = callback;
-        },
+        }
 
-        onWelcome: function(callback) {
+        onWelcome(callback) {
             this.welcome_callback = callback;
-        },
+        }
 
-        onSpawnCharacter: function(callback) {
+        onSpawnCharacter(callback) {
             this.spawn_character_callback = callback;
-        },
+        }
     
-        onSpawnItem: function(callback) {
+        onSpawnItem(callback) {
             this.spawn_item_callback = callback;
-        },
+        }
     
-        onSpawnChest: function(callback) {
+        onSpawnChest(callback) {
             this.spawn_chest_callback = callback;
-        },
+        }
 
-        onDespawnEntity: function(callback) {
+        onDespawnEntity(callback) {
             this.despawn_callback = callback;
-        },
+        }
 
-        onEntityMove: function(callback) {
+        onEntityMove(callback) {
             this.move_callback = callback;
-        },
+        }
 
-        onEntityAttack: function(callback) {
+        onEntityAttack(callback) {
             this.attack_callback = callback;
-        },
+        }
     
-        onPlayerChangeHealth: function(callback) {
+        onPlayerChangeHealth(callback) {
             this.health_callback = callback;
-        },
+        }
     
-        onPlayerEquipItem: function(callback) {
+        onPlayerEquipItem(callback) {
             this.equip_callback = callback;
-        },
+        }
     
-        onPlayerMoveToItem: function(callback) {
+        onPlayerMoveToItem(callback) {
             this.lootmove_callback = callback;
-        },
+        }
     
-        onPlayerTeleport: function(callback) {
+        onPlayerTeleport(callback) {
             this.teleport_callback = callback;
-        },
+        }
     
-        onChatMessage: function(callback) {
+        onChatMessage(callback) {
             this.chat_callback = callback;
-        },
+        }
     
-        onDropItem: function(callback) {
+        onDropItem(callback) {
             this.drop_callback = callback;
-        },
+        }
     
-        onPlayerDamageMob: function(callback) {
+        onPlayerDamageMob(callback) {
             this.dmg_callback = callback;
-        },
+        }
     
-        onPlayerKillMob: function(callback) {
+        onPlayerKillMob(callback) {
             this.kill_callback = callback;
-        },
+        }
     
-        onPopulationChange: function(callback) {
+        onPopulationChange(callback) {
             this.population_callback = callback;
-        },
+        }
     
-        onEntityList: function(callback) {
+        onEntityList(callback) {
             this.list_callback = callback;
-        },
+        }
     
-        onEntityDestroy: function(callback) {
+        onEntityDestroy(callback) {
             this.destroy_callback = callback;
-        },
+        }
     
-        onPlayerChangeMaxHitPoints: function(callback) {
+        onPlayerChangeMaxHitPoints(callback) {
             this.hp_callback = callback;
-        },
+        }
     
-        onItemBlink: function(callback) {
+        onItemBlink(callback) {
             this.blink_callback = callback;
-        },
+        }
 
-        sendHello: function(player) {
+        sendHello(player) {
             this.sendMessage([Types.Messages.HELLO,
                               player.name,
                               Types.getKindFromString(player.getSpriteName()),
                               Types.getKindFromString(player.getWeaponName())]);
-        },
+        }
 
-        sendMove: function(x, y) {
+        sendMove(x, y) {
             this.sendMessage([Types.Messages.MOVE,
                               x,
                               y]);
-        },
+        }
     
-        sendLootMove: function(item, x, y) {
+        sendLootMove(item, x, y) {
             this.sendMessage([Types.Messages.LOOTMOVE,
                               x,
                               y,
                               item.id]);
-        },
+        }
     
-        sendAggro: function(mob) {
+        sendAggro(mob) {
             this.sendMessage([Types.Messages.AGGRO,
                               mob.id]);
-        },
+        }
     
-        sendAttack: function(mob) {
+        sendAttack(mob) {
             this.sendMessage([Types.Messages.ATTACK,
                               mob.id]);
-        },
+        }
     
-        sendHit: function(mob) {
+        sendHit(mob) {
             this.sendMessage([Types.Messages.HIT,
                               mob.id]);
-        },
+        }
     
-        sendHurt: function(mob) {
+        sendHurt(mob) {
             this.sendMessage([Types.Messages.HURT,
                               mob.id]);
-        },
+        }
     
-        sendChat: function(text) {
+        sendChat(text) {
             this.sendMessage([Types.Messages.CHAT,
                               text]);
-        },
+        }
     
-        sendLoot: function(item) {
+        sendLoot(item) {
             this.sendMessage([Types.Messages.LOOT,
                               item.id]);
-        },
+        }
     
-        sendTeleport: function(x, y) {
+        sendTeleport(x, y) {
             this.sendMessage([Types.Messages.TELEPORT,
                               x,
                               y]);
-        },
+        }
     
-        sendWho: function(ids) {
+        sendWho(ids) {
             ids.unshift(Types.Messages.WHO);
             this.sendMessage(ids);
-        },
+        }
     
-        sendZone: function() {
+        sendZone() {
             this.sendMessage([Types.Messages.ZONE]);
-        },
+        }
     
-        sendOpen: function(chest) {
+        sendOpen(chest) {
             this.sendMessage([Types.Messages.OPEN,
                               chest.id]);
-        },
+        }
     
-        sendCheck: function(id) {
+        sendCheck(id) {
             this.sendMessage([Types.Messages.CHECK,
                               id]);
         }
-    });
+    
+    }
     
     export default GameClient;

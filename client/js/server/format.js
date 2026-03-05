@@ -1,9 +1,8 @@
-import { Class } from '../lib/class.js';
 import Types from '../gametypes.js';
 import log from '../lib/log.js';
 
-const FormatChecker = Class.extend({
-    init: function() {
+class FormatChecker {
+    constructor() {
         this.formats = [];
         this.formats[Types.Messages.HELLO] = ['s', 'n', 'n'],
         this.formats[Types.Messages.MOVE] = ['n', 'n'],
@@ -18,9 +17,9 @@ const FormatChecker = Class.extend({
         this.formats[Types.Messages.ZONE] = [],
         this.formats[Types.Messages.OPEN] = ['n'],
         this.formats[Types.Messages.CHECK] = ['n']
-    },
+    }
     
-    check: function(msg) {
+    check(msg) {
         const message = msg.slice(0), type = message[0], format = this.formats[type];
         
         message.shift();
@@ -48,7 +47,8 @@ const FormatChecker = Class.extend({
             return false;
         }
     }
-});
+
+}
 
 const checker = new FormatChecker();
 const check = checker.check.bind(checker);

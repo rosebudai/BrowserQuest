@@ -1,5 +1,3 @@
-
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import { requestAnimFrame } from './util.js';
@@ -28,8 +26,8 @@ import Exceptions from './exceptions.js';
 import config from './config.js';
 import manifest from './manifest.js';
     
-    const Game = Class.extend({
-        init: function(app) {
+    class Game {
+        constructor(app) {
             this.app = app;
             this.app.config = config;
             this.ready = false;
@@ -89,9 +87,9 @@ import manifest from './manifest.js';
         
             // sprites
             this.spriteNames = manifest.gameSprites;
-        },
+        }
     
-        setup: function($bubbleContainer, canvas, background, foreground, input) {
+        setup($bubbleContainer, canvas, background, foreground, input) {
      		this.setBubbleManager(new BubbleManager($bubbleContainer));
      		this.setRenderer(new Renderer(this, canvas, background, foreground));
      		this.setChatInput(input);
@@ -102,33 +100,33 @@ import manifest from './manifest.js';
                 log.info("Sprite data loaded.");
                 return data;
             });
-        },
+        }
         
-        setStorage: function(storage) {
+        setStorage(storage) {
             this.storage = storage;
-        },
+        }
     
-        setRenderer: function(renderer) {
+        setRenderer(renderer) {
             this.renderer = renderer;
-        },
+        }
 
-        setUpdater: function(updater) {
+        setUpdater(updater) {
             this.updater = updater;
-        },
+        }
     
-        setPathfinder: function(pathfinder) {
+        setPathfinder(pathfinder) {
             this.pathfinder = pathfinder;
-        },
+        }
     
-        setChatInput: function(element) {
+        setChatInput(element) {
             this.chatinput = element;
-        },
+        }
     
-        setBubbleManager: function(bubbleManager) {
+        setBubbleManager(bubbleManager) {
             this.bubbleManager = bubbleManager;
-        },
+        }
 
-        loadMap: function() {
+        loadMap() {
             const self = this;
     
             this.map = new Map(!this.renderer.upscaledRendering, this);
@@ -139,9 +137,9 @@ import manifest from './manifest.js';
                 self.renderer.setTileset(self.map.tilesets[tilesetIndex]);
                 self.renderer.camera.setMapBounds(self.map.width, self.map.height);
         	});
-        },
+        }
     
-        initPlayer: function() {
+        initPlayer() {
             if(this.storage.hasAlreadyPlayed()) {
                 const savedArmor = this.storage.data.player.armor;
                 const savedWeapon = this.storage.data.player.weapon;
@@ -174,39 +172,39 @@ import manifest from './manifest.js';
         	this.player.idle();
 
     	    log.debug("Finished initPlayer");
-        },
+        }
 
-        initShadows: function() {
+        initShadows() {
             this.shadows = {};
             this.shadows["small"] = this.sprites["shadow16"];
-        },
+        }
 
-        initCursors: function() {
+        initCursors() {
             this.cursors["hand"] = this.sprites["hand"];
             this.cursors["sword"] = this.sprites["sword"];
             this.cursors["loot"] = this.sprites["loot"];
             this.cursors["target"] = this.sprites["target"];
             this.cursors["arrow"] = this.sprites["arrow"];
             this.cursors["talk"] = this.sprites["talk"];
-        },
+        }
     
-        initAnimations: function() {
+        initAnimations() {
             this.targetAnimation = new Animation("idle_down", 4, 0, 16, 16);
             this.targetAnimation.setSpeed(50);
         
             this.sparksAnimation = new Animation("idle_down", 6, 0, 16, 16);
             this.sparksAnimation.setSpeed(120);
-        },
+        }
     
-        initHurtSprites: function() {
+        initHurtSprites() {
             const self = this;
         
             Types.forEachArmorKind(function(kind, kindName) {
                 self.sprites[kindName].createHurtSprite();
             });
-        },
+        }
     
-        initSilhouettes: function() {
+        initSilhouettes() {
             const self = this;
 
             Types.forEachMobOrNpcKind(function(kind, kindName) {
@@ -214,9 +212,9 @@ import manifest from './manifest.js';
             });
             self.sprites["chest"].createSilhouette();
             self.sprites["item-cake"].createSilhouette();
-        },
+        }
     
-        initAchievements: function() {
+        initAchievements() {
             const self = this;
         
             this.achievements = {
@@ -354,9 +352,9 @@ import manifest from './manifest.js';
             if(this.storage.hasAlreadyPlayed()) {
                 this.app.initUnlockedAchievements(this.storage.data.achievements.unlocked);
             }
-        },
+        }
     
-        getAchievementById: function(id) {
+        getAchievementById(id) {
             let found = null;
             for(const achievement of Object.values(this.achievements)) {
                 if(achievement.id === parseInt(id)) {
@@ -364,9 +362,9 @@ import manifest from './manifest.js';
                 }
             }
             return found;
-        },
+        }
     
-        loadSprite: function(name) {
+        loadSprite(name) {
             if(!this.spriteData[name]) {
                 log.error("Missing sprite data for: " + name);
                 return;
@@ -383,9 +381,9 @@ import manifest from './manifest.js';
             } catch(e) {
                 log.error("Failed to load sprite: " + name + " — " + e.message);
             }
-        },
+        }
     
-        setSpriteScale: function(scale) {
+        setSpriteScale(scale) {
             const self = this;
             
             if(this.renderer.upscaledRendering) {
@@ -403,34 +401,34 @@ import manifest from './manifest.js';
                 this.initShadows();
                 this.initCursors();
             }
-        },
+        }
     
-        loadSprites: function() {
+        loadSprites() {
             log.info("Loading sprites...");
             this.spritesets = [];
             this.spritesets[0] = {};
             this.spritesets[1] = {};
             this.spritesets[2] = {};
             this.spriteNames.forEach(this.loadSprite, this);
-        },
+        }
     
-        spritesLoaded: function() {
+        spritesLoaded() {
             if(Object.values(this.sprites).some(function(sprite) { return !sprite.isLoaded; })) {
                 return false;
             }
             return true;
-        },
+        }
     
-        setCursor: function(name, orientation) {
+        setCursor(name, orientation) {
             if(name in this.cursors) {
                 this.currentCursor = this.cursors[name];
                 this.currentCursorOrientation = orientation;
             } else {
                 log.error("Unknown cursor name :"+name);
             }
-        },
+        }
     
-        updateCursorLogic: function() {
+        updateCursorLogic() {
             if(this.hoveringCollidingTile && this.started) {
                 this.targetColor = "rgba(255, 50, 50, 0.5)";
             }
@@ -458,13 +456,13 @@ import manifest from './manifest.js';
                 this.hoveringTarget = false;
                 this.targetCellVisible = true;
             }
-        },
+        }
     
-        focusPlayer: function() {
+        focusPlayer() {
             this.renderer.camera.lookAt(this.player);
-        },
+        }
 
-        addEntity: function(entity) {
+        addEntity(entity) {
             const self = this;
             
             if(this.entities[entity.id] === undefined) {
@@ -488,9 +486,9 @@ import manifest from './manifest.js';
             else {
                 log.debug("This entity already exists : " + entity.id + " ("+entity.kind+")");
             }
-        },
+        }
 
-        removeEntity: function(entity) {
+        removeEntity(entity) {
             if(entity.id in this.entities) {
                 this.unregisterEntityPosition(entity);
                 delete this.entities[entity.id];
@@ -498,16 +496,16 @@ import manifest from './manifest.js';
             else {
                 log.debug("Cannot remove entity. Unknown ID : " + entity.id);
             }
-        },
+        }
     
-        addItem: function(item, x, y) {
+        addItem(item, x, y) {
             item.setSprite(this.sprites[item.getSpriteName()]);
             item.setGridPosition(x, y);
             item.setAnimation("idle", 150);
             this.addEntity(item);
-        },
+        }
     
-        removeItem: function(item) {
+        removeItem(item) {
             if(item) {
                 this.removeFromItemGrid(item, item.gridX, item.gridY);
                 this.removeFromRenderingGrid(item, item.gridX, item.gridY);
@@ -515,9 +513,9 @@ import manifest from './manifest.js';
             } else {
                 log.debug("Cannot remove item. Item is null/undefined.");
             }
-        },
+        }
     
-        initPathingGrid: function() {
+        initPathingGrid() {
             this.pathingGrid = [];
             for(let i=0; i < this.map.height; i += 1) {
                 this.pathingGrid[i] = [];
@@ -526,9 +524,9 @@ import manifest from './manifest.js';
                 }
             }
             log.info("Initialized the pathing grid with static colliding cells.");
-        },
+        }
     
-        initEntityGrid: function() {
+        initEntityGrid() {
             this.entityGrid = [];
             for(let i=0; i < this.map.height; i += 1) {
                 this.entityGrid[i] = [];
@@ -537,9 +535,9 @@ import manifest from './manifest.js';
                 }
             }
             log.info("Initialized the entity grid.");
-        },
+        }
     
-        initRenderingGrid: function() {
+        initRenderingGrid() {
             this.renderingGrid = [];
             for(let i=0; i < this.map.height; i += 1) {
                 this.renderingGrid[i] = [];
@@ -548,9 +546,9 @@ import manifest from './manifest.js';
                 }
             }
             log.info("Initialized the rendering grid.");
-        },
+        }
     
-        initItemGrid: function() {
+        initItemGrid() {
             this.itemGrid = [];
             for(let i=0; i < this.map.height; i += 1) {
                 this.itemGrid[i] = [];
@@ -559,12 +557,12 @@ import manifest from './manifest.js';
                 }
             }
             log.info("Initialized the item grid.");
-        },
+        }
     
         /**
          * 
          */
-        initAnimatedTiles: function() {
+        initAnimatedTiles() {
             const self = this, m = this.map;
 
             this.animatedTiles = [];
@@ -578,35 +576,35 @@ import manifest from './manifest.js';
                 }
             }, 1);
             //log.info("Initialized animated tiles.");
-        },
+        }
     
-        addToRenderingGrid: function(entity, x, y) {
+        addToRenderingGrid(entity, x, y) {
             if(!this.map.isOutOfBounds(x, y)) {
                 this.renderingGrid[y][x][entity.id] = entity;
             }
-        },
+        }
     
-        removeFromRenderingGrid: function(entity, x, y) {
+        removeFromRenderingGrid(entity, x, y) {
             if(entity && this.renderingGrid[y][x] && entity.id in this.renderingGrid[y][x]) {
                 delete this.renderingGrid[y][x][entity.id];
             }
-        },
+        }
     
-        removeFromEntityGrid: function(entity, x, y) {
+        removeFromEntityGrid(entity, x, y) {
             if(this.entityGrid[y][x][entity.id]) {
                 delete this.entityGrid[y][x][entity.id];
             }
-        },
+        }
         
-        removeFromItemGrid: function(item, x, y) {
+        removeFromItemGrid(item, x, y) {
             if(item && this.itemGrid[y][x][item.id]) {
                 delete this.itemGrid[y][x][item.id];
             }
-        },
+        }
     
-        removeFromPathingGrid: function(x, y) {
+        removeFromPathingGrid(x, y) {
             this.pathingGrid[y][x] = 0;
-        },
+        }
     
         /**
          * Registers the entity at two adjacent positions on the grid at the same time.
@@ -615,7 +613,7 @@ import manifest from './manifest.js';
          *
          * @param {Entity} entity The moving entity
          */
-        registerEntityDualPosition: function(entity) {
+        registerEntityDualPosition(entity) {
             if(entity) {
                 this.entityGrid[entity.gridY][entity.gridX][entity.id] = entity;
             
@@ -628,14 +626,14 @@ import manifest from './manifest.js';
                     }
                 }
             }
-        },
+        }
     
         /**
          * Clears the position(s) of this entity in the entity grid.
          *
          * @param {Entity} entity The moving entity
          */
-        unregisterEntityPosition: function(entity) {
+        unregisterEntityPosition(entity) {
             if(entity) {
                 this.removeFromEntityGrid(entity, entity.gridX, entity.gridY);
                 this.removeFromPathingGrid(entity.gridX, entity.gridY);
@@ -647,9 +645,9 @@ import manifest from './manifest.js';
                     this.removeFromPathingGrid(entity.nextGridX, entity.nextGridY);
                 }
             }
-        },
+        }
     
-        registerEntityPosition: function(entity) {
+        registerEntityPosition(entity) {
             const x = entity.gridX, y = entity.gridY;
         
             if(entity) {
@@ -665,26 +663,26 @@ import manifest from './manifest.js';
             
                 this.addToRenderingGrid(entity, x, y);
             }
-        },
+        }
     
-        setServerOptions: function(host, port, username) {
+        setServerOptions(host, port, username) {
             this.host = host;
             this.port = port;
             this.username = username;
-        },
+        }
     
-        loadAudio: function() {
+        loadAudio() {
             this.audioManager = new AudioManager(this);
-        },
+        }
     
-        initMusicAreas: function() {
+        initMusicAreas() {
             const self = this;
             this.map.musicAreas.forEach(function(area) {
                 self.audioManager.addArea(area.x, area.y, area.w, area.h, area.id);
             });
-        },
+        }
 
-        run: function(started_callback) {
+        run(started_callback) {
             const self = this;
 
             const startGame = function() {
@@ -743,9 +741,9 @@ import manifest from './manifest.js';
                     startGame();
                 });
             }
-        },
+        }
     
-        tick: function() {
+        tick() {
             this.currentTime = new Date().getTime();
 
             if(this.started) {
@@ -757,33 +755,33 @@ import manifest from './manifest.js';
             if(!this.isStopped) {
                 requestAnimFrame(this.tick.bind(this));
             }
-        },
+        }
 
-        start: function() {
+        start() {
             this.tick();
             this.hasNeverStarted = false;
             log.info("Game loop started.");
-        },
+        }
 
-        stop: function() {
+        stop() {
             log.info("Game stopped.");
             this.isStopped = true;
-        },
+        }
     
-        entityIdExists: function(id) {
+        entityIdExists(id) {
             return id in this.entities;
-        },
+        }
 
-        getEntityById: function(id) {
+        getEntityById(id) {
             if(id in this.entities) {
                 return this.entities[id];
             }
             else {
                 log.debug("Unknown entity id : " + id);
             }
-        },
+        }
 
-        connect: function(started_callback) {
+        connect(started_callback) {
             const self = this; // always in dispatcher mode in the build version
             let connecting = false;
 
@@ -1557,7 +1555,7 @@ import manifest from './manifest.js';
                     started_callback();
                 }
             });
-        },
+        }
 
         /**
          * Links two entities in an attacker<-->target relationship.
@@ -1566,7 +1564,7 @@ import manifest from './manifest.js';
          * @param {Entity} attacker The attacker entity
          * @param {Entity} target The target entity
          */
-        createAttackLink: function(attacker, target) {
+        createAttackLink(attacker, target) {
             if(attacker.hasTarget()) {
                 attacker.removeTarget();
             }
@@ -1575,25 +1573,25 @@ import manifest from './manifest.js';
             if(attacker.id !== this.playerId) {
                 target.addAttacker(attacker);
             }
-        },
+        }
 
         /**
          * Sends a "hello" message to the server, as a way of initiating the player connection handshake.
          * @see GameClient.sendHello
          */
-        sendHello: function() {
+        sendHello() {
             this.client.sendHello(this.player);
-        },
+        }
 
         /**
          * Converts the current mouse position on the screen to world grid coordinates.
          * @returns {Object} An object containing x and y properties.
          */
-        getMouseGridPosition: function() {
+        getMouseGridPosition() {
             const mx = this.mouse.x, my = this.mouse.y, c = this.renderer.camera, s = this.renderer.scale, ts = this.renderer.tilesize, offsetX = mx % (ts * s), offsetY = my % (ts * s), x = ((mx - offsetX) / (ts * s)) + c.gridX, y = ((my - offsetY) / (ts * s)) + c.gridY;
         
                 return { x: x, y: y };
-        },
+        }
     
         /**
          * Moves a character to a given location on the world grid.
@@ -1601,16 +1599,16 @@ import manifest from './manifest.js';
          * @param {Number} x The x coordinate of the target location.
          * @param {Number} y The y coordinate of the target location.
          */
-        makeCharacterGoTo: function(character, x, y) {
+        makeCharacterGoTo(character, x, y) {
             if(!this.map.isOutOfBounds(x, y)) {
                 character.go(x, y);
             }
-        },
+        }
     
         /**
          *
          */
-        makeCharacterTeleportTo: function(character, x, y) {
+        makeCharacterTeleportTo(character, x, y) {
             if(!this.map.isOutOfBounds(x, y)) {
                 this.unregisterEntityPosition(character);
 
@@ -1621,57 +1619,57 @@ import manifest from './manifest.js';
             } else {
                 log.debug("Teleport out of bounds: "+x+", "+y);
             }
-        },
+        }
 
         /**
          * Moves the current player to a given target location.
          * @see makeCharacterGoTo
          */
-        makePlayerGoTo: function(x, y) {
+        makePlayerGoTo(x, y) {
             this.makeCharacterGoTo(this.player, x, y);
-        },
+        }
     
         /**
          * Moves the current player towards a specific item.
          * @see makeCharacterGoTo
          */
-        makePlayerGoToItem: function(item) {
+        makePlayerGoToItem(item) {
             if(item) {
                 this.player.isLootMoving = true;
                 this.makePlayerGoTo(item.gridX, item.gridY);
                 this.client.sendLootMove(item, item.gridX, item.gridY);
             }
-        },
+        }
     
         /**
          *
          */
-        makePlayerTalkTo: function(npc) {
+        makePlayerTalkTo(npc) {
             if(npc) {
                 this.player.setTarget(npc);
                 this.player.follow(npc);
             }
-        },
+        }
     
-        makePlayerOpenChest: function(chest) {
+        makePlayerOpenChest(chest) {
             if(chest) {
                 this.player.setTarget(chest);
                 this.player.follow(chest);
             }
-        },
+        }
     
         /**
          * 
          */
-        makePlayerAttack: function(mob) {
+        makePlayerAttack(mob) {
             this.createAttackLink(this.player, mob);
             this.client.sendAttack(mob);
-        },
+        }
     
         /**
          *
          */
-        makeNpcTalk: function(npc) {
+        makeNpcTalk(npc) {
             let msg;
         
             if(npc) {
@@ -1691,36 +1689,36 @@ import manifest from './manifest.js';
                     this.tryUnlockingAchievement("RICKROLLD");
                 }
             }
-        },
+        }
 
         /**
          * Loops through all the entities currently present in the game.
          * @param {Function} callback The function to call back (must accept one entity argument).
          */
-        forEachEntity: function(callback) {
+        forEachEntity(callback) {
             for(const entity of Object.values(this.entities)) {
                 callback(entity);
             }
-        },
+        }
     
         /**
          * Same as forEachEntity but only for instances of the Mob subclass.
          * @see forEachEntity
          */
-        forEachMob: function(callback) {
+        forEachMob(callback) {
             for(const entity of Object.values(this.entities)) {
                 if(entity instanceof Mob) {
                     callback(entity);
                 }
             }
-        },
+        }
     
         /**
          * Loops through all entities visible by the camera and sorted by depth :
          * Lower 'y' value means higher depth.
          * Note: This is used by the Renderer to know in which order to render entities.
          */
-        forEachVisibleEntityByDepth: function(callback) {
+        forEachVisibleEntityByDepth(callback) {
             const self = this, m = this.map;
         
             this.camera.forEachVisiblePosition(function(x, y) {
@@ -1732,12 +1730,12 @@ import manifest from './manifest.js';
                     }
                 }
             }, this.renderer.mobile ? 0 : 2);
-        },
+        }
     
         /**
          * 
          */    
-        forEachVisibleTileIndex: function(callback, extra) {
+        forEachVisibleTileIndex(callback, extra) {
             const m = this.map;
             const zone = this.activeCameraZone;
 
@@ -1749,12 +1747,12 @@ import manifest from './manifest.js';
                     }
                 }
             }, extra);
-        },
+        }
     
         /**
          * 
          */
-        forEachVisibleTile: function(callback, extra) {
+        forEachVisibleTile(callback, extra) {
             const self = this, m = this.map;
         
             if(m.isLoaded) {
@@ -1773,24 +1771,24 @@ import manifest from './manifest.js';
                     }
                 }, extra);
             }
-        },
+        }
     
         /**
          * 
          */
-        forEachAnimatedTile: function(callback) {
+        forEachAnimatedTile(callback) {
             if(this.animatedTiles) {
                 this.animatedTiles.forEach(function(tile) {
                     callback(tile);
                 });
             }
-        },
+        }
     
         /**
          * Returns the entity located at the given position on the world grid.
          * @returns {Entity} the entity located at (x, y) or null if there is none.
          */
-        getEntityAt: function(x, y) {
+        getEntityAt(x, y) {
             if(this.map.isOutOfBounds(x, y) || !this.entityGrid) {
                 return null;
             }
@@ -1803,33 +1801,33 @@ import manifest from './manifest.js';
                 entity = this.getItemAt(x, y);
             }
             return entity;
-        },
+        }
 
-        getMobAt: function(x, y) {
+        getMobAt(x, y) {
             const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Mob)) {
                 return entity;
             }
             return null;
-        },
+        }
 
-        getNpcAt: function(x, y) {
+        getNpcAt(x, y) {
             const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Npc)) {
                 return entity;
             }
             return null;
-        },
+        }
 
-        getChestAt: function(x, y) {
+        getChestAt(x, y) {
             const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Chest)) {
                 return entity;
             }
             return null;
-        },
+        }
 
-        getItemAt: function(x, y) {
+        getItemAt(x, y) {
             if(this.map.isOutOfBounds(x, y) || !this.itemGrid) {
                 return null;
             }
@@ -1850,37 +1848,37 @@ import manifest from './manifest.js';
                 }
             }
             return item;
-        },
+        }
     
         /**
          * Returns true if an entity is located at the given position on the world grid.
          * @returns {Boolean} Whether an entity is at (x, y).
          */
-        isEntityAt: function(x, y) {
+        isEntityAt(x, y) {
             return null !== (this.getEntityAt(x, y));
-        },
+        }
 
-        isMobAt: function(x, y) {
+        isMobAt(x, y) {
             return null !== (this.getMobAt(x, y));
-        },
+        }
 
-        isItemAt: function(x, y) {
+        isItemAt(x, y) {
             return null !== (this.getItemAt(x, y));
-        },
+        }
 
-        isNpcAt: function(x, y) {
+        isNpcAt(x, y) {
             return null !== (this.getNpcAt(x, y));
-        },
+        }
 
-        isChestAt: function(x, y) {
+        isChestAt(x, y) {
             return null !== (this.getChestAt(x, y));
-        },
+        }
 
         /**
          * Finds a path to a grid position for the specified character.
          * The path will pass through any entity present in the ignore list.
          */
-        findPath: function(character, x, y, ignoreList) {
+        findPath(character, x, y, ignoreList) {
             const self = this;
             const grid = this.pathingGrid;
             let path = [];
@@ -1906,34 +1904,34 @@ import manifest from './manifest.js';
                 log.debug("Error while finding the path to "+x+", "+y+" for "+character.id);
             }
             return path;
-        },
+        }
     
         /**
          * Toggles the visibility of the pathing grid for debugging purposes.
          */
-        togglePathingGrid: function() {
+        togglePathingGrid() {
             if(this.debugPathing) {
                 this.debugPathing = false;
             } else {
                 this.debugPathing = true;
             }
-        },
+        }
     
         /**
          * Toggles the visibility of the FPS counter and other debugging info.
          */
-        toggleDebugInfo: function() {
+        toggleDebugInfo() {
             if(this.renderer && this.renderer.isDebugInfoVisible) {
                 this.renderer.isDebugInfoVisible = false;
             } else {
                 this.renderer.isDebugInfoVisible = true;
             }
-        },
+        }
     
         /**
          * 
          */
-        movecursor: function() {
+        movecursor() {
             const mouse = this.getMouseGridPosition(), x = mouse.x, y = mouse.y;
 
             if(this.player && !this.renderer.mobile && !this.renderer.tablet) {
@@ -1960,12 +1958,12 @@ import manifest from './manifest.js';
                     this.lastHovered = null;
                 }
             }
-        },
+        }
     
         /**
          * Processes game logic when the user triggers a click/touch event during the game.
          */
-        click: function() {
+        click() {
             const pos = this.getMouseGridPosition();
             let entity;
 
@@ -2005,9 +2003,9 @@ import manifest from './manifest.js';
         	        this.makePlayerGoTo(pos.x, pos.y);
         	    }
         	}
-        },
+        }
         
-        isMobOnSameTile: function(mob, x, y) {
+        isMobOnSameTile(mob, x, y) {
             const X = x || mob.gridX;
             const Y = y || mob.gridY;
             const list = this.entityGrid[Y][X];
@@ -2019,9 +2017,9 @@ import manifest from './manifest.js';
                 }
             });
             return result;
-        },
+        }
         
-        getFreeAdjacentNonDiagonalPosition: function(entity) {
+        getFreeAdjacentNonDiagonalPosition(entity) {
             const self = this;
             let result = null;
 
@@ -2031,9 +2029,9 @@ import manifest from './manifest.js';
                 }
             });
             return result;
-        },
+        }
         
-        tryMovingToADifferentTile: function(character) {
+        tryMovingToADifferentTile(character) {
             const attacker = character, target = character.target;
             
             if(attacker && target && target instanceof Player) {
@@ -2083,12 +2081,12 @@ import manifest from './manifest.js';
                 }
             }
             return false;
-        },
+        }
     
         /**
          * 
          */
-        onCharacterUpdate: function(character) {
+        onCharacterUpdate(character) {
             const time = this.currentTime, self = this;
             
             // If mob has finished moving to a different tile in order to avoid stacking, attack again from the new position.
@@ -2134,12 +2132,12 @@ import manifest from './manifest.js';
                     }
                 }
             }
-        },
+        }
     
         /**
          * 
          */
-        isZoningTile: function(x, y) {
+        isZoningTile(x, y) {
             const c = this.camera;
         
             x = x - c.gridX;
@@ -2149,12 +2147,12 @@ import manifest from './manifest.js';
                 return true;
             }
             return false;
-        },
+        }
     
         /**
          * 
          */
-        getZoningOrientation: function(x, y) {
+        getZoningOrientation(x, y) {
             let orientation = "";
             const c = this.camera;
 
@@ -2175,9 +2173,9 @@ import manifest from './manifest.js';
             }
 
             return orientation;
-        },
+        }
     
-        startZoningFrom: function(x, y) {
+        startZoningFrom(x, y) {
             this.zoningOrientation = this.getZoningOrientation(x, y);
 
             // If camera is at the edge of the active zone in the zoning direction,
@@ -2226,17 +2224,17 @@ import manifest from './manifest.js';
             }
             this.bubbleManager.clean();
             this.client.sendZone();
-        },
+        }
         
-        enqueueZoningFrom: function(x, y) {
+        enqueueZoningFrom(x, y) {
             this.zoningQueue.push({x: x, y: y});
             
             if(this.zoningQueue.length === 1) {
                 this.startZoningFrom(x, y);
             }
-        },
+        }
     
-        endZoning: function() {
+        endZoning() {
             this.currentZoning = null;
             this.activeCameraZone = this.map.getCameraZone(this.player);
 
@@ -2258,36 +2256,36 @@ import manifest from './manifest.js';
                 const pos = this.zoningQueue[0];
                 this.startZoningFrom(pos.x, pos.y);
             }
-        },
+        }
     
-        isZoning: function() {
+        isZoning() {
             return null !== (this.currentZoning);
-        },
+        }
     
-        resetZone: function() {
+        resetZone() {
             this.bubbleManager.clean();
             this.initAnimatedTiles();
             this.renderer.renderStaticCanvases();
-        },
+        }
     
-        resetCamera: function() {
+        resetCamera() {
             this.camera.focusEntity(this.player);
             this.resetZone();
-        },
+        }
     
-        say: function(message) {
+        say(message) {
             this.client.sendChat(message);
-        },
+        }
     
-        createBubble: function(id, message) {
+        createBubble(id, message) {
             this.bubbleManager.create(id, message, this.currentTime);
-        },
+        }
     
-        destroyBubble: function(id) {
+        destroyBubble(id) {
             this.bubbleManager.destroyBubble(id);
-        },
+        }
     
-        assignBubbleTo: function(character) {
+        assignBubbleTo(character) {
             const bubble = this.bubbleManager.getBubbleById(character.id);
         
             if(bubble) {
@@ -2321,9 +2319,9 @@ import manifest from './manifest.js';
                 bubble.element.css('left', x - offset + 'px');
                 bubble.element.css('top', y + 'px');
             }
-        },
+        }
     
-        restart: function() {
+        restart() {
             log.debug("Beginning restart");
         
             this.entities = {};
@@ -2345,45 +2343,45 @@ import manifest from './manifest.js';
             }
         
             log.debug("Finished restart");
-        },
+        }
     
-        onGameStart: function(callback) {
+        onGameStart(callback) {
             this.gamestart_callback = callback;
-        },
+        }
         
-        onDisconnect: function(callback) {
+        onDisconnect(callback) {
             this.disconnect_callback = callback;
-        },
+        }
     
-        onPlayerDeath: function(callback) {
+        onPlayerDeath(callback) {
             this.playerdeath_callback = callback;
-        },
+        }
     
-        onPlayerHealthChange: function(callback) {
+        onPlayerHealthChange(callback) {
             this.playerhp_callback = callback;
-        },
+        }
     
-        onPlayerHurt: function(callback) {
+        onPlayerHurt(callback) {
             this.playerhurt_callback = callback;
-        },
+        }
     
-        onPlayerEquipmentChange: function(callback) {
+        onPlayerEquipmentChange(callback) {
             this.equipment_callback = callback;
-        },
+        }
 
-        onNbPlayersChange: function(callback) {
+        onNbPlayersChange(callback) {
             this.nbplayers_callback = callback;
-        },
+        }
     
-        onNotification: function(callback) {
+        onNotification(callback) {
             this.notification_callback = callback;
-        },
+        }
     
-        onPlayerInvincible: function(callback) {
+        onPlayerInvincible(callback) {
             this.invincible_callback = callback
-        },
+        }
     
-        resize: function() {
+        resize() {
             const x = this.camera.x, y = this.camera.y, currentScale = this.renderer.scale, newScale = this.renderer.getScaleFactor();
     
                 this.renderer.rescale(newScale);
@@ -2394,15 +2392,15 @@ import manifest from './manifest.js';
                 this.camera.setPosition(x, y);
 
                 this.renderer.renderStaticCanvases();
-        },
+        }
     
-        updateBars: function() {
+        updateBars() {
             if(this.player && this.playerhp_callback) {
                 this.playerhp_callback(this.player.hitPoints, this.player.maxHitPoints);
             }
-        },
+        }
     
-        getDeadMobPosition: function(mobId) {
+        getDeadMobPosition(mobId) {
             let position;
 
             if(mobId in this.deathpositions) {
@@ -2411,13 +2409,13 @@ import manifest from './manifest.js';
             }
         
             return position;
-        },
+        }
     
-        onAchievementUnlock: function(callback) {
+        onAchievementUnlock(callback) {
             this.unlock_callback = callback;
-        },
+        }
     
-        tryUnlockingAchievement: function(name) {
+        tryUnlockingAchievement(name) {
             let achievement = null;
             if(name in this.achievements) {
                 achievement = this.achievements[name];
@@ -2429,15 +2427,15 @@ import manifest from './manifest.js';
                     }
                 }
             }
-        },
+        }
     
-        showNotification: function(message) {
+        showNotification(message) {
             if(this.notification_callback) {
                 this.notification_callback(message);
             }
-        },
+        }
 
-        removeObsoleteEntities: function() {
+        removeObsoleteEntities() {
             const nb = this.obsoleteEntities.length, self = this;
 
             if(nb > 0) {
@@ -2449,7 +2447,7 @@ import manifest from './manifest.js';
                 log.debug("Removed "+nb+" entities: "+this.obsoleteEntities.filter(function(entity) { return entity.id !== self.player.id }).map(function(entity) { return entity.id; }));
                 this.obsoleteEntities = null;
             }
-        },
+        }
     
         /**
          * Fake a mouse move event in order to update the cursor.
@@ -2457,23 +2455,23 @@ import manifest from './manifest.js';
          * For instance, to get rid of the sword cursor in case the mouse is still hovering over a dying mob.
          * Also useful when the mouse is hovering a tile where an item is appearing.
          */
-        updateCursor: function() {
+        updateCursor() {
             this.movecursor();
             this.updateCursorLogic();
-        },
+        }
     
         /**
          * Change player plateau mode when necessary
          */
-        updatePlateauMode: function() {
+        updatePlateauMode() {
             if(this.map.isPlateau(this.player.gridX, this.player.gridY)) {
                 this.player.isOnPlateau = true;
             } else {
                 this.player.isOnPlateau = false;
             }
-        },
+        }
     
-        updatePlayerCheckpoint: function() {
+        updatePlayerCheckpoint() {
             const checkpoint = this.map.getCurrentCheckpoint(this.player);
         
             if(checkpoint) {
@@ -2483,9 +2481,9 @@ import manifest from './manifest.js';
                     this.client.sendCheck(checkpoint.id);
                 }
             }
-        },
+        }
         
-        checkUndergroundAchievement: function() {
+        checkUndergroundAchievement() {
             const music = this.audioManager.getSurroundingMusic(this.player);
 
             if(music) {
@@ -2493,9 +2491,9 @@ import manifest from './manifest.js';
                     this.tryUnlockingAchievement("UNDERGROUND");
                 }
             }
-        },
+        }
         
-        forEachEntityAround: function(x, y, r, callback) {
+        forEachEntityAround(x, y, r, callback) {
             for(let i = x-r, max_i = x+r; i <= max_i; i += 1) {
                 for(let j = y-r, max_j = y+r; j <= max_j; j += 1) {
                     if(!this.map.isOutOfBounds(i, j)) {
@@ -2505,9 +2503,9 @@ import manifest from './manifest.js';
                     }
                 }
             }
-        },
+        }
         
-        checkOtherDirtyRects: function(r1, source, x, y) {
+        checkOtherDirtyRects(r1, source, x, y) {
             const r = this.renderer;
             
             this.forEachEntityAround(x, y, 2, function(e2) {
@@ -2541,6 +2539,7 @@ import manifest from './manifest.js';
                 }
             }
         }
-    });
+        
+    }
     
     export default Game;

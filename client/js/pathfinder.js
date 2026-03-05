@@ -1,26 +1,25 @@
-import { Class } from './lib/class.js';
 import AStar from './lib/astar.js';
 
-    const Pathfinder = Class.extend({
-        init: function(width, height) {
+    class Pathfinder {
+        constructor(width, height) {
             this.width = width;
             this.height = height;
             this.grid = null;
             this.blankGrid = [];
             this.initBlankGrid_();
             this.ignored = [];
-        },
+        }
 
-        initBlankGrid_: function() {
+        initBlankGrid_() {
             for(let i=0; i < this.height; i += 1) {
                 this.blankGrid[i] = [];
                 for(let j=0; j < this.width; j += 1) {
                     this.blankGrid[i][j] = 0;
                 }
             }
-        },
+        }
 
-        findPath: function(grid, entity, x, y, findIncomplete) {
+        findPath(grid, entity, x, y, findIncomplete) {
             const start = [entity.gridX, entity.gridY];
             const end = [x, y];
             let path;
@@ -36,9 +35,9 @@ import AStar from './lib/astar.js';
             }
 
             return path;
-        },
+        }
 
-        findIncompletePath_: function(start, end) {
+        findIncompletePath_(start, end) {
             let perfect, x, y, incomplete = [];
 
             perfect = AStar(this.blankGrid, start, end);
@@ -53,15 +52,15 @@ import AStar from './lib/astar.js';
                 }
             }
             return incomplete;
-        },
+        }
 
-        ignoreEntity: function(entity) {
+        ignoreEntity(entity) {
             if(entity) {
                 this.ignored.push(entity);
             }
-        },
+        }
 
-        applyIgnoreList_: function(ignored) {
+        applyIgnoreList_(ignored) {
             const self = this;
             let x;
             let y;
@@ -75,12 +74,12 @@ import AStar from './lib/astar.js';
                     self.grid[y][x] = ignored ? 0 : 1;
                 }
             });
-        },
+        }
 
-        clearIgnoreList: function() {
+        clearIgnoreList() {
             this.applyIgnoreList_(false);
             this.ignored = [];
         }
-    });
+    }
 
 export default Pathfinder;

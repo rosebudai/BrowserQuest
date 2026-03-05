@@ -8,14 +8,13 @@ import Properties from "./properties.js";
 import Formulas from "./formulas.js";
 import { check, FormatChecker } from "./format.js";
 
-const Player = Character.extend({
-    init: function(connection, worldServer) {
+class Player extends Character {
+    constructor(connection, worldServer) {
+        super(connection.id, "player", Types.Entities.WARRIOR, 0, 0, "");
         const self = this;
         
         this.server = worldServer;
         this.connection = connection;
-
-        this._super(this.connection.id, "player", Types.Entities.WARRIOR, 0, 0, "");
 
         this.hasEnteredGame = false;
         this.isDead = false;
@@ -233,9 +232,9 @@ const Player = Character.extend({
         });
         
         this.connection.sendUTF8("go"); // Notify client that the HELLO/WELCOME handshake can start
-    },
+    }
     
-    destroy: function() {
+    destroy() {
         const self = this;
         
         this.forEachAttacker(function(mob) {
@@ -247,9 +246,9 @@ const Player = Character.extend({
             mob.forgetPlayer(self.id);
         });
         this.haters = {};
-    },
+    }
     
-    getState: function() {
+    getState() {
         const basestate = this._getBaseState(), state = [this.name, this.orientation, this.armor, this.weapon];
 
         if(this.target) {
@@ -257,91 +256,91 @@ const Player = Character.extend({
         }
         
         return basestate.concat(state);
-    },
+    }
     
-    send: function(message) {
+    send(message) {
         this.connection.send(message);
-    },
+    }
     
-    broadcast: function(message, ignoreSelf) {
+    broadcast(message, ignoreSelf) {
         if(this.broadcast_callback) {
             this.broadcast_callback(message, ignoreSelf === undefined ? true : ignoreSelf);
         }
-    },
+    }
     
-    broadcastToZone: function(message, ignoreSelf) {
+    broadcastToZone(message, ignoreSelf) {
         if(this.broadcastzone_callback) {
             this.broadcastzone_callback(message, ignoreSelf === undefined ? true : ignoreSelf);
         }
-    },
+    }
     
-    onExit: function(callback) {
+    onExit(callback) {
         this.exit_callback = callback;
-    },
+    }
     
-    onMove: function(callback) {
+    onMove(callback) {
         this.move_callback = callback;
-    },
+    }
     
-    onLootMove: function(callback) {
+    onLootMove(callback) {
         this.lootmove_callback = callback;
-    },
+    }
     
-    onZone: function(callback) {
+    onZone(callback) {
         this.zone_callback = callback;
-    },
+    }
     
-    onOrient: function(callback) {
+    onOrient(callback) {
         this.orient_callback = callback;
-    },
+    }
     
-    onMessage: function(callback) {
+    onMessage(callback) {
         this.message_callback = callback;
-    },
+    }
     
-    onBroadcast: function(callback) {
+    onBroadcast(callback) {
         this.broadcast_callback = callback;
-    },
+    }
     
-    onBroadcastToZone: function(callback) {
+    onBroadcastToZone(callback) {
         this.broadcastzone_callback = callback;
-    },
+    }
     
-    equip: function(item) {
+    equip(item) {
         return new Messages.EquipItem(this, item);
-    },
+    }
     
-    addHater: function(mob) {
+    addHater(mob) {
         if(mob) {
             if(!(mob.id in this.haters)) {
                 this.haters[mob.id] = mob;
             }
         }
-    },
+    }
     
-    removeHater: function(mob) {
+    removeHater(mob) {
         if(mob && mob.id in this.haters) {
             delete this.haters[mob.id];
         }
-    },
+    }
     
-    forEachHater: function(callback) {
+    forEachHater(callback) {
         for(const mob of Object.values(this.haters)) {
             callback(mob);
         }
-    },
+    }
     
-    equipArmor: function(kind) {
+    equipArmor(kind) {
         this.armor = kind;
         this.armorLevel = Properties.getArmorLevel(kind);
-    },
+    }
     
-    equipWeapon: function(kind) {
+    equipWeapon(kind) {
         this.weapon = kind;
         this.weaponLevel = Properties.getWeaponLevel(kind);
-    },
+    }
     
-    equipItem: function(item) {
+    equipItem(item) {
         if(item) {
             log.debug(this.name + " equips " + Types.getKindAsString(item.kind));
             
@@ -353,32 +352,32 @@ const Player = Character.extend({
                 this.equipWeapon(item.kind);
             }
         }
-    },
+    }
     
-    updateHitPoints: function() {
+    updateHitPoints() {
         this.resetHitPoints(Formulas.hp(this.armorLevel));
-    },
+    }
     
-    updatePosition: function() {
+    updatePosition() {
         if(this.requestpos_callback) {
             const pos = this.requestpos_callback();
             this.setPosition(pos.x, pos.y);
         }
-    },
+    }
     
-    onRequestPosition: function(callback) {
+    onRequestPosition(callback) {
         this.requestpos_callback = callback;
-    },
+    }
     
-    resetTimeout: function() {
+    resetTimeout() {
         clearTimeout(this.disconnectTimeout);
         this.disconnectTimeout = setTimeout(this.timeout.bind(this), 1000 * 60 * 15); // 15 min.
-    },
+    }
     
-    timeout: function() {
+    timeout() {
         this.connection.sendUTF8("timeout");
         this.connection.close("Player was idle for too long");
     }
-});
+}
 
 export default Player;

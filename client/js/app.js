@@ -1,12 +1,11 @@
-
-import { Class } from './lib/class.js';
 import log from './lib/log.js';
 import { TRANSITIONEND } from './util.js';
 import Storage from './storage.js';
 import { resolveSprite } from './asset-resolver.js';
 
-    const App = Class.extend({
-        init: function() {
+    class App {
+        constructor() {
+            this._playDivHandler = null;
             this.currentPage = 1;
             this.blinkInterval = null;
             this.previousState = null;
@@ -16,30 +15,30 @@ import { resolveSprite } from './asset-resolver.js';
             this.watchNameInputInterval = setInterval(this.toggleButton.bind(this), 100);
             this.$playButton = document.querySelector('.play');
             this.$playDiv = document.querySelector('.play div');
-        },
+        }
 
-        setGame: function(game) {
+        setGame(game) {
             this.game = game;
             this.isMobile = this.game.renderer.mobile;
             this.isTablet = this.game.renderer.tablet;
             this.isDesktop = !(this.isMobile || this.isTablet);
             this.supportsWorkers = !!window.Worker;
             this.ready = true;
-        },
+        }
 
-        center: function() {
+        center() {
             window.scrollTo(0, 1);
-        },
+        }
 
-        canStartGame: function() {
+        canStartGame() {
             if(this.isDesktop) {
                 return (this.game && this.game.map && this.game.map.isLoaded);
             } else {
                 return this.game;
             }
-        },
+        }
 
-        tryStartingGame: function(username, starting_callback) {
+        tryStartingGame(username, starting_callback) {
             const self = this, $play = this.$playButton;
 
             if(username !== '') {
@@ -66,24 +65,22 @@ import { resolveSprite } from './asset-resolver.js';
                     this.startGame(username, starting_callback);
                 }
             }
-        },
+        }
 
-        _playDivHandler: null,
-
-        _unbindPlayDiv: function() {
+        _unbindPlayDiv() {
             if(this._playDivHandler) {
                 this.$playDiv.removeEventListener('click', this._playDivHandler);
                 this._playDivHandler = null;
             }
-        },
+        }
 
-        _bindPlayDiv: function(fn) {
+        _bindPlayDiv(fn) {
             this._unbindPlayDiv();
             this._playDivHandler = fn;
             this.$playDiv.addEventListener('click', fn);
-        },
+        }
 
-        startGame: function(username, starting_callback) {
+        startGame(username, starting_callback) {
             const self = this;
 
             if(starting_callback) {
@@ -97,9 +94,9 @@ import { resolveSprite } from './asset-resolver.js';
                 }
                 self.start(username);
             });
-        },
+        }
 
-        start: function(username) {
+        start(username) {
             const self = this, firstTimePlaying = !self.storage.hasAlreadyPlayed();
 
             if(username && !this.game.started) {
@@ -113,9 +110,9 @@ import { resolveSprite } from './asset-resolver.js';
                 	}
             	});
             }
-        },
+        }
 
-        setMouseCoordinates: function(event) {
+        setMouseCoordinates(event) {
             const gamePos = document.getElementById('container').getBoundingClientRect(),
                   scale = this.game.renderer.getScaleFactor(),
                   width = this.game.renderer.getWidth(),
@@ -136,9 +133,9 @@ import { resolveSprite } from './asset-resolver.js';
         	} else if(mouse.y >= height) {
         	    mouse.y = height - 1;
         	}
-        },
+        }
 
-        initHealthBar: function() {
+        initHealthBar() {
             const scale = this.game.renderer.getScaleFactor(),
                   healthMaxWidth = document.getElementById('healthbar').offsetWidth - (12 * scale);
 
@@ -148,18 +145,18 @@ import { resolveSprite } from './asset-resolver.js';
         	});
 
         	this.game.onPlayerHurt(this.blinkHealthBar.bind(this));
-        },
+        }
 
-        blinkHealthBar: function() {
+        blinkHealthBar() {
             const hitpoints = document.getElementById('hitpoints');
 
             hitpoints.classList.add('white');
             setTimeout(function() {
                 hitpoints.classList.remove('white');
             }, 500)
-        },
+        }
 
-        toggleButton: function() {
+        toggleButton() {
             const name = document.getElementById('nameinput').value,
                   play = document.querySelector('#createcharacter .play');
 
@@ -170,35 +167,35 @@ import { resolveSprite } from './asset-resolver.js';
                 play.classList.add('disabled');
                 document.getElementById('character').classList.add('disabled');
             }
-        },
+        }
 
-        hideIntro: function(hidden_callback) {
+        hideIntro(hidden_callback) {
             clearInterval(this.watchNameInputInterval);
             document.body.classList.remove('intro');
             setTimeout(function() {
                 document.body.classList.add('game');
                 hidden_callback();
             }, 1000);
-        },
+        }
 
-        showChat: function() {
+        showChat() {
             if(this.game.started) {
                 this.hideWindows();
                 document.getElementById('chatbox').classList.add('active');
                 document.getElementById('chatinput').focus();
                 document.getElementById('chatbutton').classList.add('active');
             }
-        },
+        }
 
-        hideChat: function() {
+        hideChat() {
             if(this.game.started) {
                 document.getElementById('chatbox').classList.remove('active');
                 document.getElementById('chatinput').blur();
                 document.getElementById('chatbutton').classList.remove('active');
             }
-        },
+        }
 
-        toggleInstructions: function() {
+        toggleInstructions() {
             this.hideChat();
             if(document.getElementById('achievements').classList.contains('active')) {
         	    this.toggleAchievements();
@@ -211,9 +208,9 @@ import { resolveSprite } from './asset-resolver.js';
         	    this.closeInGameAbout();
         	}
             document.getElementById('instructions').classList.toggle('active');
-        },
+        }
 
-        toggleAchievements: function() {
+        toggleAchievements() {
             this.hideChat();
         	if(document.getElementById('instructions').classList.contains('active')) {
         	    this.toggleInstructions();
@@ -227,9 +224,9 @@ import { resolveSprite } from './asset-resolver.js';
         	}
             this.resetPage();
             document.getElementById('achievements').classList.toggle('active');
-        },
+        }
 
-        resetPage: function() {
+        resetPage() {
             const self = this,
                   achievements = document.getElementById('achievements');
 
@@ -242,9 +239,9 @@ import { resolveSprite } from './asset-resolver.js';
                 };
                 achievements.addEventListener(TRANSITIONEND, handler);
             }
-        },
+        }
 
-        initEquipmentIcons: function() {
+        initEquipmentIcons() {
             const scale = this.game.renderer.getScaleFactor();
             const getIconPath = function(spriteName) {
                           return resolveSprite('item-' + spriteName, scale);
@@ -258,9 +255,9 @@ import { resolveSprite } from './asset-resolver.js';
             if(armor !== 'firefox') {
                 document.getElementById('armor').style.backgroundImage = 'url("' + armorPath + '")';
             }
-        },
+        }
 
-        hideWindows: function() {
+        hideWindows() {
             if(document.getElementById('achievements').classList.contains('active')) {
         	    this.toggleAchievements();
         	    document.getElementById('achievementsbutton').classList.remove('active');
@@ -275,9 +272,9 @@ import { resolveSprite } from './asset-resolver.js';
         	if(document.body.classList.contains('about')) {
         	    this.closeInGameAbout();
         	}
-        },
+        }
 
-        showAchievementNotification: function(id, name) {
+        showAchievementNotification(id, name) {
             const notif = document.getElementById('achievement-notification'),
                   nameEl = notif.querySelector('.name'),
                   button = document.getElementById('achievementsbutton');
@@ -293,9 +290,9 @@ import { resolveSprite } from './asset-resolver.js';
                 notif.classList.remove('active');
                 button.classList.remove('blink');
             }, 5000);
-        },
+        }
 
-        displayUnlockedAchievement: function(id) {
+        displayUnlockedAchievement(id) {
             const achievement = document.querySelector('#achievements li.achievement' + id);
 
             const achievementData = this.game.getAchievementById(id);
@@ -303,18 +300,18 @@ import { resolveSprite } from './asset-resolver.js';
                 this.setAchievementData(achievement, achievementData.name, achievementData.desc);
             }
             achievement.classList.add('unlocked');
-        },
+        }
 
-        unlockAchievement: function(id, name) {
+        unlockAchievement(id, name) {
             this.showAchievementNotification(id, name);
             this.displayUnlockedAchievement(id);
 
             const unlockedEl = document.getElementById('unlocked-achievements');
             const nb = parseInt(unlockedEl.textContent);
             unlockedEl.textContent = nb + 1;
-        },
+        }
 
-        initAchievementList: function(achievements) {
+        initAchievementList(achievements) {
             const self = this;
             const lists = document.getElementById('lists');
             const pageTmpl = document.getElementById('page-tmpl');
@@ -353,23 +350,23 @@ import { resolveSprite } from './asset-resolver.js';
             });
 
             document.getElementById('total-achievements').textContent = document.querySelectorAll('#achievements li').length;
-        },
+        }
 
-        initUnlockedAchievements: function(ids) {
+        initUnlockedAchievements(ids) {
             const self = this;
 
             ids.forEach(function(id) {
                 self.displayUnlockedAchievement(id);
             });
             document.getElementById('unlocked-achievements').textContent = ids.length;
-        },
+        }
 
-        setAchievementData: function(el, name, desc) {
+        setAchievementData(el, name, desc) {
             el.querySelector('.achievement-name').innerHTML = name;
             el.querySelector('.achievement-description').innerHTML = desc;
-        },
+        }
 
-        toggleCredits: function() {
+        toggleCredits() {
             const parchment = document.getElementById('parchment');
             const currentState = parchment.getAttribute('class');
 
@@ -404,9 +401,9 @@ import { resolveSprite } from './asset-resolver.js';
             	    }
                 }
             }
-        },
+        }
 
-        toggleAbout: function() {
+        toggleAbout() {
             const parchment = document.getElementById('parchment');
             const currentState = parchment.getAttribute('class');
 
@@ -441,30 +438,30 @@ import { resolveSprite } from './asset-resolver.js';
             	    }
                 }
             }
-        },
+        }
 
-        closeInGameCredits: function() {
+        closeInGameCredits() {
             document.body.classList.remove('credits');
             document.getElementById('parchment').classList.remove('credits');
             if(!this.game.player) {
                 document.body.classList.add('death');
             }
-        },
+        }
 
-        closeInGameAbout: function() {
+        closeInGameAbout() {
             document.body.classList.remove('about');
             document.getElementById('parchment').classList.remove('about');
             if(!this.game.player) {
                 document.body.classList.add('death');
             }
             document.getElementById('helpbutton').classList.remove('active');
-        },
+        }
 
-        togglePopulationInfo: function() {
+        togglePopulationInfo() {
             document.getElementById('population').classList.toggle('visible');
-        },
+        }
 
-        openPopup: function(type, url) {
+        openPopup(type, url) {
             const h = window.innerHeight;
             const w = window.innerWidth;
             let popupHeight;
@@ -488,9 +485,9 @@ import { resolveSprite } from './asset-resolver.js';
 
             newwindow = window.open(url,'name','height=' + popupHeight + ',width=' + popupWidth + ',top=' + top + ',left=' + left);
             if (window.focus) {newwindow.focus()}
-        },
+        }
 
-        animateParchment: function(origin, destination) {
+        animateParchment(origin, destination) {
             const self = this;
             const parchment = document.getElementById('parchment');
             let duration = 1;
@@ -518,23 +515,23 @@ import { resolveSprite } from './asset-resolver.js';
                     }, duration * 1000);
         	    }
             }
-        },
+        }
 
-        animateMessages: function() {
+        animateMessages() {
             const messages = document.querySelectorAll('#notifications div');
 
             messages.forEach(function(el) { el.classList.add('top'); });
-        },
+        }
 
-        resetMessagesPosition: function() {
+        resetMessagesPosition() {
             const message = document.getElementById('message2').textContent;
 
             document.querySelectorAll('#notifications div').forEach(function(el) { el.classList.remove('top'); });
             document.getElementById('message2').textContent = '';
             document.getElementById('message1').textContent = message;
-        },
+        }
 
-        showMessage: function(message) {
+        showMessage(message) {
             const wrapper = document.querySelector('#notifications div'),
                   messageEl = document.getElementById('message2');
 
@@ -547,13 +544,13 @@ import { resolveSprite } from './asset-resolver.js';
             this.messageTimer = setTimeout(function() {
                     wrapper.classList.add('top');
             }, 5000);
-        },
+        }
 
-        resetMessageTimer: function() {
+        resetMessageTimer() {
             clearTimeout(this.messageTimer);
-        },
+        }
 
-        resizeUi: function() {
+        resizeUi() {
             if(this.game) {
                 if(this.game.started) {
                     this.game.resize();
@@ -565,6 +562,7 @@ import { resolveSprite } from './asset-resolver.js';
                 }
             }
         }
-    });
+    
+    }
 
     export default App;

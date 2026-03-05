@@ -1,13 +1,11 @@
-
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import { isInt } from './util.js';
 import Area from './area.js';
 import { resolveTileset, resolveMap } from './asset-resolver.js';
     
-    const Map = Class.extend({
-        init: function(loadMultiTilesheets, game) {
+    class Map {
+        constructor(loadMultiTilesheets, game) {
             this.game = game;
         	this.data = [];
         	this.isLoaded = false;
@@ -19,18 +17,18 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
 
         	this._loadMap(useWorker);
         	this._initTilesets();
-        },
+        }
         
-        _checkReady: function() {
+        _checkReady() {
             if(this.tilesetsLoaded && this.mapLoaded) {
                 this.isLoaded = true;
                 if(this.ready_func) {
         	    	this.ready_func();
         	    }
         	}
-        },
+        }
 
-        _loadMap: function(useWorker) {
+        _loadMap(useWorker) {
         	const self = this;
 
         	if(useWorker) {
@@ -73,9 +71,9 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                         self._checkReady();
                     });
             }
-        },
+        }
         
-        _initTilesets: function() {
+        _initTilesets() {
             let tileset1, tileset2, tileset3;
             
             if(!this.loadMultiTilesheets) {
@@ -93,9 +91,9 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             }
         
             this.tilesets = [tileset1, tileset2, tileset3];
-        },
+        }
 
-        _initMap: function(map) {
+        _initMap(map) {
             this.width = map.width;
             this.height = map.height;
             this.tilesize = map.tilesize;
@@ -110,9 +108,9 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             this.doors = this._getDoors(map);
             this.checkpoints = this._getCheckpoints(map);
             this.cameraZones = this._getCameraZones(map);
-        },
+        }
     
-        _getDoors: function(map) {
+        _getDoors(map) {
             const doors = {}, self = this;
 
             (map.doors || []).forEach(function(door) {
@@ -141,9 +139,9 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             });
         
             return doors;
-        },
+        }
 
-        _loadTileset: function(filepath) {
+        _loadTileset(filepath) {
         	const self = this;
     	    const tileset = new Image();
     	    tileset.crossOrigin = "anonymous";
@@ -177,13 +175,13 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         	};
 
         	return tileset;
-        },
+        }
 
-        ready: function(f) {
+        ready(f) {
         	this.ready_func = f;
-        },
+        }
 
-        tileIndexToGridPosition: function(tileNum) {
+        tileIndexToGridPosition(tileNum) {
             let x = 0, y = 0;
         
             const getX = function(num, w) {
@@ -198,27 +196,27 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             y = Math.floor(tileNum / this.width);
     
             return { x: x, y: y };
-        },
+        }
 
-        GridPositionToTileIndex: function(x, y) {
+        GridPositionToTileIndex(x, y) {
             return (y * this.width) + x + 1;
-        },
+        }
 
-        isColliding: function(x, y) { 
+        isColliding(x, y) { 
             if(this.isOutOfBounds(x, y) || !this.grid) {
                 return false;
             }
             return (this.grid[y][x] === 1);
-        },
+        }
     
-        isPlateau: function(x, y) { 
+        isPlateau(x, y) { 
             if(this.isOutOfBounds(x, y) || !this.plateauGrid) {
                 return false;
             }
             return (this.plateauGrid[y][x] === 1);
-        },
+        }
         
-        _generateCollisionGrid: function() {
+        _generateCollisionGrid() {
             const tileIndex = 0, self = this;
 
             this.grid = [];
@@ -241,9 +239,9 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                 }
             });
             log.info("Collision grid generated.");
-        },
+        }
 
-        _generatePlateauGrid: function() {
+        _generatePlateauGrid() {
             let tileIndex = 0;
 
             this.plateauGrid = [];
@@ -259,16 +257,16 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                 }
             }
             log.info("Plateau grid generated.");
-        },
+        }
     
         /**
          * Returns true if the given position is located within the dimensions of the map.
          *
          * @returns {Boolean} Whether the position is out of bounds.
          */
-        isOutOfBounds: function(x, y) {
+        isOutOfBounds(x, y) {
             return isInt(x) && isInt(y) && (x < 0 || x >= this.width || y < 0 || y >= this.height);
-        },
+        }
     
         /**
          * Returns true if the given tile id is "high", i.e. above all entities.
@@ -278,46 +276,46 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
          * @param {Number} id The tile id in the tileset
          * @see Renderer.drawHighTiles
          */
-        isHighTile: function(id) {
+        isHighTile(id) {
             return this.high.indexOf(id+1) >= 0;
-        },
+        }
     
         /**
          * Returns true if the tile is animated. Used by the renderer.
          * @param {Number} id The tile id in the tileset
          */
-        isAnimatedTile: function(id) {
+        isAnimatedTile(id) {
             return id+1 in this.animated;
-        },
+        }
     
         /**
          * 
          */
-        getTileAnimationLength: function(id) {
+        getTileAnimationLength(id) {
             return this.animated[id+1].l;
-        },
+        }
     
         /**
          * 
          */
-        getTileAnimationDelay: function(id) {
+        getTileAnimationDelay(id) {
             const animProperties = this.animated[id+1];
             if(animProperties.d) {
                 return animProperties.d;
             } else {
                 return 100;
             }
-        },
+        }
     
-        isDoor: function(x, y) {
+        isDoor(x, y) {
             return this.doors[this.GridPositionToTileIndex(x, y)] !== undefined;
-        },
+        }
     
-        getDoorDestination: function(x, y) {
+        getDoorDestination(x, y) {
             return this.doors[this.GridPositionToTileIndex(x, y)];
-        },
+        }
 
-        _getCheckpoints: function(map) {
+        _getCheckpoints(map) {
             const checkpoints = [];
             (map.checkpoints || []).forEach(function(cp) {
                 const area = new Area(cp.x, cp.y, cp.w, cp.h);
@@ -325,28 +323,29 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                 checkpoints.push(area);
             });
             return checkpoints;
-        },
+        }
     
-        getCurrentCheckpoint: function(entity) {
+        getCurrentCheckpoint(entity) {
             return this.checkpoints.find(function(checkpoint) {
                 return checkpoint.contains(entity);
             });
-        },
+        }
 
-        _getCameraZones: function(map) {
+        _getCameraZones(map) {
             const zones = [];
             (map.cameraZones || []).forEach(function(zone) {
                 const area = new Area(zone.x, zone.y, zone.w, zone.h);
                 zones.push(area);
             });
             return zones;
-        },
+        }
 
-        getCameraZone: function(entity) {
+        getCameraZone(entity) {
             return this.cameraZones.find(function(zone) {
                 return zone.contains(entity);
             });
         }
-    });
+        
+    }
     
     export default Map;

@@ -1,28 +1,28 @@
 import Types from './gametypes.js';
 import Entity from './entity.js';
 
-    const Chest = Entity.extend({
-        init: function(id, kind) {
-    	    this._super(id, Types.Entities.CHEST);
-        },
+class Chest extends Entity {
+    constructor(id, kind) {
+        super(id, Types.Entities.CHEST);
+    }
 
-        getSpriteName: function() {
-            return "chest";
-        },
+    getSpriteName() {
+        return "chest";
+    }
 
-        isMoving: function() {
-            return false;
-        },
+    isMoving() {
+        return false;
+    }
 
-        open: function() {
-            if(this.open_callback) {
-                this.open_callback();
-            }
-        },
-
-        onOpen: function(callback) {
-            this.open_callback = callback;
+    open() {
+        if(this.open_callback) {
+            this.open_callback();
         }
-    });
+    }
+
+    onOpen(callback) {
+        this.open_callback = callback;
+    }
+}
 
 export default Chest;

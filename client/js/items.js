@@ -1,116 +1,115 @@
 import Types from './gametypes.js';
 import Item from './item.js';
 
-    const Items = {
+const Items = {
+    Sword2: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.SWORD2, "weapon");
+            this.lootMessage = "You pick up a steel sword";
+        }
+    },
 
-        Sword2: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.SWORD2, "weapon");
-                this.lootMessage = "You pick up a steel sword";
-            },
-        }),
+    Axe: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.AXE, "weapon");
+            this.lootMessage = "You pick up an axe";
+        }
+    },
 
-        Axe: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.AXE, "weapon");
-                this.lootMessage = "You pick up an axe";
-            },
-        }),
+    RedSword: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.REDSWORD, "weapon");
+            this.lootMessage = "You pick up a blazing sword";
+        }
+    },
 
-        RedSword: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.REDSWORD, "weapon");
-                this.lootMessage = "You pick up a blazing sword";
-            },
-        }),
+    BlueSword: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.BLUESWORD, "weapon");
+            this.lootMessage = "You pick up a magic sword";
+        }
+    },
 
-        BlueSword: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.BLUESWORD, "weapon");
-                this.lootMessage = "You pick up a magic sword";
-            },
-        }),
+    GoldenSword: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.GOLDENSWORD, "weapon");
+            this.lootMessage = "You pick up the ultimate sword";
+        }
+    },
 
-        GoldenSword: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.GOLDENSWORD, "weapon");
-                this.lootMessage = "You pick up the ultimate sword";
-            },
-        }),
+    MorningStar: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.MORNINGSTAR, "weapon");
+            this.lootMessage = "You pick up a morning star";
+        }
+    },
 
-        MorningStar: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.MORNINGSTAR, "weapon");
-                this.lootMessage = "You pick up a morning star";
-            },
-        }),
+    LeatherArmor: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.LEATHERARMOR, "armor");
+            this.lootMessage = "You equip a leather armor";
+        }
+    },
 
-        LeatherArmor: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.LEATHERARMOR, "armor");
-                this.lootMessage = "You equip a leather armor";
-            },
-        }),
+    MailArmor: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.MAILARMOR, "armor");
+            this.lootMessage = "You equip a mail armor";
+        }
+    },
 
-        MailArmor: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.MAILARMOR, "armor");
-                this.lootMessage = "You equip a mail armor";
-            },
-        }),
+    PlateArmor: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.PLATEARMOR, "armor");
+            this.lootMessage = "You equip a plate armor";
+        }
+    },
 
-        PlateArmor: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.PLATEARMOR, "armor");
-                this.lootMessage = "You equip a plate armor";
-            },
-        }),
+    RedArmor: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.REDARMOR, "armor");
+            this.lootMessage = "You equip a ruby armor";
+        }
+    },
 
-        RedArmor: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.REDARMOR, "armor");
-                this.lootMessage = "You equip a ruby armor";
-            },
-        }),
+    GoldenArmor: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.GOLDENARMOR, "armor");
+            this.lootMessage = "You equip a golden armor";
+        }
+    },
 
-        GoldenArmor: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.GOLDENARMOR, "armor");
-                this.lootMessage = "You equip a golden armor";
-            },
-        }),
+    Flask: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.FLASK, "object");
+            this.lootMessage = "You drink a health potion";
+        }
+    },
 
-        Flask: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.FLASK, "object");
-                this.lootMessage = "You drink a health potion";
-            },
-        }),
+    Cake: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.CAKE, "object");
+            this.lootMessage = "You eat a cake";
+        }
+    },
 
-        Cake: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.CAKE, "object");
-                this.lootMessage = "You eat a cake";
-            },
-        }),
+    Burger: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.BURGER, "object");
+            this.lootMessage = "You can haz rat burger";
+        }
+    },
 
-        Burger: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.BURGER, "object");
-                this.lootMessage = "You can haz rat burger";
-            },
-        }),
+    FirePotion: class extends Item {
+        constructor(id) {
+            super(id, Types.Entities.FIREPOTION, "object");
+            this.lootMessage = "You feel the power of Firefox!";
+        }
 
-        FirePotion: Item.extend({
-            init: function(id) {
-                this._super(id, Types.Entities.FIREPOTION, "object");
-                this.lootMessage = "You feel the power of Firefox!";
-            },
-
-            onLoot: function(player) {
-                player.startInvincibility();
-            },
-        }),
-    };
+        onLoot(player) {
+            player.startInvincibility();
+        }
+    }
+};
 
 export default Items;

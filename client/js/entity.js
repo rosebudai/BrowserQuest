@@ -1,24 +1,21 @@
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 
-const Entity = Class.extend({
-    init: function(id, kind) {
-	    const self = this;
-
+class Entity {
+    constructor(id, kind) {
         this.id = id;
         this.kind = kind;
 
         // Renderer
-		this.sprite = null;
-		this.flipSpriteX = false;
-    	this.flipSpriteY = false;
-		this.animations = null;
-		this.currentAnimation = null;
+        this.sprite = null;
+        this.flipSpriteX = false;
+        this.flipSpriteY = false;
+        this.animations = null;
+        this.currentAnimation = null;
         this.shadowOffsetY = 0;
 
-		// Position
-		this.setGridPosition(0, 0);
+        // Position
+        this.setGridPosition(0, 0);
 
         // Modes
         this.isLoaded = false;
@@ -26,58 +23,58 @@ const Entity = Class.extend({
         this.visible = true;
         this.isFading = false;
         this.setDirty();
-	},
+    }
 
-	setName: function(name) {
-		this.name = name;
-	},
+    setName(name) {
+        this.name = name;
+    }
 
-	setPosition: function(x, y) {
-		this.x = x;
-		this.y = y;
-	},
+    setPosition(x, y) {
+        this.x = x;
+        this.y = y;
+    }
 
-	setGridPosition: function(x, y) {
-		this.gridX = x;
-		this.gridY = y;
+    setGridPosition(x, y) {
+        this.gridX = x;
+        this.gridY = y;
 
-		this.setPosition(x * 16, y * 16);
-	},
+        this.setPosition(x * 16, y * 16);
+    }
 
-	setSprite: function(sprite) {
-	    if(!sprite) {
-	        log.error(this.id + " : sprite is null (wanted: " + this.getSpriteName() + ")", true);
-	        throw "Error";
-	    }
+    setSprite(sprite) {
+        if(!sprite) {
+            log.error(this.id + " : sprite is null (wanted: " + this.getSpriteName() + ")", true);
+            throw "Error";
+        }
 
-	    if(this.sprite && this.sprite.name === sprite.name) {
-	        return;
-	    }
+        if(this.sprite && this.sprite.name === sprite.name) {
+            return;
+        }
 
-	    this.sprite = sprite;
+        this.sprite = sprite;
         this.normalSprite = this.sprite;
 
         if(Types.isMob(this.kind) || Types.isPlayer(this.kind)) {
-        	this.hurtSprite = sprite.getHurtSprite();
+            this.hurtSprite = sprite.getHurtSprite();
         }
 
-		this.animations = sprite.createAnimations();
+        this.animations = sprite.createAnimations();
 
-		this.isLoaded = true;
-		if(this.ready_func) {
-			this.ready_func();
-		}
-	},
+        this.isLoaded = true;
+        if(this.ready_func) {
+            this.ready_func();
+        }
+    }
 
-	getSprite: function() {
-	    return this.sprite;
-	},
+    getSprite() {
+        return this.sprite;
+    }
 
-	getSpriteName: function() {
-	    return Types.getKindAsString(this.kind);
-	},
+    getSpriteName() {
+        return Types.getKindAsString(this.kind);
+    }
 
-	getAnimationByName: function(name) {
+    getAnimationByName(name) {
         let animation = null;
 
         if(name in this.animations) {
@@ -87,55 +84,55 @@ const Entity = Class.extend({
             log.error("No animation called "+ name);
         }
         return animation;
-    },
+    }
 
-	setAnimation: function(name, speed, count, onEndCount) {
-	    const self = this;
+    setAnimation(name, speed, count, onEndCount) {
+        const self = this;
 
         if(this.isLoaded) {
-		    if(this.currentAnimation && this.currentAnimation.name === name) {
-		        return;
-		    }
+            if(this.currentAnimation && this.currentAnimation.name === name) {
+                return;
+            }
 
-		    const s = this.sprite, a = this.getAnimationByName(name);
+            const s = this.sprite, a = this.getAnimationByName(name);
 
-			if(a) {
-				this.currentAnimation = a;
-				if(name.substr(0, 3) === "atk") {
-				    this.currentAnimation.reset();
-				}
-				this.currentAnimation.setSpeed(speed);
-				this.currentAnimation.setCount(count ? count : 0, onEndCount || function() {
-				    self.idle();
-				});
-			}
-		}
-		else {
-			this.log_error("Not ready for animation");
-		}
-	},
+            if(a) {
+                this.currentAnimation = a;
+                if(name.substr(0, 3) === "atk") {
+                    this.currentAnimation.reset();
+                }
+                this.currentAnimation.setSpeed(speed);
+                this.currentAnimation.setCount(count ? count : 0, onEndCount || function() {
+                    self.idle();
+                });
+            }
+        }
+        else {
+            this.log_error("Not ready for animation");
+        }
+    }
 
-	hasShadow: function() {
-	    return false;
-	},
+    hasShadow() {
+        return false;
+    }
 
-	ready: function(f) {
-		this.ready_func = f;
-	},
+    ready(f) {
+        this.ready_func = f;
+    }
 
-	clean: function() {
+    clean() {
         this.stopBlinking();
-	},
+    }
 
-    log_info: function(message) {
+    log_info(message) {
         log.info("["+this.id+"] " + message);
-    },
+    }
 
-    log_error: function(message) {
+    log_error(message) {
         log.error("["+this.id+"] " + message);
-    },
+    }
 
-    setHighlight: function(value) {
+    setHighlight(value) {
         if(value === true) {
             this.sprite = this.sprite.silhouetteSprite;
             this.isHighlighted = true;
@@ -144,35 +141,35 @@ const Entity = Class.extend({
             this.sprite = this.normalSprite;
             this.isHighlighted = false;
         }
-    },
+    }
 
-    setVisible: function(value) {
+    setVisible(value) {
         this.visible = value;
-    },
+    }
 
-    isVisible: function() {
+    isVisible() {
         return this.visible;
-    },
+    }
 
-    toggleVisibility: function() {
+    toggleVisibility() {
         if(this.visible) {
             this.setVisible(false);
         } else {
             this.setVisible(true);
         }
-    },
+    }
 
     /**
      *
      */
-    getDistanceToEntity: function(entity) {
+    getDistanceToEntity(entity) {
         const distX = Math.abs(entity.gridX - this.gridX);
         const distY = Math.abs(entity.gridY - this.gridY);
 
         return (distX > distY) ? distX : distY;
-    },
+    }
 
-    isCloseTo: function(entity) {
+    isCloseTo(entity) {
         let dx, dy, d, close = false;
         if(entity) {
             dx = Math.abs(entity.gridX - this.gridX);
@@ -183,25 +180,25 @@ const Entity = Class.extend({
             }
         }
         return close;
-    },
+    }
 
     /**
      * Returns true if the entity is adjacent to the given one.
      * @returns {Boolean} Whether these two entities are adjacent.
      */
-    isAdjacent: function(entity) {
+    isAdjacent(entity) {
         let adjacent = false;
 
         if(entity) {
             adjacent = this.getDistanceToEntity(entity) > 1 ? false : true;
         }
         return adjacent;
-    },
+    }
 
     /**
      *
      */
-    isAdjacentNonDiagonal: function(entity) {
+    isAdjacentNonDiagonal(entity) {
         let result = false;
 
         if(this.isAdjacent(entity) && !(this.gridX !== entity.gridX && this.gridY !== entity.gridY)) {
@@ -209,50 +206,50 @@ const Entity = Class.extend({
         }
 
         return result;
-    },
+    }
 
-    isDiagonallyAdjacent: function(entity) {
+    isDiagonallyAdjacent(entity) {
         return this.isAdjacent(entity) && !this.isAdjacentNonDiagonal(entity);
-    },
+    }
 
-    forEachAdjacentNonDiagonalPosition: function(callback) {
+    forEachAdjacentNonDiagonalPosition(callback) {
         callback(this.gridX - 1, this.gridY, Types.Orientations.LEFT);
         callback(this.gridX, this.gridY - 1, Types.Orientations.UP);
         callback(this.gridX + 1, this.gridY, Types.Orientations.RIGHT);
         callback(this.gridX, this.gridY + 1, Types.Orientations.DOWN);
 
-    },
+    }
 
-    fadeIn: function(currentTime) {
+    fadeIn(currentTime) {
         this.isFading = true;
         this.startFadingTime = currentTime;
-    },
+    }
 
-    blink: function(speed, callback) {
+    blink(speed, callback) {
         const self = this;
 
         this.blinking = setInterval(function() {
             self.toggleVisibility();
         }, speed);
-    },
+    }
 
-    stopBlinking: function() {
+    stopBlinking() {
         if(this.blinking) {
             clearInterval(this.blinking);
         }
         this.setVisible(true);
-    },
+    }
 
-    setDirty: function() {
+    setDirty() {
         this.isDirty = true;
         if(this.dirty_callback) {
             this.dirty_callback(this);
         }
-    },
+    }
 
-    onDirty: function(dirty_callback) {
+    onDirty(dirty_callback) {
         this.dirty_callback = dirty_callback;
     }
-});
+}
 
 export default Entity;

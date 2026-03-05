@@ -1,8 +1,7 @@
-import { Class } from './lib/class.js';
 import log from './lib/log.js';
 
-const Camera = Class.extend({
-    init: function(renderer) {
+class Camera {
+    constructor(renderer) {
         this.renderer = renderer;
         this.x = 0;
         this.y = 0;
@@ -13,9 +12,9 @@ const Camera = Class.extend({
         this.mapHeight = null;
         this.activeZone = null;
         this.rescale();
-    },
+    }
 
-    rescale: function() {
+    rescale() {
         const renderer = this.renderer, scale = renderer.scale, tilesize = renderer.tilesize;
 
         const borderPad = 5 * scale, barHeight = 17 * scale, availW = window.innerWidth - 2 * borderPad, availH = window.innerHeight - 2 * borderPad - barHeight;
@@ -34,18 +33,18 @@ const Camera = Class.extend({
         log.debug("---------");
         log.debug("Scale:" + scale);
         log.debug("W:" + this.gridW + " H:" + this.gridH);
-    },
+    }
 
-    setMapBounds: function(mapWidth, mapHeight) {
+    setMapBounds(mapWidth, mapHeight) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
-    },
+    }
 
-    setActiveZone: function(zone) {
+    setActiveZone(zone) {
         this.activeZone = zone || null;
-    },
+    }
 
-    setPosition: function(x, y) {
+    setPosition(x, y) {
         this.x = x;
         this.y = y;
 
@@ -75,9 +74,9 @@ const Camera = Class.extend({
 
         this.gridX = Math.floor(this.x / 16);
         this.gridY = Math.floor(this.y / 16);
-    },
+    }
 
-    setGridPosition: function(x, y) {
+    setGridPosition(x, y) {
         this.gridX = x;
         this.gridY = y;
 
@@ -100,41 +99,41 @@ const Camera = Class.extend({
 
         this.x = this.gridX * 16;
         this.y = this.gridY * 16;
-    },
+    }
 
-    lookAt: function(entity) {
+    lookAt(entity) {
         const r = this.renderer, x = Math.round( entity.x - (Math.floor(this.gridW / 2) * r.tilesize) ), y = Math.round( entity.y - (Math.floor(this.gridH / 2) * r.tilesize) );
 
         this.setPosition(x, y);
-    },
+    }
 
-    forEachVisiblePosition: function(callback, extra) {
+    forEachVisiblePosition(callback, extra) {
         extra = extra || 0;
         for(let y=this.gridY-extra, maxY=this.gridY+this.gridH+(extra*2); y < maxY; y += 1) {
             for(let x=this.gridX-extra, maxX=this.gridX+this.gridW+(extra*2); x < maxX; x += 1) {
                 callback(x, y);
             }
         }
-    },
+    }
 
-    isVisible: function(entity) {
+    isVisible(entity) {
         return this.isVisiblePosition(entity.gridX, entity.gridY);
-    },
+    }
 
-    isVisiblePosition: function(x, y) {
+    isVisiblePosition(x, y) {
         if(y >= this.gridY && y < this.gridY + this.gridH
         && x >= this.gridX && x < this.gridX + this.gridW) {
             return true;
         } else {
             return false;
         }
-    },
+    }
 
-    focusEntity: function(entity) {
+    focusEntity(entity) {
         const w = this.gridW - 2, h = this.gridH - 2, x = Math.floor((entity.gridX - 1) / w) * w, y = Math.floor((entity.gridY - 1) / h) * h;
 
         this.setGridPosition(x, y);
     }
-});
+}
 
 export default Camera;

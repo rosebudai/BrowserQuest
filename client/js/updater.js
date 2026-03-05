@@ -1,15 +1,14 @@
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import Character from './character.js';
 import Timer from './timer.js';
 
-    const Updater = Class.extend({
-        init: function(game) {
+    class Updater {
+        constructor(game) {
             this.game = game;
             this.playerAggroTimer = new Timer(1000);
-        },
+        }
 
-        update: function() {
+        update() {
             this.updateZoning();
             this.updateCharacters();
             this.updatePlayerAggro();
@@ -18,9 +17,9 @@ import Timer from './timer.js';
             this.updateAnimatedTiles();
             this.updateChatBubbles();
             this.updateInfos();
-        },
+        }
 
-        updateCharacters: function() {
+        updateCharacters() {
             const self = this;
         
             this.game.forEachEntity(function(entity) {
@@ -34,18 +33,18 @@ import Timer from './timer.js';
                     self.updateEntityFading(entity);
                 }
             });
-        },
+        }
         
-        updatePlayerAggro: function() {
+        updatePlayerAggro() {
             const t = this.game.currentTime, player = this.game.player;
             
             // Check player aggro every 1s when not moving nor attacking
             if(player && !player.isMoving() && !player.isAttacking()  && this.playerAggroTimer.isOver(t)) {
                 player.checkAggro();
             }
-        },
+        }
     
-        updateEntityFading: function(entity) {
+        updateEntityFading(entity) {
             if(entity && entity.isFading) {
                 const duration = 1000, t = this.game.currentTime, dt = t - entity.startFadingTime;
             
@@ -56,9 +55,9 @@ import Timer from './timer.js';
                     entity.fadingAlpha = dt / duration;
                 }
             }
-        },
+        }
 
-        updateTransitions: function() {
+        updateTransitions() {
             const self = this;
             let m = null;
             const z = this.game.currentZoning;
@@ -77,9 +76,9 @@ import Timer from './timer.js';
                     z.step(this.game.currentTime);
                 }
             }
-        },
+        }
     
-        updateZoning: function() {
+        updateZoning() {
             const g = this.game, c = g.camera, z = g.currentZoning, s = 3, ts = 16, speed = 500;
         
             if(z && z.inProgress === false) {
@@ -120,9 +119,9 @@ import Timer from './timer.js';
 
                 z.start(this.game.currentTime, updateFunc, endFunc, startValue, endValue, speed);
             }
-        },
+        }
 
-        updateCharacter: function(c) {
+        updateCharacter(c) {
             const self = this;
     
             // Estimate of the movement distance for one update
@@ -190,9 +189,9 @@ import Timer from './timer.js';
                                      c.moveSpeed);
                 }
             }
-        },
+        }
 
-        updateAnimations: function() {
+        updateAnimations() {
             const t = this.game.currentTime;
     
             this.game.forEachEntity(function(entity) {
@@ -214,9 +213,9 @@ import Timer from './timer.js';
             if(target) {
                 target.update(t);
             }
-        },
+        }
     
-        updateAnimatedTiles: function() {
+        updateAnimatedTiles() {
             const self = this, t = this.game.currentTime;
         
             this.game.forEachAnimatedTile(function (tile) {
@@ -229,19 +228,20 @@ import Timer from './timer.js';
                     }
                 }
             });
-        },
+        }
     
-        updateChatBubbles: function() {
+        updateChatBubbles() {
             const t = this.game.currentTime;
         
             this.game.bubbleManager.update(t);
-        },
+        }
     
-        updateInfos: function() {
+        updateInfos() {
             const t = this.game.currentTime;
         
             this.game.infoManager.update(t);
         }
-    });
+    
+    }
     
 export default Updater;

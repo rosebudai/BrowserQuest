@@ -1,5 +1,3 @@
-
-import { Class } from './lib/class.js';
 import Types from './gametypes.js';
 import log from './lib/log.js';
 import Camera from './camera.js';
@@ -9,8 +7,8 @@ import Character from './character.js';
 import Player from './player.js';
 import Timer from './timer.js';
 
-    const Renderer = Class.extend({
-        init: function(game, canvas, background, foreground) {
+    class Renderer {
+        constructor(game, canvas, background, foreground) {
             this.game = game;
             this.context = (canvas && canvas.getContext) ? canvas.getContext("2d") : null;
             this.background = (background && background.getContext) ? background.getContext("2d") : null;
@@ -40,21 +38,21 @@ import Timer from './timer.js';
             this.tablet = Detect.isTablet(window.innerWidth);
             
             this.fixFlickeringTimer = new Timer(100);
-        },
+        }
     
-        getWidth: function() {
+        getWidth() {
             return this.canvas.width;
-        },
+        }
     
-        getHeight: function() {
+        getHeight() {
             return this.canvas.height;
-        },
+        }
     
-        setTileset: function(tileset) {
+        setTileset(tileset) {
             this.tileset = tileset;
-        },
+        }
     
-        getScaleFactor: function() {
+        getScaleFactor() {
             const w = window.innerWidth;
             const h = window.innerHeight;
             let scale;
@@ -73,9 +71,9 @@ import Timer from './timer.js';
             }
 
             return scale;
-        },
+        }
     
-        rescale: function(factor) {
+        rescale(factor) {
             this.scale = this.getScaleFactor();
         
             this.createCamera();
@@ -93,9 +91,9 @@ import Timer from './timer.js';
             if(this.game.renderer) {
                 this.game.setSpriteScale(this.scale);
             }
-        },
+        }
 
-        createCamera: function() {
+        createCamera() {
             this.camera = new Camera(this);
             this.camera.rescale();
         
@@ -159,13 +157,13 @@ import Timer from './timer.js';
                     }
                 }
             }
-        },
+        }
     
-        initFPS: function() {
+        initFPS() {
             this.FPS = this.mobile ? 50 : 50;
-        },
+        }
     
-        initFont: function() {
+        initFont() {
             let fontsize;
         
             switch(this.scale) {
@@ -177,16 +175,16 @@ import Timer from './timer.js';
                     fontsize = 20;
             }
             this.setFontSize(fontsize);
-        },
+        }
     
-        setFontSize: function(size) {
+        setFontSize(size) {
             const font = size+"px GraphicPixel";
         
             this.context.font = font;
             this.background.font = font;
-        },
+        }
 
-        drawText: function(text, x, y, centered, color, strokeColor) {
+        drawText(text, x, y, centered, color, strokeColor) {
             const ctx = this.context;
             
             let strokeSize;
@@ -212,40 +210,40 @@ import Timer from './timer.js';
                 ctx.fillText(text, x, y);
                 ctx.restore();
             }
-        },
+        }
     
-        drawCellRect: function(x, y, color) {
+        drawCellRect(x, y, color) {
             this.context.save();
             this.context.lineWidth = 2*this.scale;
             this.context.strokeStyle = color;
             this.context.translate(x+2, y+2);
             this.context.strokeRect(0, 0, (this.tilesize * this.scale) - 4, (this.tilesize * this.scale) - 4);
             this.context.restore();
-        },
+        }
 
-        drawCellHighlight: function(x, y, color) {
+        drawCellHighlight(x, y, color) {
             const s = this.scale, ts = this.tilesize, tx = x * ts * s, ty = y * ts * s;
         
             this.drawCellRect(tx, ty, color);
-        },
+        }
     
-        drawTargetCell: function() {
+        drawTargetCell() {
             const mouse = this.game.getMouseGridPosition();
         
             if(this.game.targetCellVisible && !(mouse.x === this.game.selectedX && mouse.y === this.game.selectedY)) {
                 this.drawCellHighlight(mouse.x, mouse.y, this.game.targetColor);
             }
-        },
+        }
     
-        drawAttackTargetCell: function() {
+        drawAttackTargetCell() {
             const mouse = this.game.getMouseGridPosition(), entity = this.game.getEntityAt(mouse.x, mouse.y), s = this.scale;
         
             if(entity) {
                 this.drawCellRect(entity.x * s, entity.y * s, "rgba(255, 0, 0, 0.5)");
             }
-        },
+        }
     
-        drawOccupiedCells: function() {
+        drawOccupiedCells() {
             const positions = this.game.entityGrid;
         
             if(positions) {
@@ -257,9 +255,9 @@ import Timer from './timer.js';
                     }
                 }
             }
-        },
+        }
     
-        drawPathingCells: function() {
+        drawPathingCells() {
             const grid = this.game.pathingGrid;
         
             if(grid && this.game.debugPathing) {
@@ -271,9 +269,9 @@ import Timer from './timer.js';
                     }
                 }
             }
-        },
+        }
 
-        drawSelectedCell: function() {
+        drawSelectedCell() {
             const sprite = this.game.cursors["target"], anim = this.game.targetAnimation, os = this.upscaledRendering ? 1 : this.scale, ds = this.upscaledRendering ? this.scale : 1;
         
             if(this.game.selectedCellVisible) {
@@ -308,15 +306,15 @@ import Timer from './timer.js';
                     }
                 }
             }
-        },
+        }
     
-        clearScaledRect: function(ctx, x, y, w, h) {
+        clearScaledRect(ctx, x, y, w, h) {
             const s = this.scale;
         
             ctx.clearRect(x * s, y * s, w * s, h * s);
-        },
+        }
 
-        drawCursor: function() {
+        drawCursor() {
             const mx = this.game.mouse.x, my = this.game.mouse.y, s = this.scale, os = this.upscaledRendering ? 1 : this.scale;
         
             this.context.save();
@@ -324,9 +322,9 @@ import Timer from './timer.js';
                 this.context.drawImage(this.game.currentCursor.image, 0, 0, 14 * os, 14 * os, mx, my, 14*s, 14*s);
             }
             this.context.restore();
-        },
+        }
 
-        drawScaledImage: function(ctx, image, x, y, w, h, dx, dy) {
+        drawScaledImage(ctx, image, x, y, w, h, dx, dy) {
             const s = this.upscaledRendering ? 1 : this.scale;
             const args = [ctx, image, x, y, w, h, dx, dy];
             for(let _i = 0; _i < args.length; _i++) {
@@ -346,9 +344,9 @@ import Timer from './timer.js';
                           dy * this.scale,
                           w * this.scale,
                           h * this.scale);
-        },
+        }
 
-        drawTile: function(ctx, tileid, tileset, setW, gridW, cellid) {
+        drawTile(ctx, tileid, tileset, setW, gridW, cellid) {
             const s = this.upscaledRendering ? 1 : this.scale;
             if(tileid !== -1) { // -1 when tile is empty in Tiled. Don't attempt to draw it.
                 this.drawScaledImage(ctx,
@@ -360,15 +358,15 @@ import Timer from './timer.js';
                                      getX(cellid + 1, gridW) * this.tilesize,
                                      Math.floor(cellid / gridW) * this.tilesize);
             }
-        },
+        }
     
-        clearTile: function(ctx, gridW, cellid) {
+        clearTile(ctx, gridW, cellid) {
             const s = this.scale, ts = this.tilesize, x = getX(cellid + 1, gridW) * ts * s, y = Math.floor(cellid / gridW) * ts * s, w = ts * s, h = w;
         
             ctx.clearRect(x, y, h, w);
-        },
+        }
 
-        drawEntity: function(entity) {
+        drawEntity(entity) {
             const sprite = entity.sprite;
             const shadow = this.game.shadows["small"];
             let anim = entity.currentAnimation;
@@ -456,9 +454,9 @@ import Timer from './timer.js';
                     this.context.restore();
                 }
             }
-        },
+        }
 
-        drawEntities: function(dirtyOnly) {
+        drawEntities(dirtyOnly) {
             const self = this;
         
             this.game.forEachVisibleEntityByDepth(function(entity) {
@@ -476,17 +474,17 @@ import Timer from './timer.js';
                     }
                 }
             });
-        },
+        }
         
-        drawDirtyEntities: function() {
+        drawDirtyEntities() {
             this.drawEntities(true);
-        },
+        }
         
-        clearDirtyRect: function(r) {
+        clearDirtyRect(r) {
             this.context.clearRect(r.x, r.y, r.w, r.h);
-        },
+        }
     
-        clearDirtyRects: function() {
+        clearDirtyRects() {
             const self = this;
             let count = 0;
 
@@ -515,9 +513,9 @@ import Timer from './timer.js';
             if(count > 0) {
                 //log.debug("count:"+count);
             }
-        },
+        }
         
-        getEntityBoundingRect: function(entity) {
+        getEntityBoundingRect(entity) {
             const rect = {};
             const s = this.scale;
             let spr;
@@ -540,9 +538,9 @@ import Timer from './timer.js';
                 rect.bottom = rect.y + rect.h;
             }
             return rect;
-        },
+        }
         
-        getTileBoundingRect: function(tile) {
+        getTileBoundingRect(tile) {
             const rect = {}, gridW = this.game.map.width, s = this.scale, ts = this.tilesize, cellid = tile.index;
             
             rect.x = ((getX(cellid + 1, gridW) * ts) - this.camera.x) * s;
@@ -555,9 +553,9 @@ import Timer from './timer.js';
             rect.bottom = rect.y + rect.h;
             
             return rect;
-        },
+        }
         
-        getTargetBoundingRect: function(x, y) {
+        getTargetBoundingRect(x, y) {
             const rect = {}, s = this.scale, ts = this.tilesize, tx = x || this.game.selectedX, ty = y || this.game.selectedY;
             
             rect.x = ((tx * ts) - this.camera.x) * s;
@@ -570,16 +568,16 @@ import Timer from './timer.js';
             rect.bottom = rect.y + rect.h;
             
             return rect;
-        },
+        }
         
-        isIntersecting: function(rect1, rect2) {
+        isIntersecting(rect1, rect2) {
             return !((rect2.left > rect1.right) ||
                      (rect2.right < rect1.left) ||
                      (rect2.top > rect1.bottom) ||
                      (rect2.bottom < rect1.top));
-        },
+        }
         
-        drawEntityName: function(entity) {
+        drawEntityName(entity) {
             this.context.save();
             if(entity.name && entity instanceof Player) {
                 const color = (entity.id === this.game.playerId) ? "#fcda5c" : "white";
@@ -590,9 +588,9 @@ import Timer from './timer.js';
                               color);
             }
             this.context.restore();
-        },
+        }
 
-        drawTerrain: function() {
+        drawTerrain() {
             const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.game.forEachVisibleTile(function (id, index) {
@@ -600,9 +598,9 @@ import Timer from './timer.js';
                     self.drawTile(self.background, id, self.tileset, tilesetwidth, m.width, index);
                 }
             }, 1);
-        },
+        }
     
-        drawAnimatedTiles: function(dirtyOnly) {
+        drawAnimatedTiles(dirtyOnly) {
             const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.animatedTileCount = 0;
@@ -617,13 +615,13 @@ import Timer from './timer.js';
                     self.animatedTileCount += 1;
                 }
             });
-        },
+        }
         
-        drawDirtyAnimatedTiles: function() {
+        drawDirtyAnimatedTiles() {
             this.drawAnimatedTiles(true);
-        },
+        }
     
-        drawHighTiles: function(ctx) {
+        drawHighTiles(ctx) {
             const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.highTileCount = 0;
@@ -633,14 +631,14 @@ import Timer from './timer.js';
                     self.highTileCount += 1;
                 }
             }, 1);
-        },
+        }
 
-        drawBackground: function(ctx, color) {
+        drawBackground(ctx, color) {
             ctx.fillStyle = color;
             ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        },
+        }
 
-        drawFPS: function() {
+        drawFPS() {
             const nowTime = new Date(), diffTime = nowTime.getTime() - this.lastTime.getTime();
 
             if (diffTime >= 1000) {
@@ -652,17 +650,17 @@ import Timer from './timer.js';
         
             //this.drawText("FPS: " + this.realFPS + " / " + this.maxFPS, 30, 30, false);
             this.drawText("FPS: " + this.realFPS, 30, 30, false);
-        },
+        }
     
-        drawDebugInfo: function() {
+        drawDebugInfo() {
             if(this.isDebugInfoVisible) {
                 this.drawFPS();
                 this.drawText("A: " + this.animatedTileCount, 100, 30, false);
                 this.drawText("H: " + this.highTileCount, 140, 30, false);
             }
-        },
+        }
     
-        drawCombatInfo: function() {
+        drawCombatInfo() {
             const self = this;
         
             switch(this.scale) {
@@ -676,17 +674,17 @@ import Timer from './timer.js';
                 self.context.restore();
             });
             this.initFont();
-        },
+        }
     
-        setCameraView: function(ctx) {
+        setCameraView(ctx) {
             ctx.translate(-this.camera.x * this.scale, -this.camera.y * this.scale);
-        },
+        }
     
-        clearScreen: function(ctx) {
+        clearScreen(ctx) {
             ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        },
+        }
     
-        getPlayerImage: function() {
+        getPlayerImage() {
             const canvas = document.createElement('canvas'),
                   ctx = canvas.getContext('2d'),
                   os = this.upscaledRendering ? 1 : this.scale,
@@ -721,9 +719,9 @@ import Timer from './timer.js';
             ctx.drawImage(weapon.image, 0, wy, ww, wh, offsetX, offsetY, ww, wh);
         
             return canvas.toDataURL("image/png");
-        },
+        }
     
-        renderStaticCanvases: function() {
+        renderStaticCanvases() {
             this.background.save();
                 if(this.game.activeCameraZone) {
                     this.background.fillStyle = '#000';
@@ -744,18 +742,18 @@ import Timer from './timer.js';
                     this.drawHighTiles(this.foreground);
                 this.foreground.restore();
             }
-        },
+        }
 
-        renderFrame: function() {
+        renderFrame() {
             if(this.mobile || this.tablet) {
                 this.renderFrameMobile();
             }
             else {
                 this.renderFrameDesktop();
             }
-        },
+        }
     
-        renderFrameDesktop: function() {
+        renderFrameDesktop() {
             this.clearScreen(this.context);
         
             this.context.save();
@@ -777,9 +775,9 @@ import Timer from './timer.js';
             // Overlay UI elements
             this.drawCursor();
             this.drawDebugInfo();
-        },
+        }
     
-        renderFrameMobile: function() {
+        renderFrameMobile() {
             this.clearDirtyRects();
             this.preventFlickeringBug();
 
@@ -790,16 +788,17 @@ import Timer from './timer.js';
                 this.drawSelectedCell();
                 this.drawDirtyEntities();
             this.context.restore();
-        },
+        }
         
-        preventFlickeringBug: function() {
+        preventFlickeringBug() {
             if(this.fixFlickeringTimer.isOver(this.game.currentTime)) {
                 this.background.fillRect(0, 0, 0, 0);
                 this.context.fillRect(0, 0, 0, 0);
                 this.foreground.fillRect(0, 0, 0, 0);
             }
         }
-    });
+    
+    }
 
     const getX = function(id, w) {
         if(id == 0) {

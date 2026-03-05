@@ -1,10 +1,9 @@
-import { Class } from '../lib/class.js';
 import log from '../lib/log.js';
 import Utils from "./utils.js";
 import Checkpoint from "./checkpoint.js";
 
-const Map = Class.extend({    
-    init: function(filepath) {
+class Map {    
+    constructor(filepath) {
     	const self = this;
     
     	this.isLoaded = false;
@@ -19,9 +18,9 @@ const Map = Class.extend({
         }).catch(function(err) {
             log.error(err.message);
         });
-    },
+    }
 
-    initMap: function(map) {
+    initMap(map) {
         this.width = map.width;
         this.height = map.height;
         this.collisions = map.collisions;
@@ -47,13 +46,13 @@ const Map = Class.extend({
         if(this.ready_func) {
             this.ready_func();
         }
-    },
+    }
 
-    ready: function(f) {
+    ready(f) {
     	this.ready_func = f;
-    },
+    }
 
-    tileIndexToGridPosition: function(tileNum) {
+    tileIndexToGridPosition(tileNum) {
         let x = 0, y = 0;
         
         const getX = function(num, w) {
@@ -68,13 +67,13 @@ const Map = Class.extend({
         y = Math.floor(tileNum / this.width);
     
         return { x: x, y: y };
-    },
+    }
 
-    GridPositionToTileIndex: function(x, y) {
+    GridPositionToTileIndex(x, y) {
         return (y * this.width) + x + 1;
-    },
+    }
 
-    generateCollisionGrid: function() {
+    generateCollisionGrid() {
         this.grid = [];
     
         if(this.isLoaded) {
@@ -92,26 +91,26 @@ const Map = Class.extend({
             }
             //log.info("Collision grid generated.");
         }
-    },
+    }
 
-    isOutOfBounds: function(x, y) {
+    isOutOfBounds(x, y) {
         return x <= 0 || x >= this.width || y <= 0 || y >= this.height;
-    },
+    }
 
-    isColliding: function(x, y) {
+    isColliding(x, y) {
         if(this.isOutOfBounds(x, y)) {
             return false;
         }
         return this.grid[y][x] === 1;
-    },
+    }
     
-    GroupIdToGroupPosition: function(id) {
+    GroupIdToGroupPosition(id) {
         const posArray = id.split('-');
         
         return pos(parseInt(posArray[0]), parseInt(posArray[1]));
-    },
+    }
     
-    forEachGroup: function(callback) {
+    forEachGroup(callback) {
         const width = this.groupWidth, height = this.groupHeight;
         
         for(let x = 0; x < width; x += 1) {
@@ -119,15 +118,15 @@ const Map = Class.extend({
                 callback(x+'-'+y);
             }
         }
-    },
+    }
     
-    getGroupIdFromPosition: function(x, y) {
+    getGroupIdFromPosition(x, y) {
         const w = this.zoneWidth, h = this.zoneHeight, gx = Math.floor((x - 1) / w), gy = Math.floor((y - 1) / h);
 
         return gx+'-'+gy;
-    },
+    }
     
-    getAdjacentGroupPositions: function(id) {
+    getAdjacentGroupPositions(id) {
         const self = this,
               position = this.GroupIdToGroupPosition(id),
               x = position.x,
@@ -148,17 +147,17 @@ const Map = Class.extend({
         return list.filter(function(pos) {
             return !(pos.x < 0 || pos.y < 0 || pos.x >= self.groupWidth || pos.y >= self.groupHeight);
         });
-    },
+    }
     
-    forEachAdjacentGroup: function(groupId, callback) {
+    forEachAdjacentGroup(groupId, callback) {
         if(groupId) {
             this.getAdjacentGroupPositions(groupId).forEach(function(pos) {
                 callback(pos.x+'-'+pos.y);
             });
         }
-    },
+    }
     
-    initConnectedGroups: function(doors) {
+    initConnectedGroups(doors) {
         const self = this;
 
         this.connectedGroups = {};
@@ -171,9 +170,9 @@ const Map = Class.extend({
                 self.connectedGroups[groupId] = [connectedPosition];
             }
         });
-    },
+    }
     
-    initCheckpoints: function(cpList) {
+    initCheckpoints(cpList) {
         const self = this;
         
         this.checkpoints = {};
@@ -186,18 +185,19 @@ const Map = Class.extend({
                 self.startingAreas.push(checkpoint);
             }
         });
-    },
+    }
     
-    getCheckpoint: function(id) {
+    getCheckpoint(id) {
         return this.checkpoints[id];
-    },
+    }
     
-    getRandomStartingPosition: function() {
+    getRandomStartingPosition() {
         const nbAreas = this.startingAreas.length, i = Utils.randomInt(0, nbAreas-1), area = this.startingAreas[i];
         
         return area.getRandomPosition();
     }
-});
+
+}
 
 const pos = function(x, y) {
     return { x: x, y: y };

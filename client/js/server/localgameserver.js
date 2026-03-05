@@ -1,11 +1,10 @@
-import { Class } from '../lib/class.js';
 import WorldServer from './worldserver.js';
 import ServerMap from './map.js';
 import Player from './player.js';
 import { resolveMap } from '../asset-resolver.js';
 
-const LocalGameServer = Class.extend({
-    init: function() {
+class LocalGameServer {
+    constructor() {
         this.isConnected = false;
         this.nextEntityId = 100;
 
@@ -20,9 +19,9 @@ const LocalGameServer = Class.extend({
         this.onmessage = null;
         this.onerror = null;
         this.onclose = null;
-    },
+    }
 
-    connect: function() {
+    connect() {
         const self = this;
         const serverMapPath = resolveMap('worldServer');
         const map = new ServerMap(serverMapPath);
@@ -52,9 +51,9 @@ const LocalGameServer = Class.extend({
                 self.flushPendingMessages();
             });
         });
-    },
+    }
 
-    waitForWorldReady: function(callback) {
+    waitForWorldReady(callback) {
         const self = this;
         const checkReady = function() {
             if(self.worldServer && self.worldServer.map && self.worldServer.map.isLoaded
@@ -66,9 +65,9 @@ const LocalGameServer = Class.extend({
         };
 
         checkReady();
-    },
+    }
 
-    createPlayerConnection: function() {
+    createPlayerConnection() {
         const self = this;
         const connectionId = '5' + this.nextEntityId++;
         let closed = false;
@@ -131,9 +130,9 @@ const LocalGameServer = Class.extend({
 
         this.addConnection(connection);
         return connection;
-    },
+    }
 
-    send: function(data) {
+    send(data) {
         let message;
 
         if(!this.playerConnection) {
@@ -151,9 +150,9 @@ const LocalGameServer = Class.extend({
         }
 
         this.playerConnection.receive(message);
-    },
+    }
 
-    flushPendingMessages: function() {
+    flushPendingMessages() {
         const self = this;
 
         if(!this.playerConnection || this.pendingMessages.length === 0) {
@@ -165,9 +164,9 @@ const LocalGameServer = Class.extend({
         });
 
         this.pendingMessages = [];
-    },
+    }
 
-    close: function() {
+    close() {
         if(this.playerConnection) {
             this.playerConnection.close();
         } else {
@@ -176,35 +175,36 @@ const LocalGameServer = Class.extend({
                 this.onclose();
             }
         }
-    },
+    }
 
-    addConnection: function(connection) {
+    addConnection(connection) {
         this.connections[connection.id] = connection;
-    },
+    }
 
-    removeConnection: function(id) {
+    removeConnection(id) {
         delete this.connections[id];
-    },
+    }
 
-    getConnection: function(id) {
+    getConnection(id) {
         return this.connections[id];
-    },
+    }
 
-    getReadyState: function() {
+    getReadyState() {
         return this.isConnected ? 1 : 0;
-    },
+    }
 
-    deliverToClient: function(message) {
+    deliverToClient(message) {
         if(this.onmessage) {
             this.onmessage({ data: JSON.stringify(message) });
         }
-    },
+    }
 
-    deliverRawToClient: function(data) {
+    deliverRawToClient(data) {
         if(this.onmessage) {
             this.onmessage({ data: data });
         }
     }
-});
+
+}
 
 export default LocalGameServer;

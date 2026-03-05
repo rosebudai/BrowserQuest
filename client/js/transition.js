@@ -1,15 +1,14 @@
-import { Class } from './lib/class.js';
 import log from './lib/log.js';
 
-const Transition = Class.extend({
-    init: function() {
+class Transition {
+    constructor() {
         this.startValue = 0;
         this.endValue = 0;
         this.duration = 0;
         this.inProgress = false;
-    },
+    }
 
-    start: function(currentTime, updateFunction, stopFunction, startValue, endValue, duration) {
+    start(currentTime, updateFunction, stopFunction, startValue, endValue, duration) {
         this.startTime = currentTime;
         this.updateFunction = updateFunction;
         this.stopFunction = stopFunction;
@@ -18,9 +17,9 @@ const Transition = Class.extend({
         this.duration = duration;
         this.inProgress = true;
         this.count = 0;
-    },
+    }
 
-    step: function(currentTime) {
+    step(currentTime) {
         if(this.inProgress) {
             if(this.count > 0) {
                 this.count -= 1;
@@ -49,16 +48,16 @@ const Transition = Class.extend({
                 }
             }
         }
-    },
+    }
 
-    restart: function(currentTime, startValue, endValue) {
+    restart(currentTime, startValue, endValue) {
         this.start(currentTime, this.updateFunction, this.stopFunction, startValue, endValue, this.duration);
         this.step(currentTime);
-    },
+    }
 
-    stop: function() {
+    stop() {
         this.inProgress = false;
     }
-});
+}
 
 export default Transition;

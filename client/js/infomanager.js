@@ -1,28 +1,26 @@
-import { Class } from './lib/class.js';
-
-const InfoManager = Class.extend({
-    init: function(game) {
+class InfoManager {
+    constructor(game) {
         this.game = game;
         this.infos = {};
         this.destroyQueue = [];
-    },
+    }
 
-    addDamageInfo: function(value, x, y, type) {
+    addDamageInfo(value, x, y, type) {
         const time = this.game.currentTime, id = time+""+Math.abs(value)+""+x+""+y, self = this, info = new DamageInfo(id, value, x, y, DamageInfo.DURATION, type);
 
         info.onDestroy(function(id) {
             self.destroyQueue.push(id);
         });
         this.infos[id] = info;
-    },
+    }
 
-    forEachInfo: function(callback) {
+    forEachInfo(callback) {
         for(const info of Object.values(this.infos)) {
             callback(info);
         }
-    },
+    }
 
-    update: function(time) {
+    update(time) {
         const self = this;
 
         this.forEachInfo(function(info) {
@@ -34,7 +32,7 @@ const InfoManager = Class.extend({
         });
         this.destroyQueue = [];
     }
-});
+}
 
 
 const damageInfoColors = {
@@ -53,10 +51,8 @@ const damageInfoColors = {
 };
 
 
-const DamageInfo = Class.extend({
-    DURATION: 1000,
-
-    init: function(id, value, x, y, duration, type) {
+class DamageInfo {
+    constructor(id, value, x, y, duration, type) {
         this.id = id;
         this.value = value;
         this.duration = duration;
@@ -67,36 +63,38 @@ const DamageInfo = Class.extend({
         this.speed = 100;
         this.fillColor = damageInfoColors[type].fill;
         this.strokeColor = damageInfoColors[type].stroke;
-    },
+    }
 
-    isTimeToAnimate: function(time) {
-    	return (time - this.lastTime) > this.speed;
-    },
+    isTimeToAnimate(time) {
+        return (time - this.lastTime) > this.speed;
+    }
 
-    update: function(time) {
+    update(time) {
         if(this.isTimeToAnimate(time)) {
             this.lastTime = time;
             this.tick();
         }
-    },
+    }
 
-    tick: function() {
+    tick() {
         this.y -= 1;
         this.opacity -= 0.07;
         if(this.opacity < 0) {
             this.destroy();
         }
-    },
+    }
 
-    onDestroy: function(callback) {
+    onDestroy(callback) {
         this.destroy_callback = callback;
-    },
+    }
 
-    destroy: function() {
+    destroy() {
         if(this.destroy_callback) {
             this.destroy_callback(this.id);
         }
     }
-});
+}
+
+DamageInfo.DURATION = 1000;
 
 export default InfoManager;

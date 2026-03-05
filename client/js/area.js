@@ -1,14 +1,12 @@
-import { Class } from './lib/class.js';
-
-const Area = Class.extend({
-    init: function(x, y, width, height) {
+class Area {
+    constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-    },
+    }
 
-    contains: function(entity) {
+    contains(entity) {
         if(entity) {
             return entity.gridX >= this.x
                 && entity.gridY >= this.y
@@ -18,6 +16,6 @@ const Area = Class.extend({
             return false;
         }
     }
-});
+}
 
 export default Area;

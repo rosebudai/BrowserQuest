@@ -1,19 +1,18 @@
-import { Class } from './lib/class.js';
 import log from './lib/log.js';
 import Animation from './animation.js';
 import { resolveSprite } from './asset-resolver.js';
 
-    const Sprite = Class.extend({
-        init: function(name, scale, spriteData) {
+    class Sprite {
+        constructor(name, scale, spriteData) {
         	this.name = name;
         	this.scale = scale;
         	this.isLoaded = false;
         	this.offsetX = 0;
         	this.offsetY = 0;
             this.loadJSON(spriteData[name]);
-        },
+        }
 
-        loadJSON: function(data) {
+        loadJSON(data) {
     		this.id = data.id;
     		this.filepath = resolveSprite(this.id, this.scale);
     		this.animationData = data.animations;
@@ -23,9 +22,9 @@ import { resolveSprite } from './asset-resolver.js';
             this.offsetY = (data.offset_y !== undefined) ? data.offset_y : -16;
 
     		this.load();
-    	},
+    	}
 
-        load: function() {
+        load() {
         	const self = this;
 
         	this.image = new Image();
@@ -39,9 +38,9 @@ import { resolveSprite } from './asset-resolver.js';
         	};
 
         	this.image.src = this.filepath;
-        },
+        }
 
-        createAnimations: function() {
+        createAnimations() {
             const animations = {};
 
     	    for(const name in this.animationData) {
@@ -50,9 +49,9 @@ import { resolveSprite } from './asset-resolver.js';
     	    }
 
     	    return animations;
-    	},
+    	}
 
-    	createHurtSprite: function() {
+    	createHurtSprite() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const width = this.image.width;
@@ -86,13 +85,13 @@ import { resolveSprite } from './asset-resolver.js';
     	    } catch(e) {
     	        log.debug("Error getting image data for sprite : "+this.name+" - "+e.message);
     	    }
-        },
+        }
 
-    	getHurtSprite: function() {
+    	getHurtSprite() {
     	    return this.whiteSprite;
-    	},
+    	}
 
-    	createSilhouette: function() {
+    	createSilhouette() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const width = this.image.width;
@@ -171,6 +170,7 @@ import { resolveSprite } from './asset-resolver.js';
     	        log.debug("Error getting silhouette data for sprite : "+this.name+" - "+e.message);
     	    }
         }
-    });
+    
+    }
 
 export default Sprite;

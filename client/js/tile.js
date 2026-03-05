@@ -1,35 +1,34 @@
-import { Class } from './lib/class.js';
+class Tile {
+}
 
-const Tile = Class.extend({
-});
-
-const AnimatedTile = Tile.extend({
-    init: function(id, length, speed, index) {
+class AnimatedTile extends Tile {
+    constructor(id, length, speed, index) {
+        super();
         this.startId = id;
-    	this.id = id;
-    	this.length = length;
-    	this.speed = speed;
-    	this.index = index;
-    	this.lastTime = 0;
-    },
+        this.id = id;
+        this.length = length;
+        this.speed = speed;
+        this.index = index;
+        this.lastTime = 0;
+    }
 
-    tick: function() {
+    tick() {
         if((this.id - this.startId) < this.length - 1) {
-	        this.id += 1;
-	    } else {
-	        this.id = this.startId;
-	    }
-    },
+            this.id += 1;
+        } else {
+            this.id = this.startId;
+        }
+    }
 
-    animate: function(time) {
+    animate(time) {
         if((time - this.lastTime) > this.speed) {
-    	    this.tick();
-    	    this.lastTime = time;
-    	    return true;
+            this.tick();
+            this.lastTime = time;
+            return true;
         } else {
             return false;
         }
     }
-});
+}
 
 export default AnimatedTile;

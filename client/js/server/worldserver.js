@@ -1,4 +1,3 @@
-import { Class } from '../lib/class.js';
 import Types from '../gametypes.js';
 import log from '../lib/log.js';
 import Entity from './entity.js';
@@ -18,8 +17,8 @@ import { check } from './format.js';
 
 // ======= GAME SERVER ========
 
-const WorldServer = Class.extend({
-    init: function(id, maxPlayers, websocketServer) {
+class WorldServer {
+    constructor(id, maxPlayers, websocketServer) {
         const self = this;
 
         this.id = id;
@@ -142,9 +141,9 @@ const WorldServer = Class.extend({
                 }
             });
         });
-    },
+    }
     
-    run: function(mapFilePath) {
+    run(mapFilePath) {
         const self = this;
         
         this.map = new ServerMap(mapFilePath);
@@ -226,37 +225,37 @@ const WorldServer = Class.extend({
         }, 1000 / this.ups);
         
         log.info(""+this.id+" created (capacity: "+this.maxPlayers+" players).");
-    },
+    }
     
-    setUpdatesPerSecond: function(ups) {
+    setUpdatesPerSecond(ups) {
         this.ups = ups;
-    },
+    }
     
-    onInit: function(callback) {
+    onInit(callback) {
         this.init_callback = callback;
-    },
+    }
 
-    onPlayerConnect: function(callback) {
+    onPlayerConnect(callback) {
         this.connect_callback = callback;
-    },
+    }
     
-    onPlayerEnter: function(callback) {
+    onPlayerEnter(callback) {
         this.enter_callback = callback;
-    },
+    }
     
-    onPlayerAdded: function(callback) {
+    onPlayerAdded(callback) {
         this.added_callback = callback;
-    },
+    }
     
-    onPlayerRemoved: function(callback) {
+    onPlayerRemoved(callback) {
         this.removed_callback = callback;
-    },
+    }
     
-    onRegenTick: function(callback) {
+    onRegenTick(callback) {
         this.regen_callback = callback;
-    },
+    }
     
-    pushRelevantEntityListTo: function(player) {
+    pushRelevantEntityListTo(player) {
         let entities;
         
         if(player && (player.group in this.groups)) {
@@ -267,9 +266,9 @@ const WorldServer = Class.extend({
                 this.pushToPlayer(player, new Messages.List(entities));
             }
         }
-    },
+    }
     
-    pushSpawnsToPlayer: function(player, ids) {
+    pushSpawnsToPlayer(player, ids) {
         const self = this;
         
         ids.forEach(function(id) {
@@ -280,17 +279,17 @@ const WorldServer = Class.extend({
         });
 
         log.debug("Pushed "+ids.length+" new spawns to "+player.id);
-    },
+    }
     
-    pushToPlayer: function(player, message) {
+    pushToPlayer(player, message) {
         if(player && player.id in this.outgoingQueues) {
             this.outgoingQueues[player.id].push(message.serialize());
         } else {
             log.debug("pushToPlayer: player was undefined");
         }
-    },
+    }
     
-    pushToGroup: function(groupId, message, ignoredPlayer) {
+    pushToGroup(groupId, message, ignoredPlayer) {
         const self = this, group = this.groups[groupId];
         
         if(group) {
@@ -302,16 +301,16 @@ const WorldServer = Class.extend({
         } else {
             log.error("groupId: "+groupId+" is not a valid group");
         }
-    },
+    }
     
-    pushToAdjacentGroups: function(groupId, message, ignoredPlayer) {
+    pushToAdjacentGroups(groupId, message, ignoredPlayer) {
         const self = this;
         self.map.forEachAdjacentGroup(groupId, function(id) {
             self.pushToGroup(id, message, ignoredPlayer);
         });
-    },
+    }
     
-    pushToPreviousGroups: function(player, message) {
+    pushToPreviousGroups(player, message) {
         const self = this;
         
         // Push this message to all groups which are not going to be updated anymore,
@@ -320,17 +319,17 @@ const WorldServer = Class.extend({
             self.pushToGroup(id, message);
         });
         player.recentlyLeftGroups = [];
-    },
+    }
     
-    pushBroadcast: function(message, ignoredPlayer) {
+    pushBroadcast(message, ignoredPlayer) {
         for(const id in this.outgoingQueues) {
             if(id != ignoredPlayer) {
                 this.outgoingQueues[id].push(message.serialize());
             }
         }
-    },
+    }
     
-    processQueues: function() {
+    processQueues() {
         const self = this;
         let connection;
 
@@ -345,14 +344,14 @@ const WorldServer = Class.extend({
                 connection.send(batch);
             }
         }
-    },
+    }
     
-    addEntity: function(entity) {
+    addEntity(entity) {
         this.entities[entity.id] = entity;
         this.handleEntityGroupMembership(entity);
-    },
+    }
     
-    removeEntity: function(entity) {
+    removeEntity(entity) {
         if(entity.id in this.entities) {
             delete this.entities[entity.id];
         }
@@ -371,44 +370,44 @@ const WorldServer = Class.extend({
         entity.destroy();
         this.removeFromGroups(entity);
         log.debug("Removed "+ Types.getKindAsString(entity.kind) +" : "+ entity.id);
-    },
+    }
     
-    addPlayer: function(player) {
+    addPlayer(player) {
         this.addEntity(player);
         this.players[player.id] = player;
         this.outgoingQueues[player.id] = [];
         
         //log.info("Added player : " + player.id);
-    },
+    }
     
-    removePlayer: function(player) {
+    removePlayer(player) {
         player.broadcast(player.despawn());
         this.removeEntity(player);
         delete this.players[player.id];
         delete this.outgoingQueues[player.id];
-    },
+    }
     
-    addMob: function(mob) {
+    addMob(mob) {
         this.addEntity(mob);
         this.mobs[mob.id] = mob;
-    },
+    }
     
-    addNpc: function(kind, x, y) {
+    addNpc(kind, x, y) {
         const npc = new Npc('8'+x+''+y, kind, x, y);
         this.addEntity(npc);
         this.npcs[npc.id] = npc;
         
         return npc;
-    },
+    }
     
-    addItem: function(item) {
+    addItem(item) {
         this.addEntity(item);
         this.items[item.id] = item;
         
         return item;
-    },
+    }
 
-    createItem: function(kind, x, y) {
+    createItem(kind, x, y) {
         const id = '9'+this.itemCount++;
         let item = null;
 
@@ -418,32 +417,32 @@ const WorldServer = Class.extend({
             item = new Item(id, kind, x, y);
         }
         return item;
-    },
+    }
 
-    createChest: function(x, y, items) {
+    createChest(x, y, items) {
         const chest = this.createItem(Types.Entities.CHEST, x, y);
         chest.setItems(items);
         return chest;
-    },
+    }
     
-    addStaticItem: function(item) {
+    addStaticItem(item) {
         item.isStatic = true;
         item.onRespawn(this.addStaticItem.bind(this, item));
         
         return this.addItem(item);
-    },
+    }
     
-    addItemFromChest: function(kind, x, y) {
+    addItemFromChest(kind, x, y) {
         const item = this.createItem(kind, x, y);
         item.isFromChest = true;
         
         return this.addItem(item);
-    },
+    }
     
     /**
      * The mob will no longer be registered as an attacker of its current target.
      */
-    clearMobAggroLink: function(mob) {
+    clearMobAggroLink(mob) {
         let player = null;
         if(mob.target) {
             player = this.getEntityById(mob.target);
@@ -451,9 +450,9 @@ const WorldServer = Class.extend({
                 player.removeAttacker(mob);
             }
         }
-    },
+    }
 
-    clearMobHateLinks: function(mob) {
+    clearMobHateLinks(mob) {
         const self = this;
         if(mob) {
             mob.hatelist.forEach(function(obj) {
@@ -463,32 +462,32 @@ const WorldServer = Class.extend({
                 }
             });
         }
-    },
+    }
     
-    forEachEntity: function(callback) {
+    forEachEntity(callback) {
         for(const id in this.entities) {
             callback(this.entities[id]);
         }
-    },
+    }
     
-    forEachPlayer: function(callback) {
+    forEachPlayer(callback) {
         for(const id in this.players) {
             callback(this.players[id]);
         }
-    },
+    }
     
-    forEachMob: function(callback) {
+    forEachMob(callback) {
         for(const id in this.mobs) {
             callback(this.mobs[id]);
         }
-    },
+    }
     
-    forEachCharacter: function(callback) {
+    forEachCharacter(callback) {
         this.forEachPlayer(callback);
         this.forEachMob(callback);
-    },
+    }
     
-    handleMobHate: function(mobId, playerId, hatePoints) {
+    handleMobHate(mobId, playerId, hatePoints) {
         const mob = this.getEntityById(mobId);
         const player = this.getEntityById(playerId);
         let mostHated;
@@ -501,9 +500,9 @@ const WorldServer = Class.extend({
                 this.chooseMobTarget(mob);
             }
         }
-    },
+    }
     
-    chooseMobTarget: function(mob, hateRank) {
+    chooseMobTarget(mob, hateRank) {
         const player = this.getEntityById(mob.getHatedPlayerId(hateRank));
         
         // If the mob is not already attacking the player, create an attack link between them.
@@ -516,21 +515,21 @@ const WorldServer = Class.extend({
             this.broadcastAttacker(mob);
             log.debug(mob.id + " is now attacking " + player.id);
         }
-    },
+    }
     
-    onEntityAttack: function(callback) {
+    onEntityAttack(callback) {
         this.attack_callback = callback;
-    },
+    }
     
-    getEntityById: function(id) {
+    getEntityById(id) {
         if(id in this.entities) {
             return this.entities[id];
         } else {
             log.debug("Unknown entity : " + id);
         }
-    },
+    }
     
-    getPlayerCount: function() {
+    getPlayerCount() {
         let count = 0;
         for(const p in this.players) {
             if(this.players.hasOwnProperty(p)) {
@@ -538,18 +537,18 @@ const WorldServer = Class.extend({
             }
         }
         return count;
-    },
+    }
     
-    broadcastAttacker: function(character) {
+    broadcastAttacker(character) {
         if(character) {
             this.pushToAdjacentGroups(character.group, character.attack(), character.id);
         }
         if(this.attack_callback) {
             this.attack_callback(character);
         }
-    },
+    }
     
-    handleHurtEntity: function(entity, attacker, damage) {
+    handleHurtEntity(entity, attacker, damage) {
         const self = this;
         
         if(entity.type === 'player') {
@@ -582,17 +581,17 @@ const WorldServer = Class.extend({
     
             this.removeEntity(entity);
         }
-    },
+    }
     
-    despawn: function(entity) {
+    despawn(entity) {
         this.pushToAdjacentGroups(entity.group, entity.despawn());
 
         if(entity.id in this.entities) {
             this.removeEntity(entity);
         }
-    },
+    }
     
-    spawnStaticEntities: function() {
+    spawnStaticEntities() {
         const self = this;
         let count = 0;
 
@@ -619,16 +618,16 @@ const WorldServer = Class.extend({
                 self.addStaticItem(self.createItem(kind, pos.x + 1, pos.y));
             }
         }
-    },
+    }
 
-    isValidPosition: function(x, y) {
+    isValidPosition(x, y) {
         if(this.map && typeof x === 'number' && typeof y === 'number' && !this.map.isOutOfBounds(x, y) && !this.map.isColliding(x, y)) {
             return true;
         }
         return false;
-    },
+    }
     
-    handlePlayerVanish: function(player) {
+    handlePlayerVanish(player) {
         const self = this, previousAttackers = [];
         
         // When a player dies or teleports, all of his attackers go and attack their second most hated player.
@@ -644,23 +643,23 @@ const WorldServer = Class.extend({
         });
         
         this.handleEntityGroupMembership(player);
-    },
+    }
     
-    setPlayerCount: function(count) {
+    setPlayerCount(count) {
         this.playerCount = count;
-    },
+    }
     
-    incrementPlayerCount: function() {
+    incrementPlayerCount() {
         this.setPlayerCount(this.playerCount + 1);
-    },
+    }
     
-    decrementPlayerCount: function() {
+    decrementPlayerCount() {
         if(this.playerCount > 0) {
             this.setPlayerCount(this.playerCount - 1);
         }
-    },
+    }
     
-    getDroppedItem: function(mob) {
+    getDroppedItem(mob) {
         const kind = Types.getKindAsString(mob.kind);
         const drops = Properties[kind].drops;
         const v = Utils.random(100);
@@ -678,14 +677,14 @@ const WorldServer = Class.extend({
         }
 
         return item;
-    },
+    }
     
-    onMobMoveCallback: function(mob) {
+    onMobMoveCallback(mob) {
         this.pushToAdjacentGroups(mob.group, new Messages.Move(mob));
         this.handleEntityGroupMembership(mob);
-    },
+    }
     
-    findPositionNextTo: function(entity, target) {
+    findPositionNextTo(entity, target) {
         let valid = false, pos;
         
         while(!valid) {
@@ -693,9 +692,9 @@ const WorldServer = Class.extend({
             valid = this.isValidPosition(pos.x, pos.y);
         }
         return pos;
-    },
+    }
     
-    initZoneGroups: function() {
+    initZoneGroups() {
         const self = this;
         
         this.map.forEachGroup(function(id) {
@@ -704,9 +703,9 @@ const WorldServer = Class.extend({
                                 incoming: []};
         });
         this.zoneGroupsReady = true;
-    },
+    }
     
-    removeFromGroups: function(entity) {
+    removeFromGroups(entity) {
         const self = this, oldGroups = [];
         
         if(entity && entity.group) {
@@ -725,13 +724,13 @@ const WorldServer = Class.extend({
             entity.group = null;
         }
         return oldGroups;
-    },
+    }
     
     /**
      * Registers an entity as "incoming" into several groups, meaning that it just entered them.
      * All players inside these groups will receive a Spawn message when WorldServer.processGroups is called.
      */
-    addAsIncomingToGroup: function(entity, groupId) {
+    addAsIncomingToGroup(entity, groupId) {
         const self = this, isChest = entity && entity instanceof Chest, isItem = entity && entity instanceof Item, isDroppedItem =  entity && isItem && !entity.isStatic && !entity.isFromChest;
         
         if(entity && groupId) {
@@ -747,9 +746,9 @@ const WorldServer = Class.extend({
                 }
             });
         }
-    },
+    }
     
-    addToGroup: function(entity, groupId) {
+    addToGroup(entity, groupId) {
         const self = this, newGroups = [];
         
         if(entity && groupId && (groupId in this.groups)) {
@@ -764,16 +763,16 @@ const WorldServer = Class.extend({
             }
         }
         return newGroups;
-    },
+    }
     
-    logGroupPlayers: function(groupId) {
+    logGroupPlayers(groupId) {
         log.debug("Players inside group "+groupId+":");
         this.groups[groupId].players.forEach(function(id) {
             log.debug("- player "+id);
         });
-    },
+    }
     
-    handleEntityGroupMembership: function(entity) {
+    handleEntityGroupMembership(entity) {
         let hasChangedGroups = false;
         if(entity) {
             const groupId = this.map.getGroupIdFromPosition(entity.x, entity.y);
@@ -790,9 +789,9 @@ const WorldServer = Class.extend({
             }
         }
         return hasChangedGroups;
-    },
+    }
     
-    processGroups: function() {
+    processGroups() {
         const self = this;
         
         if(this.zoneGroupsReady) {
@@ -810,16 +809,16 @@ const WorldServer = Class.extend({
                 }
             });
         }
-    },
+    }
     
-    moveEntity: function(entity, x, y) {
+    moveEntity(entity, x, y) {
         if(entity) {
             entity.setPosition(x, y);
             this.handleEntityGroupMembership(entity);
         }
-    },
+    }
     
-    handleItemDespawn: function(item) {
+    handleItemDespawn(item) {
         const self = this;
         
         if(item) {
@@ -835,20 +834,20 @@ const WorldServer = Class.extend({
                 }
             });
         }
-    },
+    }
     
-    handleEmptyMobArea: function(area) {
+    handleEmptyMobArea(area) {
 
-    },
+    }
     
-    handleEmptyChestArea: function(area) {
+    handleEmptyChestArea(area) {
         if(area) {
             const chest = this.addItem(this.createChest(area.chestX, area.chestY, area.items));
             this.handleItemDespawn(chest);
         }
-    },
+    }
     
-    handleOpenedChest: function(chest, player) {
+    handleOpenedChest(chest, player) {
         this.pushToAdjacentGroups(chest.group, chest.despawn());
         this.removeEntity(chest);
         
@@ -857,19 +856,20 @@ const WorldServer = Class.extend({
             const item = this.addItemFromChest(kind, chest.x, chest.y);
             this.handleItemDespawn(item);
         }
-    },
+    }
     
-    tryAddingMobToChestArea: function(mob) {
+    tryAddingMobToChestArea(mob) {
         this.chestAreas.forEach(function(area) {
             if(area.contains(mob)) {
                 area.addToArea(mob);
             }
         });
-    },
+    }
     
-    updatePopulation: function(totalPlayers) {
+    updatePopulation(totalPlayers) {
         this.pushBroadcast(new Messages.Population(this.playerCount, totalPlayers ? totalPlayers : this.playerCount));
     }
-});
+
+}
 
 export default WorldServer;

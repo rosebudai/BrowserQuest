@@ -1,12 +1,10 @@
-import { Class } from './lib/class.js';
-
-const Timer = Class.extend({
-    init: function(duration, startTime) {
+class Timer {
+    constructor(duration, startTime) {
         this.lastTime = startTime || 0;
         this.duration = duration;
-    },
+    }
 
-    isOver: function(time) {
+    isOver(time) {
         let over = false;
 
         if((time - this.lastTime) > this.duration) {
@@ -15,6 +13,6 @@ const Timer = Class.extend({
         }
         return over;
     }
-});
+}
 
 export default Timer;
