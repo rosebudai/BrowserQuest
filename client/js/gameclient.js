@@ -77,7 +77,7 @@ import LocalGameServer from './server/localgameserver.js';
             
             this.connection.onclose = function() {
                 log.debug("Connection closed");
-                $('#container').addClass('error');
+                document.getElementById('container').classList.add('error');
                 
                 if(self.disconnected_callback) {
                     self.disconnected_callback("The local game server has stopped");

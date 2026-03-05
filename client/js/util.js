@@ -3,7 +3,7 @@ const isInt = function(n) {
 };
 window.isInt = isInt;
 
-const TRANSITIONEND = 'transitionend webkitTransitionEnd oTransitionEnd';
+const TRANSITIONEND = 'transitionend';
 window.TRANSITIONEND = TRANSITIONEND;
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/

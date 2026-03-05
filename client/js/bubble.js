@@ -15,7 +15,9 @@ import Timer from './timer.js';
         },
 
         destroy: function() {
-            $(this.element).remove();
+            if(this.element && this.element.parentNode) {
+                this.element.parentNode.removeChild(this.element);
+            }
         },
 
         reset: function(time) {
@@ -25,7 +27,9 @@ import Timer from './timer.js';
 
     const BubbleManager = Class.extend({
         init: function(container) {
-            this.container = container;
+            this.container = typeof container === 'string'
+                ? document.querySelector(container)
+                : container;
             this.bubbles = {};
         },
 
@@ -39,11 +43,18 @@ import Timer from './timer.js';
         create: function(id, message, time) {
             if(this.bubbles[id]) {
                 this.bubbles[id].reset(time);
-                $("#"+id+" p").html(message);
+                const existing = document.getElementById(id);
+                if(existing) {
+                    const p = existing.querySelector('p');
+                    if(p) { p.innerHTML = message; }
+                }
             }
             else {
-                const el = $("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>"); //.attr('id', id);
-                $(el).appendTo(this.container);
+                const el = document.createElement('div');
+                el.id = id;
+                el.className = 'bubble';
+                el.innerHTML = '<p>' + message + '</p><div class="thingy"></div>';
+                this.container.appendChild(el);
 
                 this.bubbles[id] = new Bubble(id, el, time);
             }

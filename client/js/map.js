@@ -51,17 +51,23 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                 };
             } else {
                 log.info("Loading map via Ajax.");
-                $.get(resolveMap('world'), function (data) {
-                    self._initMap(data);
-                    self._generateCollisionGrid();
-                    self._generatePlateauGrid();
-                    self.mapLoaded = true;
-                    self._checkReady();
-                }, 'json').fail(function(jqXHR, textStatus) {
-                    log.error("Map AJAX load failed: " + textStatus);
-                    self.mapLoaded = true;
-                    self._checkReady();
-                });
+                fetch(resolveMap('world'))
+                    .then(function(response) {
+                        if(!response.ok) { throw new Error(response.statusText); }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        self._initMap(data);
+                        self._generateCollisionGrid();
+                        self._generatePlateauGrid();
+                        self.mapLoaded = true;
+                        self._checkReady();
+                    })
+                    .catch(function(err) {
+                        log.error("Map AJAX load failed: " + err.message);
+                        self.mapLoaded = true;
+                        self._checkReady();
+                    });
             }
         },
         

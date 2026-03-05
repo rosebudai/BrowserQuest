@@ -4,159 +4,187 @@ import Game from './game.js';
     let app, game;
 
     const initApp = function() {
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
         	app = new App();
         	window.__app = app;
             app.center();
-        
+
             if(Detect.isWindows()) {
                 // Workaround for graphical glitches on text
-                $('body').addClass('windows');
+                document.body.classList.add('windows');
             }
-            
+
             if(Detect.isOpera()) {
                 // Fix for no pointer events
-                $('body').addClass('opera');
+                document.body.classList.add('opera');
             }
-        
-            $('body').click(function(event) {
-                if($('#parchment').hasClass('credits')) {
+
+            document.body.addEventListener('click', function(event) {
+                if(document.getElementById('parchment').classList.contains('credits')) {
                     app.toggleCredits();
                 }
-                
-                if($('#parchment').hasClass('about')) {
+
+                if(document.getElementById('parchment').classList.contains('about')) {
                     app.toggleAbout();
                 }
             });
-	
-        	$('.barbutton').click(function() {
-        	    $(this).toggleClass('active');
+
+        	document.querySelectorAll('.barbutton').forEach(function(el) {
+        	    el.addEventListener('click', function() {
+        	        this.classList.toggle('active');
+        	    });
         	});
-	
-        	$('#chatbutton').click(function() {
-        	    if($('#chatbutton').hasClass('active')) {
+
+        	document.getElementById('chatbutton').addEventListener('click', function() {
+        	    if(document.getElementById('chatbutton').classList.contains('active')) {
         	        app.showChat();
         	    } else {
                     app.hideChat();
         	    }
         	});
-	
-        	$('#helpbutton').click(function() {
+
+        	document.getElementById('helpbutton').addEventListener('click', function() {
                 app.toggleAbout();
         	});
-	
-        	$('#achievementsbutton').click(function() {
+
+        	document.getElementById('achievementsbutton').addEventListener('click', function() {
                 app.toggleAchievements();
                 if(app.blinkInterval) {
                     clearInterval(app.blinkInterval);
                 }
-                $(this).removeClass('blink');
-        	});
-	
-        	$('#instructions').click(function() {
-                app.hideWindows();
-        	});
-        	
-        	$('#playercount').click(function() {
-        	    app.togglePopulationInfo();
-        	});
-        	
-        	$('#population').click(function() {
-        	    app.togglePopulationInfo();
-        	});
-	
-        	$('.clickable').click(function(event) {
-                event.stopPropagation();
-        	});
-	
-        	$('#toggle-credits').click(function() {
-        	    app.toggleCredits();
-        	});
-	
-        	$('#create-new span').click(function() {
-        	    app.animateParchment('loadcharacter', 'confirmation');
-        	});
-	
-        	$('.delete').click(function() {
-                app.storage.clear();
-        	    app.animateParchment('confirmation', 'createcharacter');
-        	});
-	
-        	$('#cancel span').click(function() {
-        	    app.animateParchment('confirmation', 'loadcharacter');
-        	});
-        	
-        	$('.ribbon').click(function() {
-        	    app.toggleAbout();
+                this.classList.remove('blink');
         	});
 
-            $('#nameinput').bind("keyup", function() {
+        	document.getElementById('instructions').addEventListener('click', function() {
+                app.hideWindows();
+        	});
+
+        	document.getElementById('playercount').addEventListener('click', function() {
+        	    app.togglePopulationInfo();
+        	});
+
+        	document.getElementById('population').addEventListener('click', function() {
+        	    app.togglePopulationInfo();
+        	});
+
+        	document.querySelectorAll('.clickable').forEach(function(el) {
+        	    el.addEventListener('click', function(event) {
+                    event.stopPropagation();
+        	    });
+        	});
+
+        	const toggleCreditsEl = document.getElementById('toggle-credits');
+        	if(toggleCreditsEl) {
+        	    toggleCreditsEl.addEventListener('click', function() {
+        	        app.toggleCredits();
+        	    });
+        	}
+
+        	document.querySelector('#create-new span').addEventListener('click', function() {
+        	    app.animateParchment('loadcharacter', 'confirmation');
+        	});
+
+        	document.querySelectorAll('.delete').forEach(function(el) {
+        	    el.addEventListener('click', function() {
+                    app.storage.clear();
+        	        app.animateParchment('confirmation', 'createcharacter');
+        	    });
+        	});
+
+        	document.querySelector('#cancel span').addEventListener('click', function() {
+        	    app.animateParchment('confirmation', 'loadcharacter');
+        	});
+
+        	document.querySelectorAll('.ribbon').forEach(function(el) {
+        	    el.addEventListener('click', function() {
+        	        app.toggleAbout();
+        	    });
+        	});
+
+            document.getElementById('nameinput').addEventListener("keyup", function() {
                 app.toggleButton();
             });
-    
-            $('#previous').click(function() {
-                const $achievements = $('#achievements');
-        
+
+            document.getElementById('previous').addEventListener('click', function() {
+                const achievements = document.getElementById('achievements');
+
                 if(app.currentPage === 1) {
                     return false;
                 } else {
                     app.currentPage -= 1;
-                    $achievements.removeClass().addClass('active page' + app.currentPage);
+                    achievements.className = 'active page' + app.currentPage;
                 }
             });
-    
-            $('#next').click(function() {
-                const $achievements = $('#achievements'), $lists = $('#lists'), nbPages = $lists.children('ul').length;
-        
+
+            document.getElementById('next').addEventListener('click', function() {
+                const achievements = document.getElementById('achievements'),
+                      lists = document.getElementById('lists'),
+                      nbPages = lists.querySelectorAll(':scope > ul').length;
+
                 if(app.currentPage === nbPages) {
                     return false;
                 } else {
                     app.currentPage += 1;
-                    $achievements.removeClass().addClass('active page' + app.currentPage);
+                    achievements.className = 'active page' + app.currentPage;
                 }
             });
 
-            $('#notifications div').bind(TRANSITIONEND, app.resetMessagesPosition.bind(app));
-    
-            $('.close').click(function() {
-                app.hideWindows();
-            });
-        
-            $('.twitter').click(function() {
-                const url = $(this).attr('href');
+            document.querySelector('#notifications div').addEventListener(TRANSITIONEND, app.resetMessagesPosition.bind(app));
 
-               app.openPopup('twitter', url);
-               return false;
+            document.querySelectorAll('.close').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    app.hideWindows();
+                });
             });
 
-            $('.facebook').click(function() {
-                const url = $(this).attr('href');
+            document.querySelectorAll('.twitter').forEach(function(el) {
+                el.addEventListener('click', function(event) {
+                    const url = this.getAttribute('href');
 
-               app.openPopup('facebook', url);
-               return false;
+                   app.openPopup('twitter', url);
+                   event.preventDefault();
+                   return false;
+                });
             });
-        
+
+            document.querySelectorAll('.facebook').forEach(function(el) {
+                el.addEventListener('click', function(event) {
+                    const url = this.getAttribute('href');
+
+                   app.openPopup('facebook', url);
+                   event.preventDefault();
+                   return false;
+                });
+            });
+
             const data = app.storage.data;
     		if(data.hasAlreadyPlayed) {
     		    if(data.player.name && data.player.name !== "") {
-		            $('#playername').html(data.player.name);
+		            document.getElementById('playername').innerHTML = data.player.name;
     		        if(data.player.image) {
-    		            $('#playerimage').attr('src', data.player.image).show();
+    		            const playerImage = document.getElementById('playerimage');
+    		            playerImage.setAttribute('src', data.player.image);
+    		            playerImage.style.display = '';
     		        }
     		    }
     		}
-    		
-    		$('.play div').click(function(event) {
-                const nameFromInput = $('#nameinput').attr('value'), nameFromStorage = $('#playername').html(), name = nameFromInput || nameFromStorage;
-                
-                app.tryStartingGame(name);
-            });
-        
+
+    		document.querySelectorAll('.play div').forEach(function(el) {
+    		    el.addEventListener('click', function(event) {
+                    const nameFromInput = document.getElementById('nameinput').getAttribute('value'),
+                          nameFromStorage = document.getElementById('playername').innerHTML,
+                          name = nameFromInput || nameFromStorage;
+
+                    app.tryStartingGame(name);
+                });
+    		});
+
             document.addEventListener("touchstart", function() {},false);
-            
-            $('#resize-check').bind("transitionend", app.resizeUi.bind(app));
-            $('#resize-check').bind("webkitTransitionEnd", app.resizeUi.bind(app));
-            $('#resize-check').bind("oTransitionEnd", app.resizeUi.bind(app));
+
+            const resizeCheck = document.getElementById('resize-check');
+            resizeCheck.addEventListener("transitionend", app.resizeUi.bind(app));
+            resizeCheck.addEventListener("webkitTransitionEnd", app.resizeUi.bind(app));
+            resizeCheck.addEventListener("oTransitionEnd", app.resizeUi.bind(app));
 
             let resizeTimeout;
             window.addEventListener('resize', function() {
@@ -169,13 +197,13 @@ import Game from './game.js';
             });
 
             log.info("App initialized.");
-        
+
             initGame();
         });
     };
-    
+
     const initGame = function() {
-            
+
             const canvas = document.getElementById("entities"), background = document.getElementById("background"), foreground = document.getElementById("foreground"), input = document.getElementById("chatinput");
 
     		game = new Game(app);
@@ -183,98 +211,102 @@ import Game from './game.js';
     		game.setup('#bubbles', canvas, background, foreground, input);
     		game.setStorage(app.storage);
     		app.setGame(game);
-    		
+
     		if(app.isDesktop && app.supportsWorkers) {
     		    game.loadMap();
     		}
-	
+
     		game.onGameStart(function() {
                 app.initEquipmentIcons();
     		});
-    		
+
     		game.onDisconnect(function(message) {
-    		    $('#death').find('p').html(message+"<em>Please reload the page.</em>");
-    		    $('#respawn').hide();
+    		    document.getElementById('death').querySelector('p').innerHTML = message+"<em>Please reload the page.</em>";
+    		    document.getElementById('respawn').style.display = 'none';
     		});
-	
+
     		game.onPlayerDeath(function() {
-    		    if($('body').hasClass('credits')) {
-    		        $('body').removeClass('credits');
+    		    if(document.body.classList.contains('credits')) {
+    		        document.body.classList.remove('credits');
     		    }
-                $('body').addClass('death');
+                document.body.classList.add('death');
     		});
-	
+
     		game.onPlayerEquipmentChange(function() {
     		    app.initEquipmentIcons();
     		});
-	
+
     		game.onPlayerInvincible(function() {
-    		    $('#hitpoints').toggleClass('invincible');
+    		    document.getElementById('hitpoints').classList.toggle('invincible');
     		});
 
     		game.onNbPlayersChange(function(worldPlayers, totalPlayers) {
     		    const setWorldPlayersString = function(string) {
-                              $("#instance-population").find("span:nth-child(2)").text(string);
-                              $("#playercount").find("span:nth-child(2)").text(string);
+                              document.querySelector("#instance-population span:nth-child(2)").textContent = string;
+                              document.querySelector("#playercount span:nth-child(2)").textContent = string;
                           },
                       setTotalPlayersString = function(string) {
-                          $("#world-population").find("span:nth-child(2)").text(string);
+                          document.querySelector("#world-population span:nth-child(2)").textContent = string;
                       };
-    		    
-    		    $("#playercount").find("span.count").text(worldPlayers);
-    		    
-    		    $("#instance-population").find("span").text(worldPlayers);
+
+    		    document.querySelector("#playercount span.count").textContent = worldPlayers;
+
+    		    document.querySelector("#instance-population span").textContent = worldPlayers;
     		    if(worldPlayers == 1) {
     		        setWorldPlayersString("player");
     		    } else {
     		        setWorldPlayersString("players");
     		    }
-    		    
-    		    $("#world-population").find("span").text(totalPlayers);
+
+    		    document.querySelector("#world-population span").textContent = totalPlayers;
     		    if(totalPlayers == 1) {
     		        setTotalPlayersString("player");
     		    } else {
     		        setTotalPlayersString("players");
     		    }
     		});
-	
+
     		game.onAchievementUnlock(function(id, name, description) {
     		    app.unlockAchievement(id, name);
     		});
-	
+
     		game.onNotification(function(message) {
     		    app.showMessage(message);
     		});
-	
+
             app.initHealthBar();
-	
-            $('#nameinput').attr('value', '');
-    		$('#chatbox').attr('value', '');
-    		
+
+            document.getElementById('nameinput').setAttribute('value', '');
+    		document.getElementById('chatbox').setAttribute('value', '');
+
         	if(game.renderer.mobile || game.renderer.tablet) {
-                $('#foreground').bind('touchstart', function(event) {
+                document.getElementById('foreground').addEventListener('touchstart', function(event) {
                     app.center();
-                    app.setMouseCoordinates(event.originalEvent.touches[0]);
+                    app.setMouseCoordinates(event.touches[0]);
                 	game.click();
                 	app.hideWindows();
                 });
             } else {
-                $('#foreground').click(function(event) {
+                document.getElementById('foreground').addEventListener('click', function(event) {
                     app.center();
                     app.setMouseCoordinates(event);
                     if(game) {
                 	    game.click();
                 	}
                 	app.hideWindows();
-                    // $('#chatinput').focus();
+                    // document.getElementById('chatinput').focus();
                 });
             }
 
-            $('body').unbind('click');
-            $('body').click(function(event) {
+            // Remove previously attached body click handler by replacing with new one
+            // (vanilla JS can't easily unbind anonymous handlers, so we use a named reference)
+            if(window._bodyClickHandler) {
+                document.body.removeEventListener('click', window._bodyClickHandler);
+            }
+            window._bodyClickHandler = function(event) {
                 let hasClosedParchment = false;
-                
-                if($('#parchment').hasClass('credits')) {
+
+                if(document.getElementById('parchment').classList.contains('credits')) {
                     if(game.started) {
                         app.closeInGameCredits();
                         hasClosedParchment = true;
@@ -282,8 +314,8 @@ import Game from './game.js';
                         app.toggleCredits();
                     }
                 }
-                
-                if($('#parchment').hasClass('about')) {
+
+                if(document.getElementById('parchment').classList.contains('about')) {
                     if(game.started) {
                         app.closeInGameAbout();
                         hasClosedParchment = true;
@@ -291,68 +323,69 @@ import Game from './game.js';
                         app.toggleAbout();
                     }
                 }
-                
+
                 if(game.started && !game.renderer.mobile && game.player && !hasClosedParchment) {
                     game.click();
                 }
-            });
-            
-            $('#respawn').click(function(event) {
+            };
+            document.body.addEventListener('click', window._bodyClickHandler);
+
+            document.getElementById('respawn').addEventListener('click', function(event) {
                 game.audioManager.playSound("revive");
                 game.restart();
-                $('body').removeClass('death');
+                document.body.classList.remove('death');
             });
-            
-            $(document).mousemove(function(event) {
+
+            document.addEventListener('mousemove', function(event) {
             	app.setMouseCoordinates(event);
             	if(game.started) {
             	    game.movecursor();
             	}
             });
 
-            $(document).keydown(function(e) {
-            	const key = e.which, $chat = $('#chatinput');
+            document.addEventListener('keydown', function(e) {
+            	const key = e.which;
 
                 if(key === 13) {
-                    if($('#chatbox').hasClass('active')) {
+                    if(document.getElementById('chatbox').classList.contains('active')) {
                         app.hideChat();
                     } else {
                         app.showChat();
                     }
                 }
             });
-            
-            $('#chatinput').keydown(function(e) {
-                const key = e.which, $chat = $('#chatinput');
+
+            document.getElementById('chatinput').addEventListener('keydown', function(e) {
+                const key = e.which, chat = document.getElementById('chatinput');
 
                 if(key === 13) {
-                    if($chat.val() !== '') {
+                    if(chat.value !== '') {
                         if(game.player) {
-                            game.say($chat.val());
+                            game.say(chat.value);
                         }
-                        $chat.val('');
+                        chat.value = '';
                         app.hideChat();
-                        $('#foreground').focus();
+                        document.getElementById('foreground').focus();
                         return false;
                     } else {
                         app.hideChat();
                         return false;
                     }
                 }
-                
+
                 if(key === 27) {
                     app.hideChat();
                     return false;
                 }
             });
 
-            $('#nameinput').keypress(function(event) {
-                const $name = $('#nameinput'), name = $name.attr('value');
+            document.getElementById('nameinput').addEventListener('keypress', function(event) {
+                const nameInput = document.getElementById('nameinput'), name = nameInput.getAttribute('value');
 
                 if(event.keyCode === 13) {
                     if(name !== '') {
                         app.tryStartingGame(name, function() {
-                            $name.blur(); // exit keyboard on mobile
+                            nameInput.blur(); // exit keyboard on mobile
                         });
                         return false; // prevent form submit
                     } else {
@@ -360,18 +393,18 @@ import Game from './game.js';
                     }
                 }
             });
-            
-            $('#mutebutton').click(function() {
+
+            document.getElementById('mutebutton').addEventListener('click', function() {
                 game.audioManager.toggle();
             });
-            
-            $(document).bind("keydown", function(e) {
-            	const key = e.which, $chat = $('#chatinput');
 
-                if($('#chatinput:focus').size() == 0 && $('#nameinput:focus').size() == 0) {
+            document.addEventListener("keydown", function(e) {
+            	const key = e.which, chat = document.getElementById('chatinput');
+
+                if(document.activeElement !== document.getElementById('chatinput') && document.activeElement !== document.getElementById('nameinput')) {
                     if(key === 13) { // Enter
                         if(game.ready) {
-                            $chat.focus();
+                            chat.focus();
                             return false;
                         }
                     }
@@ -396,15 +429,15 @@ import Game from './game.js';
                     }
                 } else {
                     if(key === 13 && game.ready) {
-                        $chat.focus();
+                        chat.focus();
                         return false;
                     }
                 }
             });
-            
+
             if(game.renderer.tablet) {
-                $('body').addClass('tablet');
+                document.body.classList.add('tablet');
             }
     };
-    
+
     initApp();

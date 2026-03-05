@@ -11,10 +11,10 @@ import { resolveSprite } from './asset-resolver.js';
             this.ready = false;
             this.storage = new Storage();
             this.watchNameInputInterval = setInterval(this.toggleButton.bind(this), 100);
-            this.$playButton = $('.play'),
-            this.$playDiv = $('.play div');
+            this.$playButton = document.querySelector('.play');
+            this.$playDiv = document.querySelector('.play div');
         },
-        
+
         setGame: function(game) {
             this.game = game;
             this.isMobile = this.game.renderer.mobile;
@@ -23,11 +23,11 @@ import { resolveSprite } from './asset-resolver.js';
             this.supportsWorkers = !!window.Worker;
             this.ready = true;
         },
-    
+
         center: function() {
             window.scrollTo(0, 1);
         },
-        
+
         canStartGame: function() {
             if(this.isDesktop) {
                 return (this.game && this.game.map && this.game.map.isLoaded);
@@ -35,23 +35,23 @@ import { resolveSprite } from './asset-resolver.js';
                 return this.game;
             }
         },
-        
+
         tryStartingGame: function(username, starting_callback) {
             const self = this, $play = this.$playButton;
-            
+
             if(username !== '') {
                 if(!this.ready || !this.canStartGame()) {
                     if(!this.isMobile) {
                         // on desktop and tablets, add a spinner to the play button
-                        $play.addClass('loading');
+                        $play.classList.add('loading');
                     }
-                    this.$playDiv.unbind('click');
+                    this._unbindPlayDiv();
                     const watchCanStart = setInterval(function() {
                         log.debug("waiting...");
                         if(self.canStartGame()) {
                             setTimeout(function() {
                                 if(!self.isMobile) {
-                                    $play.removeClass('loading');
+                                    $play.classList.remove('loading');
                                 }
                             }, 1500);
                             clearInterval(watchCanStart);
@@ -59,15 +59,30 @@ import { resolveSprite } from './asset-resolver.js';
                         }
                     }, 100);
                 } else {
-                    this.$playDiv.unbind('click');
+                    this._unbindPlayDiv();
                     this.startGame(username, starting_callback);
-                }      
+                }
             }
         },
-        
+
+        _playDivHandler: null,
+
+        _unbindPlayDiv: function() {
+            if(this._playDivHandler) {
+                this.$playDiv.removeEventListener('click', this._playDivHandler);
+                this._playDivHandler = null;
+            }
+        },
+
+        _bindPlayDiv: function(fn) {
+            this._unbindPlayDiv();
+            this._playDivHandler = fn;
+            this.$playDiv.addEventListener('click', fn);
+        },
+
         startGame: function(username, starting_callback) {
             const self = this;
-            
+
             if(starting_callback) {
                 starting_callback();
             }
@@ -83,13 +98,13 @@ import { resolveSprite } from './asset-resolver.js';
 
         start: function(username) {
             const self = this, firstTimePlaying = !self.storage.hasAlreadyPlayed();
-            
+
             if(username && !this.game.started) {
                 this.game.setServerOptions("localhost", 8000, username);
 
                 this.center();
                 this.game.run(function() {
-                    $('body').addClass('started');
+                    document.body.classList.add('started');
                 	if(firstTimePlaying) {
                 	    self.toggleInstructions();
                 	}
@@ -98,10 +113,14 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         setMouseCoordinates: function(event) {
-            const gamePos = $('#container').offset(), scale = this.game.renderer.getScaleFactor(), width = this.game.renderer.getWidth(), height = this.game.renderer.getHeight(), mouse = this.game.mouse;
+            const gamePos = document.getElementById('container').getBoundingClientRect(),
+                  scale = this.game.renderer.getScaleFactor(),
+                  width = this.game.renderer.getWidth(),
+                  height = this.game.renderer.getHeight(),
+                  mouse = this.game.mouse;
 
-            mouse.x = event.pageX - gamePos.left - (this.isMobile ? 0 : 5 * scale);
-        	mouse.y = event.pageY - gamePos.top - (this.isMobile ? 0 : 7 * scale);
+            mouse.x = event.pageX - (gamePos.left + window.pageXOffset) - (this.isMobile ? 0 : 5 * scale);
+        	mouse.y = event.pageY - (gamePos.top + window.pageYOffset) - (this.isMobile ? 0 : 7 * scale);
 
         	if(mouse.x <= 0) {
         	    mouse.x = 0;
@@ -117,42 +136,44 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         initHealthBar: function() {
-            const scale = this.game.renderer.getScaleFactor(), healthMaxWidth = $("#healthbar").width() - (12 * scale);
+            const scale = this.game.renderer.getScaleFactor(),
+                  healthMaxWidth = document.getElementById('healthbar').offsetWidth - (12 * scale);
 
         	this.game.onPlayerHealthChange(function(hp, maxHp) {
         	    const barWidth = Math.round((healthMaxWidth / maxHp) * (hp > 0 ? hp : 0));
-        	    $("#hitpoints").css('width', barWidth + "px");
+        	    document.getElementById('hitpoints').style.width = barWidth + "px";
         	});
 
         	this.game.onPlayerHurt(this.blinkHealthBar.bind(this));
         },
 
         blinkHealthBar: function() {
-            const $hitpoints = $('#hitpoints');
+            const hitpoints = document.getElementById('hitpoints');
 
-            $hitpoints.addClass('white');
+            hitpoints.classList.add('white');
             setTimeout(function() {
-                $hitpoints.removeClass('white');
+                hitpoints.classList.remove('white');
             }, 500)
         },
 
         toggleButton: function() {
-            const name = $('#parchment input').val(), $play = $('#createcharacter .play');
-    
+            const name = document.getElementById('nameinput').value,
+                  play = document.querySelector('#createcharacter .play');
+
             if(name && name.length > 0) {
-                $play.removeClass('disabled');
-                $('#character').removeClass('disabled');
+                play.classList.remove('disabled');
+                document.getElementById('character').classList.remove('disabled');
             } else {
-                $play.addClass('disabled');
-                $('#character').addClass('disabled');
+                play.classList.add('disabled');
+                document.getElementById('character').classList.add('disabled');
             }
         },
 
         hideIntro: function(hidden_callback) {
             clearInterval(this.watchNameInputInterval);
-            $('body').removeClass('intro');
+            document.body.classList.remove('intro');
             setTimeout(function() {
-                $('body').addClass('game');
+                document.body.classList.add('game');
                 hidden_callback();
             }, 1000);
         },
@@ -160,60 +181,63 @@ import { resolveSprite } from './asset-resolver.js';
         showChat: function() {
             if(this.game.started) {
                 this.hideWindows();
-                $('#chatbox').addClass('active');
-                $('#chatinput').focus();
-                $('#chatbutton').addClass('active');
+                document.getElementById('chatbox').classList.add('active');
+                document.getElementById('chatinput').focus();
+                document.getElementById('chatbutton').classList.add('active');
             }
         },
 
         hideChat: function() {
             if(this.game.started) {
-                $('#chatbox').removeClass('active');
-                $('#chatinput').blur();
-                $('#chatbutton').removeClass('active');
+                document.getElementById('chatbox').classList.remove('active');
+                document.getElementById('chatinput').blur();
+                document.getElementById('chatbutton').classList.remove('active');
             }
         },
 
         toggleInstructions: function() {
             this.hideChat();
-            if($('#achievements').hasClass('active')) {
+            if(document.getElementById('achievements').classList.contains('active')) {
         	    this.toggleAchievements();
-        	    $('#achievementsbutton').removeClass('active');
+        	    document.getElementById('achievementsbutton').classList.remove('active');
         	}
-        	if($('body').hasClass('credits')) {
+        	if(document.body.classList.contains('credits')) {
         	    this.closeInGameCredits();
         	}
-        	if($('body').hasClass('about')) {
+        	if(document.body.classList.contains('about')) {
         	    this.closeInGameAbout();
         	}
-            $('#instructions').toggleClass('active');
+            document.getElementById('instructions').classList.toggle('active');
         },
 
         toggleAchievements: function() {
             this.hideChat();
-        	if($('#instructions').hasClass('active')) {
+        	if(document.getElementById('instructions').classList.contains('active')) {
         	    this.toggleInstructions();
-        	    $('#helpbutton').removeClass('active');
+        	    document.getElementById('helpbutton').classList.remove('active');
         	}
-        	if($('body').hasClass('credits')) {
+        	if(document.body.classList.contains('credits')) {
         	    this.closeInGameCredits();
         	}
-        	if($('body').hasClass('about')) {
+        	if(document.body.classList.contains('about')) {
         	    this.closeInGameAbout();
         	}
             this.resetPage();
-            $('#achievements').toggleClass('active');
+            document.getElementById('achievements').classList.toggle('active');
         },
 
         resetPage: function() {
-            const self = this, $achievements = $('#achievements');
+            const self = this,
+                  achievements = document.getElementById('achievements');
 
-            if($achievements.hasClass('active')) {
-                $achievements.bind(TRANSITIONEND, function() {
-                    $achievements.removeClass('page' + self.currentPage).addClass('page1');
+            if(achievements.classList.contains('active')) {
+                const handler = function() {
+                    achievements.classList.remove('page' + self.currentPage);
+                    achievements.classList.add('page1');
                     self.currentPage = 1;
-                    $achievements.unbind(TRANSITIONEND);
-                });
+                    achievements.removeEventListener(TRANSITIONEND, handler);
+                };
+                achievements.addEventListener(TRANSITIONEND, handler);
             }
         },
 
@@ -227,140 +251,145 @@ import { resolveSprite } from './asset-resolver.js';
                   weaponPath = getIconPath(weapon),
                   armorPath = getIconPath(armor);
 
-            $('#weapon').css('background-image', 'url("' + weaponPath + '")');
+            document.getElementById('weapon').style.backgroundImage = 'url("' + weaponPath + '")';
             if(armor !== 'firefox') {
-                $('#armor').css('background-image', 'url("' + armorPath + '")');
+                document.getElementById('armor').style.backgroundImage = 'url("' + armorPath + '")';
             }
         },
 
         hideWindows: function() {
-            if($('#achievements').hasClass('active')) {
+            if(document.getElementById('achievements').classList.contains('active')) {
         	    this.toggleAchievements();
-        	    $('#achievementsbutton').removeClass('active');
+        	    document.getElementById('achievementsbutton').classList.remove('active');
         	}
-        	if($('#instructions').hasClass('active')) {
+        	if(document.getElementById('instructions').classList.contains('active')) {
         	    this.toggleInstructions();
-        	    $('#helpbutton').removeClass('active');
+        	    document.getElementById('helpbutton').classList.remove('active');
         	}
-        	if($('body').hasClass('credits')) {
+        	if(document.body.classList.contains('credits')) {
         	    this.closeInGameCredits();
         	}
-        	if($('body').hasClass('about')) {
+        	if(document.body.classList.contains('about')) {
         	    this.closeInGameAbout();
         	}
         },
 
         showAchievementNotification: function(id, name) {
-            const $notif = $('#achievement-notification'), $name = $notif.find('.name'), $button = $('#achievementsbutton');
+            const notif = document.getElementById('achievement-notification'),
+                  nameEl = notif.querySelector('.name'),
+                  button = document.getElementById('achievementsbutton');
 
-            $notif.removeClass().addClass('active achievement' + id);
-            $name.text(name);
+            notif.className = 'active achievement' + id;
+            nameEl.textContent = name;
             if(this.game.storage.getAchievementCount() === 1) {
                 this.blinkInterval = setInterval(function() {
-                    $button.toggleClass('blink');
+                    button.classList.toggle('blink');
                 }, 500);
             }
             setTimeout(function() {
-                $notif.removeClass('active');
-                $button.removeClass('blink');
+                notif.classList.remove('active');
+                button.classList.remove('blink');
             }, 5000);
         },
 
         displayUnlockedAchievement: function(id) {
-            const $achievement = $('#achievements li.achievement' + id);
+            const achievement = document.querySelector('#achievements li.achievement' + id);
 
-            const achievement = this.game.getAchievementById(id);
-            if(achievement && achievement.hidden) {
-                this.setAchievementData($achievement, achievement.name, achievement.desc);
+            const achievementData = this.game.getAchievementById(id);
+            if(achievementData && achievementData.hidden) {
+                this.setAchievementData(achievement, achievementData.name, achievementData.desc);
             }
-            $achievement.addClass('unlocked');
+            achievement.classList.add('unlocked');
         },
 
         unlockAchievement: function(id, name) {
             this.showAchievementNotification(id, name);
             this.displayUnlockedAchievement(id);
 
-            const nb = parseInt($('#unlocked-achievements').text());
-            $('#unlocked-achievements').text(nb + 1);
+            const unlockedEl = document.getElementById('unlocked-achievements');
+            const nb = parseInt(unlockedEl.textContent);
+            unlockedEl.textContent = nb + 1;
         },
 
         initAchievementList: function(achievements) {
             const self = this;
-            const $lists = $('#lists');
-            const $page = $('#page-tmpl');
-            const $achievement = $('#achievement-tmpl');
+            const lists = document.getElementById('lists');
+            const pageTmpl = document.getElementById('page-tmpl');
+            const achievementTmpl = document.getElementById('achievement-tmpl');
             let page = 0;
             let count = 0;
-            let $p = null;
+            let p = null;
 
             _.each(achievements, function(achievement) {
                 count++;
-    
-                const $a = $achievement.clone();
-                $a.removeAttr('id');
-                $a.addClass('achievement'+count);
+
+                const a = achievementTmpl.cloneNode(true);
+                a.removeAttribute('id');
+                a.classList.add('achievement'+count);
                 if(!achievement.hidden) {
-                    self.setAchievementData($a, achievement.name, achievement.desc);
+                    self.setAchievementData(a, achievement.name, achievement.desc);
                 }
-                $a.find('.twitter').attr('href', 'http://twitter.com/share?url=http%3A%2F%2Fbrowserquest.mozilla.org&text=I%20unlocked%20the%20%27'+ achievement.name +'%27%20achievement%20on%20Mozilla%27s%20%23BrowserQuest%21&related=glecollinet:Creators%20of%20BrowserQuest%2Cwhatthefranck');
-                $a.show();
-                $a.find('a').click(function() {
-                     const url = $(this).attr('href');
+                a.querySelector('.twitter').setAttribute('href', 'http://twitter.com/share?url=http%3A%2F%2Fbrowserquest.mozilla.org&text=I%20unlocked%20the%20%27'+ achievement.name +'%27%20achievement%20on%20Mozilla%27s%20%23BrowserQuest%21&related=glecollinet:Creators%20of%20BrowserQuest%2Cwhatthefranck');
+                a.style.display = '';
+                a.querySelector('a').addEventListener('click', function(event) {
+                     const url = this.getAttribute('href');
 
                     self.openPopup('twitter', url);
+                    event.preventDefault();
                     return false;
                 });
-    
+
                 if((count - 1) % 4 === 0) {
                     page++;
-                    $p = $page.clone();
-                    $p.attr('id', 'page'+page);
-                    $p.show();
-                    $lists.append($p);
+                    p = pageTmpl.cloneNode(true);
+                    p.id = 'page'+page;
+                    p.style.display = '';
+                    lists.appendChild(p);
                 }
-                $p.append($a);
+                p.appendChild(a);
             });
 
-            $('#total-achievements').text($('#achievements').find('li').length);
+            document.getElementById('total-achievements').textContent = document.querySelectorAll('#achievements li').length;
         },
 
         initUnlockedAchievements: function(ids) {
             const self = this;
-            
+
             _.each(ids, function(id) {
                 self.displayUnlockedAchievement(id);
             });
-            $('#unlocked-achievements').text(ids.length);
+            document.getElementById('unlocked-achievements').textContent = ids.length;
         },
 
-        setAchievementData: function($el, name, desc) {
-            $el.find('.achievement-name').html(name);
-            $el.find('.achievement-description').html(desc);
+        setAchievementData: function(el, name, desc) {
+            el.querySelector('.achievement-name').innerHTML = name;
+            el.querySelector('.achievement-description').innerHTML = desc;
         },
 
         toggleCredits: function() {
-            const currentState = $('#parchment').attr('class');
+            const parchment = document.getElementById('parchment');
+            const currentState = parchment.getAttribute('class');
 
             if(this.game.started) {
                 this.hideChat();
-                if($('#achievements').hasClass('active')) {
+                if(document.getElementById('achievements').classList.contains('active')) {
                     this.toggleAchievements();
-                    $('#achievementsbutton').removeClass('active');
+                    document.getElementById('achievementsbutton').classList.remove('active');
                 }
-                if($('#instructions').hasClass('active')) {
+                if(document.getElementById('instructions').classList.contains('active')) {
                     this.toggleInstructions();
-                    $('#helpbutton').removeClass('active');
+                    document.getElementById('helpbutton').classList.remove('active');
                 }
-                $('#parchment').removeClass().addClass('credits');
+                parchment.className = 'credits';
 
-                $('body').toggleClass('credits');
+                document.body.classList.toggle('credits');
 
                 if(!this.game.player) {
-                    $('body').toggleClass('death');
+                    document.body.classList.toggle('death');
                 }
-                if($('body').hasClass('about')) {
+                if(document.body.classList.contains('about')) {
                     this.closeInGameAbout();
-                    $('#helpbutton').removeClass('active');
+                    document.getElementById('helpbutton').classList.remove('active');
                 }
             } else {
                 if(currentState !== 'animate') {
@@ -373,25 +402,26 @@ import { resolveSprite } from './asset-resolver.js';
                 }
             }
         },
-        
+
         toggleAbout: function() {
-            const currentState = $('#parchment').attr('class');
+            const parchment = document.getElementById('parchment');
+            const currentState = parchment.getAttribute('class');
 
             if(this.game.started) {
                 this.hideChat();
-                if($('#achievements').hasClass('active')) {
+                if(document.getElementById('achievements').classList.contains('active')) {
                     this.toggleAchievements();
-                    $('#achievementsbutton').removeClass('active');
+                    document.getElementById('achievementsbutton').classList.remove('active');
                 }
-                if($('#instructions').hasClass('active')) {
+                if(document.getElementById('instructions').classList.contains('active')) {
                     this.toggleInstructions();
                 }
-                $('#parchment').removeClass().addClass('about');
-                $('body').toggleClass('about');
+                parchment.className = 'about';
+                document.body.classList.toggle('about');
                 if(!this.game.player) {
-                    $('body').toggleClass('death');
+                    document.body.classList.toggle('death');
                 }
-                if($('body').hasClass('credits')) {
+                if(document.body.classList.contains('credits')) {
                     this.closeInGameCredits();
                 }
             } else {
@@ -411,29 +441,29 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         closeInGameCredits: function() {
-            $('body').removeClass('credits');
-            $('#parchment').removeClass('credits');
+            document.body.classList.remove('credits');
+            document.getElementById('parchment').classList.remove('credits');
             if(!this.game.player) {
-                $('body').addClass('death');
+                document.body.classList.add('death');
             }
         },
-        
+
         closeInGameAbout: function() {
-            $('body').removeClass('about');
-            $('#parchment').removeClass('about');
+            document.body.classList.remove('about');
+            document.getElementById('parchment').classList.remove('about');
             if(!this.game.player) {
-                $('body').addClass('death');
+                document.body.classList.add('death');
             }
-            $('#helpbutton').removeClass('active');
+            document.getElementById('helpbutton').classList.remove('active');
         },
-        
+
         togglePopulationInfo: function() {
-            $('#population').toggleClass('visible');
+            document.getElementById('population').classList.toggle('visible');
         },
 
         openPopup: function(type, url) {
-            const h = $(window).height();
-            const w = $(window).width();
+            const h = window.innerHeight;
+            const w = window.innerWidth;
             let popupHeight;
             let popupWidth;
             let top;
@@ -459,26 +489,27 @@ import { resolveSprite } from './asset-resolver.js';
 
         animateParchment: function(origin, destination) {
             const self = this;
-            const $parchment = $('#parchment');
+            const parchment = document.getElementById('parchment');
             let duration = 1;
 
             if(this.isMobile) {
-                $parchment.removeClass(origin).addClass(destination);
+                parchment.classList.remove(origin);
+                parchment.classList.add(destination);
             } else {
                 if(this.isParchmentReady) {
                     if(this.isTablet) {
                         duration = 0;
                     }
                     this.isParchmentReady = !this.isParchmentReady;
-        
-                    $parchment.toggleClass('animate');
-                    $parchment.removeClass(origin);
+
+                    parchment.classList.toggle('animate');
+                    parchment.classList.remove(origin);
 
                     setTimeout(function() {
-                        $('#parchment').toggleClass('animate');
-                        $parchment.addClass(destination);
+                        parchment.classList.toggle('animate');
+                        parchment.classList.add(destination);
                     }, duration * 1000);
-        
+
                     setTimeout(function() {
                         self.isParchmentReady = !self.isParchmentReady;
                     }, duration * 1000);
@@ -487,37 +518,38 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         animateMessages: function() {
-            const $messages = $('#notifications div');
+            const messages = document.querySelectorAll('#notifications div');
 
-            $messages.addClass('top');
+            messages.forEach(function(el) { el.classList.add('top'); });
         },
 
         resetMessagesPosition: function() {
-            const message = $('#message2').text();
+            const message = document.getElementById('message2').textContent;
 
-            $('#notifications div').removeClass('top');
-            $('#message2').text('');
-            $('#message1').text(message);
+            document.querySelectorAll('#notifications div').forEach(function(el) { el.classList.remove('top'); });
+            document.getElementById('message2').textContent = '';
+            document.getElementById('message1').textContent = message;
         },
 
         showMessage: function(message) {
-            const $wrapper = $('#notifications div'), $message = $('#notifications #message2');
+            const wrapper = document.querySelector('#notifications div'),
+                  messageEl = document.getElementById('message2');
 
             this.animateMessages();
-            $message.text(message);
+            messageEl.textContent = message;
             if(this.messageTimer) {
                 this.resetMessageTimer();
             }
 
             this.messageTimer = setTimeout(function() {
-                    $wrapper.addClass('top');
+                    wrapper.classList.add('top');
             }, 5000);
         },
 
         resetMessageTimer: function() {
             clearTimeout(this.messageTimer);
         },
-        
+
         resizeUi: function() {
             if(this.game) {
                 if(this.game.started) {

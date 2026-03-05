@@ -37,10 +37,10 @@
             }
 
             // Set name input and trigger the play button
-            const $input = $('#nameinput');
-            $input.val(name);
-            $input[0].dispatchEvent(new Event('input', { bubbles: true }));
-            $('.play div').click();
+            const input = document.getElementById('nameinput');
+            input.value = name;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            document.querySelector('.play div').click();
 
             let elapsed = 0;
             const interval = 200;
