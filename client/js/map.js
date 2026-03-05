@@ -1,5 +1,6 @@
 
 import Area from './area.js';
+import { resolveTileset, resolveMap } from './asset-resolver.js';
     
     var Map = Class.extend({
         init: function(loadMultiTilesheets, game) {
@@ -27,13 +28,13 @@ import Area from './area.js';
 
         _loadMap: function(useWorker) {
         	var self = this,
-        	    filepath = "maps/world_client.json";
-        	
+        	    filepath = resolveMap('world');
+
         	if(useWorker) {
         	    log.info("Loading map with web worker.");
                 var worker = new Worker('js/mapworker.js');
                 worker.postMessage(1);
-            
+
                 worker.onmessage = function(event) {
                     var map = event.data;
                     self._initMap(map);
@@ -41,6 +42,10 @@ import Area from './area.js';
                     self.plateauGrid = map.plateauGrid;
                     self.mapLoaded = true;
                     self._checkReady();
+                };
+
+                worker.onerror = function(e) {
+                    log.error("Map worker error: " + e.message);
                 };
             } else {
                 log.info("Loading map via Ajax.");
@@ -50,8 +55,10 @@ import Area from './area.js';
                     self._generatePlateauGrid();
                     self.mapLoaded = true;
                     self._checkReady();
-                }, 'json');
-            }        
+                }, 'json').fail(function(jqXHR, textStatus) {
+                    log.error("Map AJAX load failed: " + textStatus);
+                });
+            }
         },
         
         _initTilesets: function() {
@@ -59,15 +66,15 @@ import Area from './area.js';
             
             if(!this.loadMultiTilesheets) {
                 this.tilesetCount = 1;
-                tileset1 = this._loadTileset('img/1/tilesheet.png');
+                tileset1 = this._loadTileset(resolveTileset(1));
             } else {
                 if(this.game.renderer.mobile || this.game.renderer.tablet) {
                     this.tilesetCount = 1;
-                    tileset2 = this._loadTileset('img/2/tilesheet.png');
+                    tileset2 = this._loadTileset(resolveTileset(2));
                 } else {
                     this.tilesetCount = 2;
-                    tileset2 = this._loadTileset('img/2/tilesheet.png');
-                    tileset3 = this._loadTileset('img/3/tilesheet.png');
+                    tileset2 = this._loadTileset(resolveTileset(2));
+                    tileset3 = this._loadTileset(resolveTileset(3));
                 }
             }
         
@@ -136,16 +143,20 @@ import Area from './area.js';
                     throw Error("Tileset size should be a multiple of "+ self.tilesize);
                 }
                 log.info("Map tileset loaded.");
-            
+
                 self.tilesetCount -= 1;
                 if(self.tilesetCount === 0) {
                     log.debug("All map tilesets loaded.")
-                    
+
             		self.tilesetsLoaded = true;
             		self._checkReady();
             	}
         	};
-    	
+
+        	tileset.onerror = function() {
+        	    log.error("Failed to load tileset: " + filepath);
+        	};
+
         	return tileset;
         },
 
