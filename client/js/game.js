@@ -21,7 +21,6 @@ import Npc from './npc.js';
 import Player from './player.js';
 import Character from './character.js';
 import Chest from './chest.js';
-import Mobs from './mobs.js';
 import Exceptions from './exceptions.js';
 import config from './config.js';
 import manifest from './manifest.js';
@@ -1253,7 +1252,7 @@ import manifest from './manifest.js';
                                         }
 
                                         entity.isDying = true;
-                                        entity.setSprite(self.sprites[entity instanceof Mobs.Rat ? "rat" : "death"]);
+                                        entity.setSprite(self.sprites[entity.kind === Types.Entities.RAT ? "rat" : "death"]);
                                         entity.animate("death", 120, 1, function() {
                                             log.info(entity.id + " was removed");
 
