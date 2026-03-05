@@ -1,4 +1,8 @@
 
+import { Class } from './lib/class.js';
+import Types from './gametypes.js';
+import log from './lib/log.js';
+import { requestAnimFrame } from './util.js';
 import InfoManager from './infomanager.js';
 import BubbleManager from './bubble.js';
 import Renderer from './renderer.js';

@@ -1,3 +1,4 @@
+import Types from '../gametypes.js';
 import Item from "./item.js";
 import Utils from "./utils.js";
 

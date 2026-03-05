@@ -1,3 +1,4 @@
+import log from '../lib/log.js';
 import Entity from "./entity.js";
 import Messages from "./message.js";
 import Utils from "./utils.js";

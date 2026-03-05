@@ -67,3 +67,5 @@ window.Class = Class;
 if(typeof window !== 'undefined') {
     window.Class = Class;
 }
+
+export { Class };

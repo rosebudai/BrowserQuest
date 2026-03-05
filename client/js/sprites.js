@@ -1,6 +1,7 @@
 // Sprite JSON data loaded from the asset manifest.
 // Supports both inline data (object — used in Rosebud packages) and
 // paths (string — used in local dev, fetched at runtime).
+import log from './lib/log.js';
 import manifest from './manifest.js';
 import { resolveSpriteData } from './asset-resolver.js';
 

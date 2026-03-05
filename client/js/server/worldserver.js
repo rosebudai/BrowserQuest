@@ -1,3 +1,6 @@
+import { Class } from '../lib/class.js';
+import Types from '../gametypes.js';
+import log from '../lib/log.js';
 import Entity from './entity.js';
 import Character from './character.js';
 import Mob from './mob.js';

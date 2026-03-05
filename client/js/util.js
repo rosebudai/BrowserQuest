@@ -7,13 +7,16 @@ const TRANSITIONEND = 'transitionend';
 window.TRANSITIONEND = TRANSITIONEND;
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       || 
-          window.webkitRequestAnimationFrame || 
-          window.mozRequestAnimationFrame    || 
-          window.oRequestAnimationFrame      || 
-          window.msRequestAnimationFrame     || 
+const requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          window.oRequestAnimationFrame      ||
+          window.msRequestAnimationFrame     ||
           function(/* function */ callback, /* DOMElement */ element){
             window.setTimeout(callback, 1000 / 60);
           };
 })();
+window.requestAnimFrame = requestAnimFrame;
+
+export { isInt, TRANSITIONEND, requestAnimFrame };

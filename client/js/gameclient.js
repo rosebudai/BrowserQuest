@@ -1,4 +1,7 @@
 
+import { Class } from './lib/class.js';
+import Types from './gametypes.js';
+import log from './lib/log.js';
 import Player from './player.js';
 import EntityFactory from './entityfactory.js';
 import LocalGameServer from './server/localgameserver.js';

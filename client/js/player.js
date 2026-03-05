@@ -1,3 +1,5 @@
+import Types from './gametypes.js';
+import log from './lib/log.js';
 import Character from './character.js';
 import Exceptions from './exceptions.js';
 

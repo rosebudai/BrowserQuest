@@ -1,7 +1,8 @@
+import { Class } from '../lib/class.js';
+import log from '../lib/log.js';
 import Utils from "./utils.js";
 import Checkpoint from "./checkpoint.js";
 
-/* Uses global Class */
 const Map = Class.extend({    
     init: function(filepath) {
     	const self = this;

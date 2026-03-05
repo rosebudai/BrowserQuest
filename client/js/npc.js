@@ -1,3 +1,4 @@
+import Types from './gametypes.js';
 import Character from './character.js';
 
     const NpcTalk = {

@@ -1,3 +1,5 @@
+import { Class } from './lib/class.js';
+import log from './lib/log.js';
 import Area from './area.js';
 import { resolveSound, resolveMusic } from './asset-resolver.js';
 

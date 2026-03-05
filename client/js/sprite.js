@@ -1,3 +1,5 @@
+import { Class } from './lib/class.js';
+import log from './lib/log.js';
 import Animation from './animation.js';
 import { resolveSprite } from './asset-resolver.js';
 

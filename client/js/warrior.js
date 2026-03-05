@@ -1,3 +1,4 @@
+import Types from './gametypes.js';
 import Player from './player.js';
 
     const Warrior = Player.extend({

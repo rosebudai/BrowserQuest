@@ -1,3 +1,4 @@
+import Types from './gametypes.js';
 import Mob from './mob.js';
 import Timer from './timer.js';
 

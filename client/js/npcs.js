@@ -1,3 +1,4 @@
+import Types from './gametypes.js';
 import Npc from './npc.js';
 
     const NPCs = {

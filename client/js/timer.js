@@ -1,3 +1,4 @@
+import { Class } from './lib/class.js';
 
 const Timer = Class.extend({
     init: function(duration, startTime) {

@@ -1,3 +1,4 @@
+import Types from './gametypes.js';
 import Entity from './entity.js';
 
     const Chest = Entity.extend({

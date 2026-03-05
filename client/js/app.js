@@ -1,4 +1,7 @@
 
+import { Class } from './lib/class.js';
+import log from './lib/log.js';
+import { TRANSITIONEND } from './util.js';
 import Storage from './storage.js';
 import { resolveSprite } from './asset-resolver.js';
 

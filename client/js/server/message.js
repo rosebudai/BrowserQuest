@@ -1,6 +1,8 @@
+import { Class } from '../lib/class.js';
+import Types from '../gametypes.js';
+
 const Messages = {};
 
-/* Uses global Class */
 const Message = Class.extend({
 });
 

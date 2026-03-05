@@ -1,3 +1,4 @@
+import { Class } from './lib/class.js';
 
 const Animation = Class.extend({
     init: function(name, length, row, width, height) {

@@ -1,3 +1,4 @@
+import { Class } from './lib/class.js';
 import Timer from './timer.js';
 
     const Bubble = Class.extend({

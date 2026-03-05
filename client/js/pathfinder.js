@@ -1,3 +1,4 @@
+import { Class } from './lib/class.js';
 import AStar from './lib/astar.js';
 
     const Pathfinder = Class.extend({

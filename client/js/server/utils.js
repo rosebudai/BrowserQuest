@@ -1,3 +1,5 @@
+import Types from '../gametypes.js';
+
 const Utils = {};
 
 function sanitize(str) {

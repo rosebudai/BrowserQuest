@@ -1,3 +1,4 @@
+import Types from '../gametypes.js';
 import Area from "./area.js";
 import Mob from "./mob.js";
 import Utils from "./utils.js";

@@ -1,3 +1,6 @@
+import { Class } from './lib/class.js';
+import Types from './gametypes.js';
+import log from './lib/log.js';
 import Entity from './entity.js';
 import Transition from './transition.js';
 import Timer from './timer.js';

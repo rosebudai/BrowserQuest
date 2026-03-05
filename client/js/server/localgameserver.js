@@ -1,9 +1,9 @@
+import { Class } from '../lib/class.js';
 import WorldServer from './worldserver.js';
 import ServerMap from './map.js';
 import Player from './player.js';
 import { resolveMap } from '../asset-resolver.js';
 
-/* Uses global Class */
 const LocalGameServer = Class.extend({
     init: function() {
         this.isConnected = false;

@@ -1,3 +1,5 @@
+import { Class } from './lib/class.js';
+import log from './lib/log.js';
 
 const Transition = Class.extend({
     init: function() {

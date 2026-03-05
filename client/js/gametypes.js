@@ -312,3 +312,5 @@ Types.getMessageTypeAsString = function(type) {
 if(typeof window !== 'undefined') {
     window.Types = Types;
 }
+
+export default Types;

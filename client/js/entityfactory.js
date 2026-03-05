@@ -1,3 +1,5 @@
+import Types from './gametypes.js';
+import log from './lib/log.js';
 import Mobs from './mobs.js';
 import Items from './items.js';
 import NPCs from './npcs.js';

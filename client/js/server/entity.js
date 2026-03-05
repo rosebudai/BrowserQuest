@@ -1,7 +1,7 @@
+import { Class } from '../lib/class.js';
 import Messages from "./message.js";
 import Utils from "./utils.js";
 
-/* Uses global Class */
 const Entity = Class.extend({
     init: function(id, type, kind, x, y) {
         this.id = parseInt(id);

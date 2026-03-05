@@ -1,6 +1,6 @@
+import { Class } from '../lib/class.js';
 import Utils from "./utils.js";
 
-/* Uses global Class */
 const Checkpoint = Class.extend({
     init: function(id, x, y, width, height) {
         this.id = id;

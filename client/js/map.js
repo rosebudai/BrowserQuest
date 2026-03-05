@@ -1,4 +1,8 @@
 
+import { Class } from './lib/class.js';
+import Types from './gametypes.js';
+import log from './lib/log.js';
+import { isInt } from './util.js';
 import Area from './area.js';
 import { resolveTileset, resolveMap } from './asset-resolver.js';
     

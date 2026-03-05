@@ -1,3 +1,6 @@
+import Types from '../gametypes.js';
+import log from '../lib/log.js';
+
 const Properties = {
     rat: {
         drops: {

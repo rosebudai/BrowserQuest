@@ -1,7 +1,7 @@
+import { Class } from '../lib/class.js';
 import Utils from "./utils.js";
 import Mob from "./mob.js";
 
-/* Uses global Class */
 const Area = Class.extend({
     init: function(id, x, y, width, height, world) {
         this.id = id;

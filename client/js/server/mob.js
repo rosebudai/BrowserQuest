@@ -1,3 +1,4 @@
+import log from '../lib/log.js';
 import Character from "./character.js";
 import Messages from "./message.js";
 import Properties from "./properties.js";
