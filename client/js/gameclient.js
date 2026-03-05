@@ -1,7 +1,6 @@
 
 import Player from './player.js';
 import EntityFactory from './entityfactory.js';
-import BISON from './lib/bison.js';
 import LocalGameServer from './server/localgameserver.js';
 
     var GameClient = Class.extend({
@@ -35,7 +34,6 @@ import LocalGameServer from './server/localgameserver.js';
             this.handlers[Types.Messages.HP] = this.receiveHitPoints;
             this.handlers[Types.Messages.BLINK] = this.receiveBlink;
         
-            this.useBison = false;
             this.enable();
         },
     
@@ -92,11 +90,7 @@ import LocalGameServer from './server/localgameserver.js';
         sendMessage: function(json) {
             var data;
             if(this.connection.getReadyState() === 1) {
-                if(this.useBison) {
-                    data = BISON.encode(json);
-                } else {
-                    data = JSON.stringify(json);
-                }
+                data = JSON.stringify(json);
                 this.connection.send(data);
             }
         },
@@ -105,11 +99,7 @@ import LocalGameServer from './server/localgameserver.js';
             var data, action;
         
             if(this.isListening) {
-                if(this.useBison) {
-                    data = BISON.decode(message);
-                } else {
-                    data = JSON.parse(message);
-                }
+                data = JSON.parse(message);
 
                 log.debug("data: " + message);
 

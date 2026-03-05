@@ -509,7 +509,7 @@ import manifest from './manifest.js';
                 this.removeFromRenderingGrid(item, item.gridX, item.gridY);
                 delete this.entities[item.id];
             } else {
-                log.debug("Cannot remove item. Unknown ID : " + item.id);
+                log.debug("Cannot remove item. Item is null/undefined.");
             }
         },
     

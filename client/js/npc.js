@@ -80,17 +80,7 @@ import Character from './character.js';
             "nyan nyan nyan nyan nyan nyan nyan nyan"
         ],
         
-        "beachnpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
-        ],
-        
         "forestnpc": [
-            "lorem ipsum dolor sit amet",
-            "consectetur adipisicing elit, sed do eiusmod tempor"
-        ],
-        
-        "desertnpc": [
             "lorem ipsum dolor sit amet",
             "consectetur adipisicing elit, sed do eiusmod tempor"
         ],

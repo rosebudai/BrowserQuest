@@ -212,7 +212,7 @@ var pos = function(x, y) {
 };
 
 var equalPositions = function(pos1, pos2) {
-    return pos1.x === pos2.x && pos2.y === pos2.y;
+    return pos1.x === pos2.x && pos1.y === pos2.y;
 };
 
 export default Map;
