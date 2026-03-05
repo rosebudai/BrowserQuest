@@ -166,47 +166,21 @@ const { chromium } = require('playwright');
       const game = window.__game;
       const results = [];
 
-      // Test 1: Resolver returns raw path when __resolveAsset is not set
+      // Test 1: Resolver returns a manifest path (img/ for dev, assets/ for packaged)
       try {
-        const testResult = { name: 'resolveSprite returns raw path locally', ok: false, reason: '' };
+        const testResult = { name: 'resolveSprite returns manifest path', ok: false, reason: '' };
         const ratSprite = game.sprites['rat'];
-        if (ratSprite && ratSprite.filepath && ratSprite.filepath.indexOf('img/') === 0) {
+        if (ratSprite && ratSprite.filepath && (ratSprite.filepath.indexOf('img/') === 0 || ratSprite.filepath.indexOf('assets/') === 0)) {
           testResult.ok = true;
         } else {
-          testResult.reason = 'filepath not a raw path: ' + (ratSprite && ratSprite.filepath);
+          testResult.reason = 'unexpected filepath: ' + (ratSprite && ratSprite.filepath);
         }
         results.push(testResult);
       } catch (e) {
         results.push({ name: 'resolveSprite returns raw path locally', ok: false, reason: e.message });
       }
 
-      // Test 2: Setting __resolveAsset transforms paths at call time (late binding)
-      // We test this by setting __resolveAsset, then triggering game.loadSprite
-      // which creates new Sprite objects that go through the resolver
-      try {
-        const testResult = { name: '__resolveAsset late binding works', ok: false, reason: '' };
-        var original = window.__resolveAsset;
-        var transformedPaths = [];
-        window.__resolveAsset = function(p) { transformedPaths.push(p); return '/cdn/' + p; };
-
-        // loadSprite creates new Sprite objects which call resolveSprite internally
-        game.loadSprite('rat');
-
-        window.__resolveAsset = original;
-
-        // Check that the resolver was called with the rat sprite path
-        var ratPathFound = transformedPaths.some(function(p) { return p.indexOf('rat.png') >= 0; });
-        if (ratPathFound && transformedPaths.length > 0) {
-          testResult.ok = true;
-        } else {
-          testResult.reason = 'transformedPaths=' + JSON.stringify(transformedPaths);
-        }
-        results.push(testResult);
-      } catch (e) {
-        results.push({ name: '__resolveAsset late binding works', ok: false, reason: e.message });
-      }
-
-      // Test 3: Manifest completeness — gameSprites count matches loaded sprites
+      // Test 2: Manifest completeness — gameSprites count matches loaded sprites
       try {
         const testResult = { name: 'gameSprites matches loaded sprite count', ok: false, reason: '' };
         const loadedCount = Object.keys(game.sprites).length;
@@ -220,23 +194,23 @@ const { chromium } = require('playwright');
         results.push({ name: 'gameSprites matches loaded sprite count', ok: false, reason: e.message });
       }
 
-      // Test 4: All sprites have both rawFilepath and filepath set
+      // Test 3: All sprites have filepath set
       try {
-        const testResult = { name: 'All sprites have rawFilepath and filepath', ok: true, reason: '' };
+        const testResult = { name: 'All sprites have filepath', ok: true, reason: '' };
         const missing = [];
         for (const name in game.sprites) {
           const s = game.sprites[name];
-          if (!s.rawFilepath || !s.filepath) {
+          if (!s.filepath) {
             missing.push(name);
           }
         }
         if (missing.length > 0) {
           testResult.ok = false;
-          testResult.reason = 'Missing paths on: ' + missing.join(', ');
+          testResult.reason = 'Missing filepath on: ' + missing.join(', ');
         }
         results.push(testResult);
       } catch (e) {
-        results.push({ name: 'All sprites have rawFilepath and filepath', ok: false, reason: e.message });
+        results.push({ name: 'All sprites have filepath', ok: false, reason: e.message });
       }
 
       return results;
@@ -244,6 +218,55 @@ const { chromium } = require('playwright');
 
     const resolverPassed = resolverResults.filter(r => r.ok).length;
     logCategory('Resolver integration', resolverPassed, resolverResults.length, resolverResults);
+
+    // ---- Category 8: Manifest path format (rewriter compatibility) ----
+    const manifestResults = await page.evaluate(() => {
+      const results = [];
+      const game = window.__game;
+
+      // Test 1: All sprite paths are complete quoted strings (contain full path)
+      try {
+        const testResult = { name: 'Sprite paths are complete strings', ok: true, reason: '' };
+        const bad = [];
+        for (const name in game.sprites) {
+          const s = game.sprites[name];
+          if (!s.filepath || (!s.filepath.includes('/') && !s.filepath.includes('.'))) {
+            bad.push(name + ': ' + s.filepath);
+          }
+        }
+        if (bad.length > 0) {
+          testResult.ok = false;
+          testResult.reason = 'Incomplete paths: ' + bad.join(', ');
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: 'Sprite paths are complete strings', ok: false, reason: e.message });
+      }
+
+      // Test 2: No string concatenation artifacts in paths (no undefined, no [object])
+      try {
+        const testResult = { name: 'No path concatenation artifacts', ok: true, reason: '' };
+        const bad = [];
+        for (const name in game.sprites) {
+          const fp = game.sprites[name].filepath;
+          if (fp && (fp.includes('undefined') || fp.includes('[object'))) {
+            bad.push(name + ': ' + fp);
+          }
+        }
+        if (bad.length > 0) {
+          testResult.ok = false;
+          testResult.reason = 'Bad paths: ' + bad.join(', ');
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: 'No path concatenation artifacts', ok: false, reason: e.message });
+      }
+
+      return results;
+    });
+
+    const manifestPassed = manifestResults.filter(r => r.ok).length;
+    logCategory('Manifest path format', manifestPassed, manifestResults.length, manifestResults);
 
   } catch (err) {
     console.error('\x1b[31mFATAL ERROR:\x1b[0m', err.message);

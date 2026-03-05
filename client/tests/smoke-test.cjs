@@ -337,8 +337,11 @@ const path = require('path');
       };
     });
 
-    const viewportOk = viewportInfo.canvasWidth >= viewportInfo.viewportWidth &&
-                       viewportInfo.canvasHeight >= viewportInfo.viewportHeight;
+    // Canvas is grid-aligned (tilesize * scale * gridW/H) and the status bar
+    // takes ~34px, so canvas won't exactly match the viewport. Check that the
+    // canvas covers at least 80% of each viewport dimension.
+    const viewportOk = viewportInfo.canvasWidth >= viewportInfo.viewportWidth * 0.80 &&
+                       viewportInfo.canvasHeight >= viewportInfo.viewportHeight * 0.80;
     logStep('Viewport', viewportOk,
       `Canvas: ${viewportInfo.canvasWidth}x${viewportInfo.canvasHeight}, Viewport: ${viewportInfo.viewportWidth}x${viewportInfo.viewportHeight}`);
     await screenshot('08-viewport');

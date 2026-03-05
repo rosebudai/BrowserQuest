@@ -24,13 +24,22 @@ Logger.prototype.debug = function(message) {
     }
 };
 
+Logger.prototype.warn = function(message) {
+    if(window.console) {
+        console.warn(message);
+    }
+};
+
 Logger.prototype.error = function(message, stacktrace) {
     if(window.console) {
         console.error(message);
         if(stacktrace !== undefined && stacktrace === true) {
-            var trace = printStackTrace();
-            console.error(trace.join('\n\n'));
-            console.error('-----------------------------');
+            if(typeof printStackTrace === 'function') {
+                var trace = printStackTrace();
+                console.error(trace.join('\n\n'));
+            } else if(typeof Error !== 'undefined') {
+                console.error(new Error().stack);
+            }
         }
     }
 };

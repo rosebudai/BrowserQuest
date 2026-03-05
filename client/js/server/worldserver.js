@@ -283,7 +283,7 @@ var WorldServer = Class.extend({
         if(player && player.id in this.outgoingQueues) {
             this.outgoingQueues[player.id].push(message.serialize());
         } else {
-            log.error("pushToPlayer: player was undefined");
+            log.debug("pushToPlayer: player was undefined");
         }
     },
     
@@ -524,7 +524,7 @@ var WorldServer = Class.extend({
         if(id in this.entities) {
             return this.entities[id];
         } else {
-            log.error("Unknown entity : " + id);
+            log.debug("Unknown entity : " + id);
         }
     },
     

@@ -126,7 +126,7 @@ import Timer from './timer.js';
             if(this.request_path_callback) {
                 return this.request_path_callback(x, y);
             } else {
-                log.error(this.id + " couldn't request pathfinding to "+x+", "+y);
+                log.debug(this.id + " couldn't request pathfinding to "+x+", "+y);
                 return [];
             }
         },
@@ -407,7 +407,7 @@ import Timer from './timer.js';
             if(!this.isAttackedBy(character)) {
                 this.attackers[character.id] = character;
             } else {
-                log.error(this.id + " is already attacked by " + character.id);
+                log.debug(this.id + " is already attacked by " + character.id);
             }
         },
 

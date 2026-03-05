@@ -22,7 +22,7 @@ import Chest from './chest.js';
 import Mobs from './mobs.js';
 import Exceptions from './exceptions.js';
 import config from './config.js';
-import manifest from './asset-manifest.js';
+import manifest from './manifest.js';
     
     var Game = Class.extend({
         init: function(app) {
@@ -139,13 +139,36 @@ import manifest from './asset-manifest.js';
     
         initPlayer: function() {
             if(this.storage.hasAlreadyPlayed()) {
-                this.player.setSpriteName(this.storage.data.player.armor);
-                this.player.setWeaponName(this.storage.data.player.weapon);
+                var savedArmor = this.storage.data.player.armor;
+                var savedWeapon = this.storage.data.player.weapon;
+                if(savedArmor && this.sprites[savedArmor]) {
+                    this.player.setSpriteName(savedArmor);
+                } else if(savedArmor) {
+                    log.warn("Saved armor '" + savedArmor + "' not found in sprites, using clotharmor");
+                }
+                if(savedWeapon) {
+                    this.player.setWeaponName(savedWeapon);
+                }
             }
-        
-        	this.player.setSprite(this.sprites[this.player.getSpriteName()]);
+
+            var spriteName = this.player.getSpriteName();
+            var sprite = this.sprites[spriteName];
+            if(!sprite) {
+                log.warn("Sprite '" + spriteName + "' not found, falling back to clotharmor");
+                sprite = this.sprites["clotharmor"];
+            }
+            if(!sprite) {
+                // Last resort: use first available sprite
+                var names = Object.keys(this.sprites);
+                if(names.length > 0) {
+                    sprite = this.sprites[names[0]];
+                    log.warn("clotharmor not found, using first available: " + names[0]);
+                }
+            }
+
+        	this.player.setSprite(sprite);
         	this.player.idle();
-        
+
     	    log.debug("Finished initPlayer");
         },
 
@@ -340,13 +363,21 @@ import manifest from './asset-manifest.js';
         },
     
         loadSprite: function(name) {
-            if(this.renderer.upscaledRendering) {
-                this.spritesets[0][name] = new Sprite(name, 1, this.spriteData);
-            } else {
-                this.spritesets[1][name] = new Sprite(name, 2, this.spriteData);
-                if(!this.renderer.mobile && !this.renderer.tablet) {
-                    this.spritesets[2][name] = new Sprite(name, 3, this.spriteData);
+            if(!this.spriteData[name]) {
+                log.error("Missing sprite data for: " + name);
+                return;
+            }
+            try {
+                if(this.renderer.upscaledRendering) {
+                    this.spritesets[0][name] = new Sprite(name, 1, this.spriteData);
+                } else {
+                    this.spritesets[1][name] = new Sprite(name, 2, this.spriteData);
+                    if(!this.renderer.mobile && !this.renderer.tablet) {
+                        this.spritesets[2][name] = new Sprite(name, 3, this.spriteData);
+                    }
                 }
+            } catch(e) {
+                log.error("Failed to load sprite: " + name + " — " + e.message);
             }
         },
     
@@ -451,7 +482,7 @@ import manifest from './asset-manifest.js';
                 }
             }
             else {
-                log.error("This entity already exists : " + entity.id + " ("+entity.kind+")");
+                log.debug("This entity already exists : " + entity.id + " ("+entity.kind+")");
             }
         },
 
@@ -461,7 +492,7 @@ import manifest from './asset-manifest.js';
                 delete this.entities[entity.id];
             }
             else {
-                log.error("Cannot remove entity. Unknown ID : " + entity.id);
+                log.debug("Cannot remove entity. Unknown ID : " + entity.id);
             }
         },
     
@@ -478,7 +509,7 @@ import manifest from './asset-manifest.js';
                 this.removeFromRenderingGrid(item, item.gridX, item.gridY);
                 delete this.entities[item.id];
             } else {
-                log.error("Cannot remove item. Unknown ID : " + item.id);
+                log.debug("Cannot remove item. Unknown ID : " + item.id);
             }
         },
     
@@ -1888,7 +1919,7 @@ import manifest from './asset-manifest.js';
                     this.pathfinder.clearIgnoreList();
                 }
             } else {
-                log.error("Error while finding the path to "+x+", "+y+" for "+character.id);
+                log.debug("Error while finding the path to "+x+", "+y+" for "+character.id);
             }
             return path;
         },

@@ -43,7 +43,7 @@ var Entity = Class.extend({
 
 	setSprite: function(sprite) {
 	    if(!sprite) {
-	        log.error(this.id + " : sprite is null", true);
+	        log.error(this.id + " : sprite is null (wanted: " + this.getSpriteName() + ")", true);
 	        throw "Error";
 	    }
 

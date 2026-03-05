@@ -137,7 +137,8 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         _loadTileset: function(filepath) {
         	var self = this;
     	    var tileset = new Image();
-    	
+    	    tileset.crossOrigin = "anonymous";
+
         	tileset.src = filepath;
     
             log.info("Loading tileset: "+filepath);

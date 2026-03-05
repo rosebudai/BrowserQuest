@@ -96,11 +96,19 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         loadSound: function(name, handleLoaded) {
-            this.load(resolveSound(name) + "." + this.extension, name, handleLoaded, 4);
+            var path = resolveSound(name);
+            if(this.extension !== "mp3") {
+                path = path.replace(".mp3", "." + this.extension);
+            }
+            this.load(path, name, handleLoaded, 4);
         },
 
         loadMusic: function(name, handleLoaded) {
-            this.load(resolveMusic(name) + "." + this.extension, name, handleLoaded, 1);
+            var path = resolveMusic(name);
+            if(this.extension !== "mp3") {
+                path = path.replace(".mp3", "." + this.extension);
+            }
+            this.load(path, name, handleLoaded, 1);
             var music = this.sounds[name][0];
             music.loop = true;
             music.addEventListener('ended', function() { music.play() }, false);

@@ -1,6 +1,5 @@
 import Animation from './animation.js';
 import { resolveSprite } from './asset-resolver.js';
-import manifest from './asset-manifest.js';
 
     var Sprite = Class.extend({
         init: function(name, scale, spriteData) {
@@ -14,7 +13,6 @@ import manifest from './asset-manifest.js';
 
         loadJSON: function(data) {
     		this.id = data.id;
-    		this.rawFilepath = manifest.sprites[this.id] && manifest.sprites[this.id][this.scale];
     		this.filepath = resolveSprite(this.id, this.scale);
     		this.animationData = data.animations;
     		this.width = data.width;
@@ -29,6 +27,7 @@ import manifest from './asset-manifest.js';
         	var self = this;
 
         	this.image = new Image();
+        	this.image.crossOrigin = "anonymous";
         	this.image.onload = function() {
         		self.isLoaded = true;
 
@@ -37,19 +36,7 @@ import manifest from './asset-manifest.js';
                 }
         	};
 
-        	if(this.rawFilepath && this.filepath !== this.rawFilepath) {
-        	    // Resolved path differs from raw manifest path — cross-origin asset
-        	    // Fetch as blob to get same-origin URL (avoids canvas taint from cross-origin redirects)
-        	    fetch(this.filepath).then(function(r) { return r.blob(); }).then(function(b) {
-        	        self.image.src = URL.createObjectURL(b);
-        	    }).catch(function(err) {
-        	        log.debug("Blob fetch failed for " + self.filepath + " - " + (err && err.message || err) + ", falling back to crossOrigin");
-        	        self.image.crossOrigin = 'anonymous';
-        	        self.image.src = self.filepath;
-        	    });
-        	} else {
-        	    this.image.src = this.filepath;
-        	}
+        	this.image.src = this.filepath;
         },
 
         createAnimations: function() {
