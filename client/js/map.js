@@ -27,11 +27,11 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         },
 
         _loadMap: function(useWorker) {
-        	var self = this,
-        	    filepath = resolveMap('world');
+        	var self = this;
 
         	if(useWorker) {
         	    log.info("Loading map with web worker.");
+        	    // Worker uses importScripts internally — not resolver-aware
                 var worker = new Worker('js/mapworker.js');
                 worker.postMessage(1);
 
@@ -46,10 +46,12 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
 
                 worker.onerror = function(e) {
                     log.error("Map worker error: " + e.message);
+                    self.mapLoaded = true;
+                    self._checkReady();
                 };
             } else {
                 log.info("Loading map via Ajax.");
-                $.get(filepath, function (data) {
+                $.get(resolveMap('world'), function (data) {
                     self._initMap(data);
                     self._generateCollisionGrid();
                     self._generatePlateauGrid();
@@ -57,6 +59,8 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                     self._checkReady();
                 }, 'json').fail(function(jqXHR, textStatus) {
                     log.error("Map AJAX load failed: " + textStatus);
+                    self.mapLoaded = true;
+                    self._checkReady();
                 });
             }
         },
@@ -155,6 +159,11 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
 
         	tileset.onerror = function() {
         	    log.error("Failed to load tileset: " + filepath);
+        	    self.tilesetCount -= 1;
+        	    if(self.tilesetCount === 0) {
+        	        self.tilesetsLoaded = true;
+        	        self._checkReady();
+        	    }
         	};
 
         	return tileset;

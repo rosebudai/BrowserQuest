@@ -1,6 +1,6 @@
 import Animation from './animation.js';
 import { resolveSprite } from './asset-resolver.js';
-import { manifest } from './asset-resolver.js';
+import manifest from './asset-manifest.js';
 
     var Sprite = Class.extend({
         init: function(name, scale, spriteData) {

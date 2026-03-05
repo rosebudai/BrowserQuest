@@ -56,8 +56,9 @@ spriteImageNames.forEach(function(name) {
 });
 
 // The 67 sprites that game.js instantiates as Sprite image objects.
-// This is a subset of spriteData — it excludes arrow, impact, item-clotharmor,
-// and item-sword1 which have JSON metadata but are not rendered in-game.
+// This is a subset of spriteData — it excludes arrow and impact (which have
+// JSON metadata but no corresponding image files) plus item-clotharmor and
+// item-sword1 (which have images but are not used by the game at runtime).
 var gameSprites = [
     'hand', 'sword', 'loot', 'target', 'talk', 'sparks', 'shadow16',
     'rat', 'skeleton', 'skeleton2', 'spectre', 'boss', 'deathknight',
@@ -95,7 +96,7 @@ var manifest = {
 };
 
 musicNames.forEach(function(name) {
-    manifest.audio.music[name] = 'audio/music/' + name + '.mp3';
+    manifest.audio.music[name] = 'audio/music/' + name;
 });
 
 soundNames.forEach(function(name) {

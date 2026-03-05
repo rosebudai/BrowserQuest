@@ -100,7 +100,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         loadMusic: function(name, handleLoaded) {
-            this.load(resolveMusic(name), name, handleLoaded, 1);
+            this.load(resolveMusic(name) + "." + this.extension, name, handleLoaded, 1);
             var music = this.sounds[name][0];
             music.loop = true;
             music.addEventListener('ended', function() { music.play() }, false);

@@ -24,11 +24,12 @@ var LocalGameServer = Class.extend({
 
     connect: function() {
         var self = this;
-        var map = new ServerMap(resolveMap('worldServer'));
+        var serverMapPath = resolveMap('worldServer');
+        var map = new ServerMap(serverMapPath);
 
         map.ready(function() {
             self.worldServer = new WorldServer('local-1', 1, self);
-            self.worldServer.run(resolveMap('worldServer'));
+            self.worldServer.run(serverMapPath);
 
             self.waitForWorldReady(function() {
                 self.playerConnection = self.createPlayerConnection();
