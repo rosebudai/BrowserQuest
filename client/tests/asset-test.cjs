@@ -161,6 +161,90 @@ const { chromium } = require('playwright');
     const musicPassed = musicResults.filter(r => r.ok).length;
     logCategory('Audio music', musicPassed, expectedMusic.length, musicResults);
 
+    // ---- Category 7: Resolver integration ----
+    const resolverResults = await page.evaluate(() => {
+      const game = window.__game;
+      const results = [];
+
+      // Test 1: Resolver returns raw path when __resolveAsset is not set
+      try {
+        const testResult = { name: 'resolveSprite returns raw path locally', ok: false, reason: '' };
+        const ratSprite = game.sprites['rat'];
+        if (ratSprite && ratSprite.filepath && ratSprite.filepath.indexOf('img/') === 0) {
+          testResult.ok = true;
+        } else {
+          testResult.reason = 'filepath not a raw path: ' + (ratSprite && ratSprite.filepath);
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: 'resolveSprite returns raw path locally', ok: false, reason: e.message });
+      }
+
+      // Test 2: Setting __resolveAsset transforms paths at call time (late binding)
+      // We test this by setting __resolveAsset, then triggering game.loadSprite
+      // which creates new Sprite objects that go through the resolver
+      try {
+        const testResult = { name: '__resolveAsset late binding works', ok: false, reason: '' };
+        var original = window.__resolveAsset;
+        var transformedPaths = [];
+        window.__resolveAsset = function(p) { transformedPaths.push(p); return '/cdn/' + p; };
+
+        // loadSprite creates new Sprite objects which call resolveSprite internally
+        game.loadSprite('rat');
+
+        window.__resolveAsset = original;
+
+        // Check that the resolver was called with the rat sprite path
+        var ratPathFound = transformedPaths.some(function(p) { return p.indexOf('rat.png') >= 0; });
+        if (ratPathFound && transformedPaths.length > 0) {
+          testResult.ok = true;
+        } else {
+          testResult.reason = 'transformedPaths=' + JSON.stringify(transformedPaths);
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: '__resolveAsset late binding works', ok: false, reason: e.message });
+      }
+
+      // Test 3: Manifest completeness — gameSprites count matches loaded sprites
+      try {
+        const testResult = { name: 'gameSprites matches loaded sprite count', ok: false, reason: '' };
+        const loadedCount = Object.keys(game.sprites).length;
+        if (loadedCount === 67) {
+          testResult.ok = true;
+        } else {
+          testResult.reason = 'Expected 67 sprites, got ' + loadedCount;
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: 'gameSprites matches loaded sprite count', ok: false, reason: e.message });
+      }
+
+      // Test 4: All sprites have both rawFilepath and filepath set
+      try {
+        const testResult = { name: 'All sprites have rawFilepath and filepath', ok: true, reason: '' };
+        const missing = [];
+        for (const name in game.sprites) {
+          const s = game.sprites[name];
+          if (!s.rawFilepath || !s.filepath) {
+            missing.push(name);
+          }
+        }
+        if (missing.length > 0) {
+          testResult.ok = false;
+          testResult.reason = 'Missing paths on: ' + missing.join(', ');
+        }
+        results.push(testResult);
+      } catch (e) {
+        results.push({ name: 'All sprites have rawFilepath and filepath', ok: false, reason: e.message });
+      }
+
+      return results;
+    });
+
+    const resolverPassed = resolverResults.filter(r => r.ok).length;
+    logCategory('Resolver integration', resolverPassed, resolverResults.length, resolverResults);
+
   } catch (err) {
     console.error('\x1b[31mFATAL ERROR:\x1b[0m', err.message);
   }
