@@ -1,30 +1,42 @@
-// Sprite JSON files loaded via fetch instead of RequireJS text! plugin
-var spriteNames = [
-    "agent", "arrow", "axe", "bat", "beachnpc", "bluesword", "boss",
-    "chest", "clotharmor", "coder", "crab", "death", "deathknight",
-    "desertnpc", "eye", "firefox", "forestnpc", "goblin", "goldenarmor",
-    "goldensword", "guard", "hand", "impact", "item-axe", "item-bluesword",
-    "item-burger", "item-cake", "item-firepotion", "item-flask",
-    "item-goldenarmor", "item-goldensword", "item-leatherarmor",
-    "item-mailarmor", "item-morningstar", "item-platearmor", "item-redarmor",
-    "item-redsword", "item-sword1", "item-sword2", "king", "lavanpc",
-    "leatherarmor", "loot", "mailarmor", "morningstar", "nyan", "octocat",
-    "ogre", "platearmor", "priest", "rat", "redarmor", "redsword", "rick",
-    "scientist", "shadow16", "skeleton", "skeleton2", "snake", "sorcerer",
-    "sparks", "spectre", "sword", "sword1", "sword2", "talk", "target",
-    "villagegirl", "villager", "wizard"
-];
+// Sprite JSON files loaded via fetch, driven by the asset manifest.
+import manifest from './asset-manifest.js';
+import { resolveSpriteData } from './asset-resolver.js';
 
 async function loadSprites() {
+    var spriteNames = Object.keys(manifest.spriteData);
     var sprites = {};
-    var responses = await Promise.all(
+
+    var results = await Promise.all(
         spriteNames.map(function(name) {
-            return fetch("sprites/" + name + ".json").then(function(r) { return r.json(); });
+            return fetch(resolveSpriteData(name))
+                .then(function(r) {
+                    if (!r.ok) {
+                        throw new Error('HTTP ' + r.status + ' for ' + name);
+                    }
+                    return r.json();
+                })
+                .then(function(data) {
+                    return { name: name, data: data, ok: true };
+                })
+                .catch(function(err) {
+                    log.error('Failed to load sprite data: ' + name + ' — ' + err.message);
+                    return { name: name, data: null, ok: false };
+                });
         })
     );
-    responses.forEach(function(sprite) {
-        sprites[sprite.id] = sprite;
+
+    results.forEach(function(result) {
+        if (result.ok && result.data && result.data.id) {
+            sprites[result.data.id] = result.data;
+        }
     });
+
+    var loaded = results.filter(function(r) { return r.ok; }).length;
+    var failed = results.length - loaded;
+    if (failed > 0) {
+        log.warn('Sprite loading: ' + loaded + '/' + results.length + ' succeeded, ' + failed + ' failed');
+    }
+
     return sprites;
 }
 
