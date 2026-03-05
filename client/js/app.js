@@ -320,7 +320,7 @@ import { resolveSprite } from './asset-resolver.js';
             let count = 0;
             let p = null;
 
-            _.each(achievements, function(achievement) {
+            Object.values(achievements).forEach(function(achievement) {
                 count++;
 
                 const a = achievementTmpl.cloneNode(true);
@@ -355,7 +355,7 @@ import { resolveSprite } from './asset-resolver.js';
         initUnlockedAchievements: function(ids) {
             const self = this;
 
-            _.each(ids, function(id) {
+            ids.forEach(function(id) {
                 self.displayUnlockedAchievement(id);
             });
             document.getElementById('unlocked-achievements').textContent = ids.length;

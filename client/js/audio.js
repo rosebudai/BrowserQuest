@@ -15,9 +15,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             this.soundNames = ["loot", "hit1", "hit2", "hurt", "heal", "chat", "revive", "death", "firefox", "achievement", "kill1", "kill2", "noloot", "teleport", "chest", "npc", "npc-end"];
 
             const loadSoundFiles = function() {
-                let counter = _.size(self.soundNames);
+                let counter = self.soundNames.length;
                 log.info("Loading sound files...");
-                _.each(self.soundNames, function(name) { self.loadSound(name, function() {
+                self.soundNames.forEach(function(name) { self.loadSound(name, function() {
                         counter -= 1;
                         if(counter === 0) {
                             if(!Detect.isSafari()) { // Disable music on Safari - See bug 738008
@@ -34,7 +34,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                     // Load the village music first, as players always start here
                     self.loadMusic(self.musicNames.shift(), function() {
                         // Then, load all the other music files
-                        _.each(self.musicNames, function(name) {
+                        self.musicNames.forEach(function(name) {
                             self.loadMusic(name);
                         });
                     });
@@ -89,9 +89,9 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             sound.load();
 
             this.sounds[name] = [sound];
-            _.times(channels - 1, function() {
+            for(let _t = 0; _t < channels - 1; _t++) {
                 self.sounds[name].push(sound.cloneNode(true));
-            });
+            }
         },
 
         loadSound: function(name, handleLoaded) {
@@ -117,7 +117,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             if(!this.sounds[name]) {
                 return null;
             }
-            let sound = _.detect(this.sounds[name], function(sound) {
+            let sound = this.sounds[name].find(function(sound) {
                 return sound.ended || sound.paused;
             });
             if(sound && sound.ended) {
@@ -144,7 +144,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         getSurroundingMusic: function(entity) {
             let music = null;
 
-            const area = _.detect(this.areas, function(area) {
+            const area = this.areas.find(function(area) {
                 return area.contains(entity);
             });
 

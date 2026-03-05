@@ -107,7 +107,7 @@ Messages.Drop = Message.extend({
                     this.mob.id,
                     this.item.id,
                     this.item.kind,
-                    _.pluck(this.mob.hatelist, "id")];
+                    this.mob.hatelist.map(function(obj) { return obj.id; })];
 
         return drop;
     }

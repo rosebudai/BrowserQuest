@@ -111,7 +111,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         _getDoors: function(map) {
             const doors = {}, self = this;
 
-            _.each(map.doors, function(door) {
+            (map.doors || []).forEach(function(door) {
                 let o;
                 
                 switch(door.to) {
@@ -225,12 +225,12 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
                 }
             }
 
-            _.each(this.collisions, function(tileIndex) {
+            this.collisions.forEach(function(tileIndex) {
                 const pos = self.tileIndexToGridPosition(tileIndex+1);
                 self.grid[pos.y][pos.x] = 1;
             });
 
-            _.each(this.blocking, function(tileIndex) {
+            this.blocking.forEach(function(tileIndex) {
                 const pos = self.tileIndexToGridPosition(tileIndex+1);
                 if(self.grid[pos.y] !== undefined) {
                     self.grid[pos.y][pos.x] = 1;
@@ -246,7 +246,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             for(let j, i = 0; i < this.height; i++) {
                 this.plateauGrid[i] = [];
                 for(j = 0; j < this.width; j++) {
-                    if(_.include(this.plateau, tileIndex)) {
+                    if(this.plateau.includes(tileIndex)) {
                         this.plateauGrid[i][j] = 1;
                     } else {
                         this.plateauGrid[i][j] = 0;
@@ -275,7 +275,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
          * @see Renderer.drawHighTiles
          */
         isHighTile: function(id) {
-            return _.indexOf(this.high, id+1) >= 0;
+            return this.high.indexOf(id+1) >= 0;
         },
     
         /**
@@ -315,7 +315,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
 
         _getCheckpoints: function(map) {
             const checkpoints = [];
-            _.each(map.checkpoints, function(cp) {
+            (map.checkpoints || []).forEach(function(cp) {
                 const area = new Area(cp.x, cp.y, cp.w, cp.h);
                 area.id = cp.id;
                 checkpoints.push(area);
@@ -324,14 +324,14 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         },
     
         getCurrentCheckpoint: function(entity) {
-            return _.detect(this.checkpoints, function(checkpoint) {
+            return this.checkpoints.find(function(checkpoint) {
                 return checkpoint.contains(entity);
             });
         },
 
         _getCameraZones: function(map) {
             const zones = [];
-            _.each(map.cameraZones, function(zone) {
+            (map.cameraZones || []).forEach(function(zone) {
                 const area = new Area(zone.x, zone.y, zone.w, zone.h);
                 zones.push(area);
             });
@@ -339,7 +339,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         },
 
         getCameraZone: function(entity) {
-            return _.detect(this.cameraZones, function(zone) {
+            return this.cameraZones.find(function(zone) {
                 return zone.contains(entity);
             });
         }

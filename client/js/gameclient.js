@@ -117,7 +117,7 @@ import LocalGameServer from './server/localgameserver.js';
     
         receiveAction: function(data) {
             const action = data[0];
-            if(this.handlers[action] && _.isFunction(this.handlers[action])) {
+            if(this.handlers[action] && typeof this.handlers[action] === 'function') {
                 this.handlers[action].call(this, data);
             }
             else {
@@ -128,7 +128,7 @@ import LocalGameServer from './server/localgameserver.js';
         receiveActionBatch: function(actions) {
             const self = this;
 
-            _.each(actions, function(action) {
+            actions.forEach(function(action) {
                 self.receiveAction(action);
             });
         },

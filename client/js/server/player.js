@@ -324,9 +324,9 @@ const Player = Character.extend({
     },
     
     forEachHater: function(callback) {
-        _.each(this.haters, function(mob) {
+        for(const mob of Object.values(this.haters)) {
             callback(mob);
-        });
+        }
     },
     
     equipArmor: function(kind) {

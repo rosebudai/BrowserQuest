@@ -336,14 +336,14 @@ import manifest from './manifest.js';
                 }
             };
         
-            _.each(this.achievements, function(obj) {
+            for(const obj of Object.values(this.achievements)) {
                 if(!obj.isCompleted) {
                     obj.isCompleted = function() { return true; }
                 }
                 if(!obj.hidden) {
                     obj.hidden = false;
                 }
-            });
+            }
         
             this.app.initAchievementList(this.achievements);
         
@@ -354,11 +354,11 @@ import manifest from './manifest.js';
     
         getAchievementById: function(id) {
             let found = null;
-            _.each(this.achievements, function(achievement, key) {
+            for(const achievement of Object.values(this.achievements)) {
                 if(achievement.id === parseInt(id)) {
                     found = achievement;
                 }
-            });
+            }
             return found;
         },
     
@@ -389,10 +389,10 @@ import manifest from './manifest.js';
             } else {
                 this.sprites = this.spritesets[scale - 1];
                 
-                _.each(this.entities, function(entity) {
+                for(const entity of Object.values(this.entities)) {
                     entity.sprite = null;
                     entity.setSprite(self.sprites[entity.getSpriteName()]);
-                });
+                }
                 if(this.spritesLoaded()) {
                     this.initHurtSprites();
                 }
@@ -407,11 +407,11 @@ import manifest from './manifest.js';
             this.spritesets[0] = {};
             this.spritesets[1] = {};
             this.spritesets[2] = {};
-            _.map(this.spriteNames, this.loadSprite, this);
+            this.spriteNames.forEach(this.loadSprite, this);
         },
     
         spritesLoaded: function() {
-            if(_.any(this.sprites, function(sprite) { return !sprite.isLoaded; })) {
+            if(Object.values(this.sprites).some(function(sprite) { return !sprite.isLoaded; })) {
                 return false;
             }
             return true;
@@ -675,7 +675,7 @@ import manifest from './manifest.js';
     
         initMusicAreas: function() {
             const self = this;
-            _.each(this.map.musicAreas, function(area) {
+            this.map.musicAreas.forEach(function(area) {
                 self.audioManager.addArea(area.x, area.y, area.w, area.h, area.id);
             });
         },
@@ -817,17 +817,17 @@ import manifest from './manifest.js';
             });
 
             this.client.onEntityList(function(list) {
-                const entityIds = _.pluck(self.entities, 'id'), knownIds = _.intersection(entityIds, list), newIds = _.difference(list, knownIds);
-            
-                self.obsoleteEntities = _.reject(self.entities, function(entity) {
-                    return _.include(knownIds, entity.id) || entity.id === self.player.id;
+                const entityIds = Object.values(self.entities).map(function(e) { return e.id; }), knownIds = entityIds.filter(function(id) { return list.includes(id); }), newIds = list.filter(function(id) { return !knownIds.includes(id); });
+
+                self.obsoleteEntities = Object.values(self.entities).filter(function(entity) {
+                    return !knownIds.includes(entity.id) && entity.id !== self.player.id;
                 });
-            
+
                 // Destroy entities outside of the player's zone group
                 self.removeObsoleteEntities();
-                
+
                 // Ask the server for spawn information about unknown entities
-                if(_.size(newIds) > 0) {
+                if(newIds.length > 0) {
                     self.client.sendWho(newIds);
                 }
             });
@@ -1034,7 +1034,7 @@ import manifest from './manifest.js';
                             }
                         }
                         
-                        if(_.size(self.player.attackers) > 0) {
+                        if(Object.keys(self.player.attackers).length > 0) {
                             setTimeout(function() { self.tryUnlockingAchievement("COWARD"); }, 500);
                         }
                         self.player.forEachAttacker(function(attacker) {
@@ -1422,7 +1422,7 @@ import manifest from './manifest.js';
                     if(mobName === 'boss') {
                         self.showNotification("You killed the skeleton king");
                     } else {
-                        if(_.include(['a', 'e', 'i', 'o', 'u'], mobName[0])) {
+                        if(['a', 'e', 'i', 'o', 'u'].includes(mobName[0])) {
                             self.showNotification("You killed an " + mobName);
                         } else {
                             self.showNotification("You killed a " + mobName);
@@ -1694,9 +1694,9 @@ import manifest from './manifest.js';
          * @param {Function} callback The function to call back (must accept one entity argument).
          */
         forEachEntity: function(callback) {
-            _.each(this.entities, function(entity) {
+            for(const entity of Object.values(this.entities)) {
                 callback(entity);
-            });
+            }
         },
     
         /**
@@ -1704,11 +1704,11 @@ import manifest from './manifest.js';
          * @see forEachEntity
          */
         forEachMob: function(callback) {
-            _.each(this.entities, function(entity) {
+            for(const entity of Object.values(this.entities)) {
                 if(entity instanceof Mob) {
                     callback(entity);
                 }
-            });
+            }
         },
     
         /**
@@ -1722,7 +1722,7 @@ import manifest from './manifest.js';
             this.camera.forEachVisiblePosition(function(x, y) {
                 if(!m.isOutOfBounds(x, y)) {
                     if(self.renderingGrid[y][x]) {
-                        _.each(self.renderingGrid[y][x], function(entity) {
+                        Object.values(self.renderingGrid[y][x]).forEach(function(entity) {
                             callback(entity);
                         });
                     }
@@ -1755,13 +1755,13 @@ import manifest from './manifest.js';
         
             if(m.isLoaded) {
                 this.forEachVisibleTileIndex(function(tileIndex) {
-                    if(_.isArray(m.data[tileIndex])) {
-                        _.each(m.data[tileIndex], function(id) {
+                    if(Array.isArray(m.data[tileIndex])) {
+                        m.data[tileIndex].forEach(function(id) {
                             callback(id-1, tileIndex);
                         });
                     }
                     else {
-                        if(_.isNaN(m.data[tileIndex]-1)) {
+                        if(isNaN(m.data[tileIndex]-1)) {
                             //throw Error("Tile number for index:"+tileIndex+" is NaN");
                         } else {
                             callback(m.data[tileIndex]-1, tileIndex);
@@ -1776,7 +1776,7 @@ import manifest from './manifest.js';
          */
         forEachAnimatedTile: function(callback) {
             if(this.animatedTiles) {
-                _.each(this.animatedTiles, function(tile) {
+                this.animatedTiles.forEach(function(tile) {
                     callback(tile);
                 });
             }
@@ -1793,8 +1793,8 @@ import manifest from './manifest.js';
 
             const entities = this.entityGrid[y][x];
             let entity = null;
-            if(_.size(entities) > 0) {
-                entity = entities[_.keys(entities)[0]];
+            if(Object.keys(entities).length > 0) {
+                entity = entities[Object.keys(entities)[0]];
             } else {
                 entity = this.getItemAt(x, y);
             }
@@ -1832,17 +1832,17 @@ import manifest from './manifest.js';
             const items = this.itemGrid[y][x];
             let item = null;
 
-            if(_.size(items) > 0) {
+            if(Object.keys(items).length > 0) {
                 // If there are potions/burgers stacked with equipment items on the same tile, always get expendable items first.
-                _.each(items, function(i) {
+                for(const i of Object.values(items)) {
                     if(Types.isExpendableItem(i.kind)) {
                         item = i;
-                    };
-                });
+                    }
+                }
 
                 // Else, get the first item of the stack
                 if(!item) {
-                    item = items[_.keys(items)[0]];
+                    item = items[Object.keys(items)[0]];
                 }
             }
             return item;
@@ -1853,23 +1853,23 @@ import manifest from './manifest.js';
          * @returns {Boolean} Whether an entity is at (x, y).
          */
         isEntityAt: function(x, y) {
-            return !_.isNull(this.getEntityAt(x, y));
+            return null !== (this.getEntityAt(x, y));
         },
 
         isMobAt: function(x, y) {
-            return !_.isNull(this.getMobAt(x, y));
+            return null !== (this.getMobAt(x, y));
         },
 
         isItemAt: function(x, y) {
-            return !_.isNull(this.getItemAt(x, y));
+            return null !== (this.getItemAt(x, y));
         },
 
         isNpcAt: function(x, y) {
-            return !_.isNull(this.getNpcAt(x, y));
+            return null !== (this.getNpcAt(x, y));
         },
 
         isChestAt: function(x, y) {
-            return !_.isNull(this.getChestAt(x, y));
+            return null !== (this.getChestAt(x, y));
         },
 
         /**
@@ -1888,7 +1888,7 @@ import manifest from './manifest.js';
 
             if(this.pathfinder && character) {
                 if(ignoreList) {
-                    _.each(ignoreList, function(entity) {
+                    ignoreList.forEach(function(entity) {
                         self.pathfinder.ignoreEntity(entity);
                     });
                 }
@@ -2009,7 +2009,7 @@ import manifest from './manifest.js';
             const list = this.entityGrid[Y][X];
             let result = false;
 
-            _.each(list, function(entity) {
+            Object.values(list).forEach(function(entity) {
                 if(entity instanceof Mob && entity.id !== mob.id) {
                     result = true;
                 }
@@ -2257,7 +2257,7 @@ import manifest from './manifest.js';
         },
     
         isZoning: function() {
-            return !_.isNull(this.currentZoning);
+            return null !== (this.currentZoning);
         },
     
         resetZone: function() {
@@ -2434,15 +2434,15 @@ import manifest from './manifest.js';
         },
 
         removeObsoleteEntities: function() {
-            const nb = _.size(this.obsoleteEntities), self = this;
-        
+            const nb = this.obsoleteEntities.length, self = this;
+
             if(nb > 0) {
-                _.each(this.obsoleteEntities, function(entity) {
+                this.obsoleteEntities.forEach(function(entity) {
                     if(entity.id != self.player.id) { // never remove yourself
                         self.removeEntity(entity);
                     }
                 });
-                log.debug("Removed "+nb+" entities: "+_.pluck(_.reject(this.obsoleteEntities, function(id) { return id === self.player.id }), 'id'));
+                log.debug("Removed "+nb+" entities: "+this.obsoleteEntities.filter(function(entity) { return entity.id !== self.player.id }).map(function(entity) { return entity.id; }));
                 this.obsoleteEntities = null;
             }
         },
@@ -2495,7 +2495,7 @@ import manifest from './manifest.js';
             for(let i = x-r, max_i = x+r; i <= max_i; i += 1) {
                 for(let j = y-r, max_j = y+r; j <= max_j; j += 1) {
                     if(!this.map.isOutOfBounds(i, j)) {
-                        _.each(this.renderingGrid[j][i], function(entity) {
+                        Object.values(this.renderingGrid[j][i]).forEach(function(entity) {
                             callback(entity);
                         });
                     }

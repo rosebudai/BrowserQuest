@@ -47,7 +47,7 @@ const MobArea = Area.extend({
         const self = this;
         
         setInterval(function() {
-            _.each(self.entities, function(mob) {
+            self.entities.forEach(function(mob) {
                 const canRoam = (Utils.random(20) === 1);
                 let pos;
 

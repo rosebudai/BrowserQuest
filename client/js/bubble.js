@@ -63,14 +63,14 @@ import Timer from './timer.js';
         update: function(time) {
             const self = this, bubblesToDelete = [];
 
-            _.each(this.bubbles, function(bubble) {
+            for(const bubble of Object.values(this.bubbles)) {
                 if(bubble.isOver(time)) {
                     bubble.destroy();
                     bubblesToDelete.push(bubble.id);
                 }
-            });
+            }
 
-            _.each(bubblesToDelete, function(id) {
+            bubblesToDelete.forEach(function(id) {
                 delete self.bubbles[id];
             });
         },
@@ -78,12 +78,12 @@ import Timer from './timer.js';
         clean: function() {
             const self = this, bubblesToDelete = [];
 
-            _.each(this.bubbles, function(bubble) {
+            for(const bubble of Object.values(this.bubbles)) {
                 bubble.destroy();
                 bubblesToDelete.push(bubble.id);
-            });
+            }
 
-            _.each(bubblesToDelete, function(id) {
+            bubblesToDelete.forEach(function(id) {
                 delete self.bubbles[id];
             });
 
@@ -100,9 +100,9 @@ import Timer from './timer.js';
         },
 
         forEachBubble: function(callback) {
-            _.each(this.bubbles, function(bubble) {
+            for(const bubble of Object.values(this.bubbles)) {
                 callback(bubble);
-            });
+            }
         }
     });
 

@@ -11,7 +11,7 @@ const Chest = Item.extend({
     },
     
     getRandomItem: function() {
-        const nbItems = _.size(this.items);
+        const nbItems = this.items.length;
         let item = null;
 
         if(nbItems > 0) {

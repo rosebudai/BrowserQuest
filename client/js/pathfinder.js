@@ -66,7 +66,7 @@ import AStar from './lib/astar.js';
             let y;
             let g;
 
-            _.each(this.ignored, function(entity) {
+            this.ignored.forEach(function(entity) {
                 x = entity.isMoving() ? entity.nextGridX : entity.gridX;
                 y = entity.isMoving() ? entity.nextGridY : entity.gridY;
 

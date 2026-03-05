@@ -72,7 +72,7 @@ import Timer from './timer.js';
             	this.flipSpriteX = false;
         	    this.flipSpriteY = false;
 
-        	    if(_.indexOf(oriented, animation) >= 0) {
+        	    if(oriented.indexOf(animation) >= 0) {
         	        animation += "_" + (o === Types.Orientations.LEFT ? "right" : Types.getOrientationAsString(o));
         	        this.flipSpriteX = (this.orientation === Types.Orientations.LEFT) ? true : false;
         	    }
@@ -425,9 +425,9 @@ import Timer from './timer.js';
          * @param {Function} callback Function which must accept one character argument.
          */
         forEachAttacker: function(callback) {
-            _.each(this.attackers, function(attacker) {
+            for(const attacker of Object.values(this.attackers)) {
                 callback(attacker);
-            });
+            }
         },
 
         /**

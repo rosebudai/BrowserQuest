@@ -16,11 +16,9 @@ const InfoManager = Class.extend({
     },
 
     forEachInfo: function(callback) {
-        const self = this;
-
-        _.each(this.infos, function(info, id) {
+        for(const info of Object.values(this.infos)) {
             callback(info);
-        });
+        }
     },
 
     update: function(time) {
@@ -30,7 +28,7 @@ const InfoManager = Class.extend({
             info.update(time);
         });
 
-        _.each(this.destroyQueue, function(id) {
+        this.destroyQueue.forEach(function(id) {
             delete self.infos[id];
         });
         this.destroyQueue = [];

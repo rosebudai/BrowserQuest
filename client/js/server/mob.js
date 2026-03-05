@@ -35,14 +35,14 @@ const Mob = Character.extend({
     },
     
     hates: function(playerId) {
-        return _.any(this.hatelist, function(obj) { 
-            return obj.id === playerId; 
+        return this.hatelist.some(function(obj) {
+            return obj.id === playerId;
         });
     },
     
     increaseHateFor: function(playerId, points) {
         if(this.hates(playerId)) {
-            _.detect(this.hatelist, function(obj) {
+            this.hatelist.find(function(obj) {
                 return obj.id === playerId;
             }).hate += points;
         }
@@ -52,7 +52,7 @@ const Mob = Character.extend({
 
         /*
         log.debug("Hatelist : "+this.id);
-        _.each(this.hatelist, function(obj) {
+        this.hatelist.forEach(function(obj) {
             log.debug(obj.id + " -> " + obj.hate);
         });*/
         
@@ -67,8 +67,8 @@ const Mob = Character.extend({
     getHatedPlayerId: function(hateRank) {
         let i;
         let playerId;
-        const sorted = _.sortBy(this.hatelist, function(obj) { return obj.hate; });
-        const size = _.size(this.hatelist);
+        const sorted = [...this.hatelist].sort(function(a, b) { return a.hate - b.hate; });
+        const size = this.hatelist.length;
 
         if(hateRank && hateRank <= size) {
             i = size - hateRank;
@@ -84,7 +84,7 @@ const Mob = Character.extend({
     },
     
     forgetPlayer: function(playerId, duration) {
-        this.hatelist = _.reject(this.hatelist, function(obj) { return obj.id === playerId; });
+        this.hatelist = this.hatelist.filter(function(obj) { return obj.id !== playerId; });
         
         if(this.hatelist.length === 0) {
             this.returnToSpawningPosition(duration);

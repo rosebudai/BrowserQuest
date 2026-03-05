@@ -12,7 +12,7 @@ import Chest from './chest.js';
             return;
         }
 
-        if(!_.isFunction(EntityFactory.builders[kind])) {
+        if(typeof EntityFactory.builders[kind] !== 'function') {
             throw Error(kind + " is not a valid Entity type");
         }
 

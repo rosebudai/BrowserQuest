@@ -153,7 +153,7 @@ const WorldServer = Class.extend({
             
             // Populate all mob "roaming" areas
             try {
-                _.each(self.map.mobAreas, function(a) {
+                self.map.mobAreas.forEach(function(a) {
                     const area = new MobArea(a.id, a.nb, a.type, a.x, a.y, a.width, a.height, self);
                     area.spawnMobs();
                     area.onEmpty(self.handleEmptyMobArea.bind(self, area));
@@ -166,7 +166,7 @@ const WorldServer = Class.extend({
 
             // Create all chest areas
             try {
-                _.each(self.map.chestAreas, function(a) {
+                self.map.chestAreas.forEach(function(a) {
                     const area = new ChestArea(a.id, a.x, a.y, a.w, a.h, a.tx, a.ty, a.i, self);
                     self.chestAreas.push(area);
                     area.onEmpty(self.handleEmptyChestArea.bind(self, area));
@@ -177,7 +177,7 @@ const WorldServer = Class.extend({
 
             // Spawn static chests
             try {
-                _.each(self.map.staticChests, function(chest) {
+                self.map.staticChests.forEach(function(chest) {
                     const c = self.createChest(chest.x, chest.y, chest.i);
                     self.addStaticItem(c);
                 });
@@ -201,7 +201,7 @@ const WorldServer = Class.extend({
             self.populationComplete = true;
 
             // Set maximum number of entities contained in each chest area
-            _.each(self.chestAreas, function(area) {
+            self.chestAreas.forEach(function(area) {
                 area.setNumberOfEntities(area.entities.length);
             });
         });
@@ -257,9 +257,9 @@ const WorldServer = Class.extend({
         let entities;
         
         if(player && (player.group in this.groups)) {
-            entities = _.keys(this.groups[player.group].entities);
-            entities = _.reject(entities, function(id) { return id == player.id; });
-            entities = _.map(entities, function(id) { return parseInt(id); });
+            entities = Object.keys(this.groups[player.group].entities);
+            entities = entities.filter(function(id) { return id != player.id; });
+            entities = entities.map(function(id) { return parseInt(id); });
             if(entities) {
                 this.pushToPlayer(player, new Messages.List(entities));
             }
@@ -269,14 +269,14 @@ const WorldServer = Class.extend({
     pushSpawnsToPlayer: function(player, ids) {
         const self = this;
         
-        _.each(ids, function(id) {
+        ids.forEach(function(id) {
             const entity = self.getEntityById(id);
             if(entity) {
                 self.pushToPlayer(player, new Messages.Spawn(entity));
             }
         });
-        
-        log.debug("Pushed "+_.size(ids)+" new spawns to "+player.id);
+
+        log.debug("Pushed "+ids.length+" new spawns to "+player.id);
     },
     
     pushToPlayer: function(player, message) {
@@ -291,7 +291,7 @@ const WorldServer = Class.extend({
         const self = this, group = this.groups[groupId];
         
         if(group) {
-            _.each(group.players, function(playerId) {
+            group.players.forEach(function(playerId) {
                 if(playerId != ignoredPlayer) {
                     self.pushToPlayer(self.getEntityById(playerId), message);
                 }
@@ -313,7 +313,7 @@ const WorldServer = Class.extend({
         
         // Push this message to all groups which are not going to be updated anymore,
         // since the player left them.
-        _.each(player.recentlyLeftGroups, function(id) {
+        player.recentlyLeftGroups.forEach(function(id) {
             self.pushToGroup(id, message);
         });
         player.recentlyLeftGroups = [];
@@ -453,7 +453,7 @@ const WorldServer = Class.extend({
     clearMobHateLinks: function(mob) {
         const self = this;
         if(mob) {
-            _.each(mob.hatelist, function(obj) {
+            mob.hatelist.forEach(function(obj) {
                 const player = self.getEntityById(obj.id);
                 if(player) {
                     player.removeHater(mob);
@@ -593,9 +593,9 @@ const WorldServer = Class.extend({
         const self = this;
         let count = 0;
 
-        _.each(this.map.staticEntities, function(kindName, tid) {
+        for(const [tid, kindName] of Object.entries(this.map.staticEntities)) {
             const kind = Types.getKindFromString(kindName), pos = self.map.tileIndexToGridPosition(tid);
-            
+
             if(Types.isNpc(kind)) {
                 self.addNpc(kind, pos.x + 1, pos.y);
             }
@@ -615,11 +615,11 @@ const WorldServer = Class.extend({
             if(Types.isItem(kind)) {
                 self.addStaticItem(self.createItem(kind, pos.x + 1, pos.y));
             }
-        });
+        }
     },
 
     isValidPosition: function(x, y) {
-        if(this.map && _.isNumber(x) && _.isNumber(y) && !this.map.isOutOfBounds(x, y) && !this.map.isColliding(x, y)) {
+        if(this.map && typeof x === 'number' && typeof y === 'number' && !this.map.isOutOfBounds(x, y) && !this.map.isColliding(x, y)) {
             return true;
         }
         return false;
@@ -634,7 +634,7 @@ const WorldServer = Class.extend({
             self.chooseMobTarget(mob, 2);
         });
         
-        _.each(previousAttackers, function(mob) {
+        previousAttackers.forEach(function(mob) {
             player.removeAttacker(mob);
             mob.clearTarget();
             mob.forgetPlayer(player.id, 1000);
@@ -710,7 +710,7 @@ const WorldServer = Class.extend({
             
             const group = this.groups[entity.group];
             if(entity instanceof Player) {
-                group.players = _.reject(group.players, function(id) { return id === entity.id; });
+                group.players = group.players.filter(function(id) { return id !== entity.id; });
             }
             
             this.map.forEachAdjacentGroup(entity.group, function(id) {
@@ -736,7 +736,7 @@ const WorldServer = Class.extend({
                 const group = self.groups[id];
                 
                 if(group) {
-                    if(!_.include(group.entities, entity.id)
+                    if(!Object.values(group.entities).includes(entity.id)
                     //  Items dropped off of mobs are handled differently via DROP messages. See handleHurtEntity.
                     && (!isItem || isChest || (isItem && !isDroppedItem))) {
                         group.incoming.push(entity);
@@ -765,7 +765,7 @@ const WorldServer = Class.extend({
     
     logGroupPlayers: function(groupId) {
         log.debug("Players inside group "+groupId+":");
-        _.each(this.groups[groupId].players, function(id) {
+        this.groups[groupId].players.forEach(function(id) {
             log.debug("- player "+id);
         });
     },
@@ -780,8 +780,8 @@ const WorldServer = Class.extend({
                 const oldGroups = this.removeFromGroups(entity);
                 const newGroups = this.addToGroup(entity, groupId);
                 
-                if(_.size(oldGroups) > 0) {
-                    entity.recentlyLeftGroups = _.difference(oldGroups, newGroups);
+                if(oldGroups.length > 0) {
+                    entity.recentlyLeftGroups = oldGroups.filter(function(x) { return !newGroups.includes(x); });
                     log.debug("group diff: " + entity.recentlyLeftGroups);
                 }
             }
@@ -796,7 +796,7 @@ const WorldServer = Class.extend({
             this.map.forEachGroup(function(id) {
                 let spawns = [];
                 if(self.groups[id].incoming.length > 0) {
-                    spawns = _.each(self.groups[id].incoming, function(entity) {
+                    self.groups[id].incoming.forEach(function(entity) {
                         if(entity instanceof Player) {
                             self.pushToGroup(id, new Messages.Spawn(entity), entity.id);
                         } else {
@@ -857,7 +857,7 @@ const WorldServer = Class.extend({
     },
     
     tryAddingMobToChestArea: function(mob) {
-        _.each(this.chestAreas, function(area) {
+        this.chestAreas.forEach(function(area) {
             if(area.contains(mob)) {
                 area.addToArea(mob);
             }

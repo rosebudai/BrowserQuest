@@ -247,7 +247,7 @@ import Timer from './timer.js';
             if(positions) {
                 for(let i=0; i < positions.length; i += 1) {
                     for(let j=0; j < positions[i].length; j += 1) {
-                        if(!_.isNull(positions[i][j])) {
+                        if(positions[i][j] !== null) {
                             this.drawCellHighlight(i, j, "rgba(50, 50, 255, 0.5)");
                         }
                     }
@@ -324,12 +324,14 @@ import Timer from './timer.js';
 
         drawScaledImage: function(ctx, image, x, y, w, h, dx, dy) {
             const s = this.upscaledRendering ? 1 : this.scale;
-            _.each(arguments, function(arg) {
-                if(_.isUndefined(arg) || _.isNaN(arg) || _.isNull(arg) || arg < 0) {
+            const args = [ctx, image, x, y, w, h, dx, dy];
+            for(let _i = 0; _i < args.length; _i++) {
+                const arg = args[_i];
+                if(arg === undefined || (typeof arg === 'number' && isNaN(arg)) || arg === null || arg < 0) {
                     log.error("x:"+x+" y:"+y+" w:"+w+" h:"+h+" dx:"+dx+" dy:"+dy, true);
                     throw Error("A problem occured when trying to draw on the canvas");
                 }
-            });
+            }
         
             ctx.drawImage(image,
                           x * s,

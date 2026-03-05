@@ -181,11 +181,11 @@ Types.rankedArmors = [
 ];
 
 Types.getWeaponRank = function(weaponKind) {
-    return _.indexOf(Types.rankedWeapons, weaponKind);
+    return Types.rankedWeapons.indexOf(weaponKind);
 };
 
 Types.getArmorRank = function(armorKind) {
-    return _.indexOf(Types.rankedArmors, armorKind);
+    return Types.rankedArmors.indexOf(armorKind);
 };
 
 Types.isPlayer = function(kind) {
@@ -291,18 +291,18 @@ Types.getOrientationAsString = function(orientation) {
 };
 
 Types.getRandomItemKind = function(item) {
-    const all = _.union(this.rankedWeapons, this.rankedArmors), forbidden = [Types.Entities.SWORD1, Types.Entities.CLOTHARMOR], itemKinds = _.difference(all, forbidden), i = Math.floor(Math.random() * _.size(itemKinds));
+    const all = [...new Set([...this.rankedWeapons, ...this.rankedArmors])], forbidden = [Types.Entities.SWORD1, Types.Entities.CLOTHARMOR], itemKinds = all.filter(function(x) { return !forbidden.includes(x); }), i = Math.floor(Math.random() * itemKinds.length);
     
     return itemKinds[i];
 };
 
 Types.getMessageTypeAsString = function(type) {
     let typeName;
-    _.each(Types.Messages, function(value, name) {
+    for(const [name, value] of Object.entries(Types.Messages)) {
         if(value === type) {
             typeName = name;
         }
-    });
+    }
     if(!typeName) {
         typeName = "UNKNOWN";
     }

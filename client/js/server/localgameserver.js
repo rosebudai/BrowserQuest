@@ -160,7 +160,7 @@ const LocalGameServer = Class.extend({
             return;
         }
 
-        _.each(this.pendingMessages, function(data) {
+        this.pendingMessages.forEach(function(data) {
             self.send(data);
         });
 

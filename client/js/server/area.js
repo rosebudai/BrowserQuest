@@ -27,7 +27,7 @@ const Area = Class.extend({
     },
     
     removeFromArea: function(entity) {
-        const i = _.indexOf(_.pluck(this.entities, 'id'), entity.id);
+        const i = this.entities.map(function(e) { return e.id; }).indexOf(entity.id);
         this.entities.splice(i, 1);
         
         if(this.isEmpty() && this.hasCompletelyRespawned && this.empty_callback) {
@@ -55,11 +55,11 @@ const Area = Class.extend({
     },
     
     isEmpty: function() {
-        return !_.any(this.entities, function(entity) { return !entity.isDead });
+        return !this.entities.some(function(entity) { return !entity.isDead });
     },
     
     isFull: function() {
-        return !this.isEmpty() && (this.nbEntities === _.size(this.entities));
+        return !this.isEmpty() && (this.nbEntities === this.entities.length);
     },
     
     onEmpty: function(callback) {

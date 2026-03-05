@@ -418,7 +418,7 @@ import Game from './game.js';
                     }
                     if(key === 27) { // ESC
                         app.hideWindows();
-                        _.each(game.player.attackers, function(attacker) {
+                        Object.values(game.player.attackers).forEach(function(attacker) {
                             attacker.stop();
                         });
                         return false;
