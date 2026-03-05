@@ -5,7 +5,7 @@ import Character from './character.js';
 import Player from './player.js';
 import Timer from './timer.js';
 
-    var Renderer = Class.extend({
+    const Renderer = Class.extend({
         init: function(game, canvas, background, foreground) {
             this.game = game;
             this.context = (canvas && canvas.getContext) ? canvas.getContext("2d") : null;
@@ -51,12 +51,12 @@ import Timer from './timer.js';
         },
     
         getScaleFactor: function() {
-            var w = window.innerWidth,
-                h = window.innerHeight,
-                scale;
-        
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            let scale;
+
             this.mobile = false;
-        
+
             if(w <= 1000) {
                 scale = 2;
                 this.mobile = true;
@@ -67,7 +67,7 @@ import Timer from './timer.js';
             else {
                 scale = 3;
             }
-        
+
             return scale;
         },
     
@@ -107,31 +107,31 @@ import Timer from './timer.js';
             this.forecanvas.height = this.canvas.height;
             log.debug("#foreground set to "+this.forecanvas.width+" x "+this.forecanvas.height);
 
-            var borderPad = this.scale * 5;
+            const borderPad = this.scale * 5;
 
-            var canvasBorderEl = document.getElementById('canvasborder');
+            const canvasBorderEl = document.getElementById('canvasborder');
             if(canvasBorderEl) {
-                var bgW = this.canvas.width + 2 * borderPad;
-                var bgH = this.canvas.height + 2 * borderPad;
+                const bgW = this.canvas.width + 2 * borderPad;
+                const bgH = this.canvas.height + 2 * borderPad;
                 canvasBorderEl.style.backgroundSize = bgW + 'px ' + bgH + 'px';
             }
-            var canvasDiv = document.getElementById('canvas');
+            const canvasDiv = document.getElementById('canvas');
             if(canvasDiv) {
                 canvasDiv.style.width = this.canvas.width + 'px';
                 canvasDiv.style.height = this.canvas.height + 'px';
                 canvasDiv.style.position = 'relative';
             }
-            var bubblesEl = document.getElementById('bubbles');
+            const bubblesEl = document.getElementById('bubbles');
             if(bubblesEl) {
                 bubblesEl.style.width = this.canvas.width + 'px';
                 bubblesEl.style.height = this.canvas.height + 'px';
             }
-            var barEl = document.getElementById('bar-container');
+            const barEl = document.getElementById('bar-container');
             if(barEl) {
-                var cw = this.canvas.width;
-                var s = this.scale;
-                var spriteW = 480 * s;
-                var offset = (cw - spriteW) / 2;
+                const cw = this.canvas.width;
+                const s = this.scale;
+                const spriteW = 480 * s;
+                const offset = (cw - spriteW) / 2;
 
                 barEl.style.width = cw + 'px';
                 barEl.style.backgroundColor = '#373737';
@@ -141,16 +141,16 @@ import Timer from './timer.js';
                 // so they align with the centered sprite.
                 // Clear inline left first so getComputedStyle reads the
                 // stylesheet value (avoids cumulative offset on re-rescale).
-                var fixedElements = [
+                const fixedElements = [
                     'healthbar', 'hitpoints', 'weapon', 'armor',
                     'playercount', 'chatbutton', 'achievementsbutton',
                     'helpbutton', 'mutebutton'
                 ];
-                for(var i = 0; i < fixedElements.length; i++) {
-                    var el = document.getElementById(fixedElements[i]);
+                for(let i = 0; i < fixedElements.length; i++) {
+                    const el = document.getElementById(fixedElements[i]);
                     if(el) {
                         el.style.left = '';
-                        var cssLeft = parseInt(window.getComputedStyle(el).left, 10) || 0;
+                        const cssLeft = parseInt(window.getComputedStyle(el).left, 10) || 0;
                         el.style.left = (cssLeft + offset) + 'px';
                     }
                 }
@@ -162,7 +162,7 @@ import Timer from './timer.js';
         },
     
         initFont: function() {
-            var fontsize;
+            let fontsize;
         
             switch(this.scale) {
                 case 1:
@@ -176,16 +176,16 @@ import Timer from './timer.js';
         },
     
         setFontSize: function(size) {
-            var font = size+"px GraphicPixel";
+            const font = size+"px GraphicPixel";
         
             this.context.font = font;
             this.background.font = font;
         },
 
         drawText: function(text, x, y, centered, color, strokeColor) {
-            var ctx = this.context;
+            const ctx = this.context;
             
-            var strokeSize;
+            let strokeSize;
         
             switch(this.scale) {
                 case 1:
@@ -220,16 +220,13 @@ import Timer from './timer.js';
         },
 
         drawCellHighlight: function(x, y, color) {
-            var s = this.scale,
-                ts = this.tilesize,
-                tx = x * ts * s,
-                ty = y * ts * s;
+            const s = this.scale, ts = this.tilesize, tx = x * ts * s, ty = y * ts * s;
         
             this.drawCellRect(tx, ty, color);
         },
     
         drawTargetCell: function() {
-            var mouse = this.game.getMouseGridPosition();
+            const mouse = this.game.getMouseGridPosition();
         
             if(this.game.targetCellVisible && !(mouse.x === this.game.selectedX && mouse.y === this.game.selectedY)) {
                 this.drawCellHighlight(mouse.x, mouse.y, this.game.targetColor);
@@ -237,9 +234,7 @@ import Timer from './timer.js';
         },
     
         drawAttackTargetCell: function() {
-            var mouse = this.game.getMouseGridPosition(),
-                entity = this.game.getEntityAt(mouse.x, mouse.y),
-                s = this.scale;
+            const mouse = this.game.getMouseGridPosition(), entity = this.game.getEntityAt(mouse.x, mouse.y), s = this.scale;
         
             if(entity) {
                 this.drawCellRect(entity.x * s, entity.y * s, "rgba(255, 0, 0, 0.5)");
@@ -247,11 +242,11 @@ import Timer from './timer.js';
         },
     
         drawOccupiedCells: function() {
-            var positions = this.game.entityGrid;
+            const positions = this.game.entityGrid;
         
             if(positions) {
-                for(var i=0; i < positions.length; i += 1) {
-                    for(var j=0; j < positions[i].length; j += 1) {
+                for(let i=0; i < positions.length; i += 1) {
+                    for(let j=0; j < positions[i].length; j += 1) {
                         if(!_.isNull(positions[i][j])) {
                             this.drawCellHighlight(i, j, "rgba(50, 50, 255, 0.5)");
                         }
@@ -261,11 +256,11 @@ import Timer from './timer.js';
         },
     
         drawPathingCells: function() {
-            var grid = this.game.pathingGrid;
+            const grid = this.game.pathingGrid;
         
             if(grid && this.game.debugPathing) {
-                for(var y=0; y < grid.length; y += 1) {
-                    for(var x=0; x < grid[y].length; x += 1) {
+                for(let y=0; y < grid.length; y += 1) {
+                    for(let x=0; x < grid[y].length; x += 1) {
                         if(grid[y][x] === 1 && this.game.camera.isVisiblePosition(x, y)) {
                             this.drawCellHighlight(x, y, "rgba(50, 50, 255, 0.5)");
                         }
@@ -275,15 +270,12 @@ import Timer from './timer.js';
         },
 
         drawSelectedCell: function() {
-            var sprite = this.game.cursors["target"],
-                anim = this.game.targetAnimation,
-                os = this.upscaledRendering ? 1 : this.scale,
-                ds = this.upscaledRendering ? this.scale : 1;
+            const sprite = this.game.cursors["target"], anim = this.game.targetAnimation, os = this.upscaledRendering ? 1 : this.scale, ds = this.upscaledRendering ? this.scale : 1;
         
             if(this.game.selectedCellVisible) {
                 if(this.mobile || this.tablet) {
                     if(this.game.drawTarget) {
-                        var x = this.game.selectedX,
+                        const x = this.game.selectedX,
                             y = this.game.selectedY;
                         
                         this.drawCellHighlight(this.game.selectedX, this.game.selectedY, "rgb(51, 255, 0)");
@@ -293,17 +285,17 @@ import Timer from './timer.js';
                     }
                 } else {
                     if(sprite && anim) {
-                        var	frame = anim.currentFrame,
-                            s = this.scale,
-                            x = frame.x * os,
-                            y = frame.y * os,
-                            w = sprite.width * os,
-                            h = sprite.height * os,
-                            ts = 16,
-                            dx = this.game.selectedX * ts * s,
-                            dy = this.game.selectedY * ts * s,
-                            dw = w * ds,
-                            dh = h * ds;
+                        const frame = anim.currentFrame;
+                        const s = this.scale;
+                        const x = frame.x * os;
+                        const y = frame.y * os;
+                        const w = sprite.width * os;
+                        const h = sprite.height * os;
+                        const ts = 16;
+                        const dx = this.game.selectedX * ts * s;
+                        const dy = this.game.selectedY * ts * s;
+                        const dw = w * ds;
+                        const dh = h * ds;
 
                         this.context.save();
                         this.context.translate(dx, dy);
@@ -315,16 +307,13 @@ import Timer from './timer.js';
         },
     
         clearScaledRect: function(ctx, x, y, w, h) {
-            var s = this.scale;
+            const s = this.scale;
         
             ctx.clearRect(x * s, y * s, w * s, h * s);
         },
 
         drawCursor: function() {
-            var mx = this.game.mouse.x,
-                my = this.game.mouse.y,
-                s = this.scale,
-                os = this.upscaledRendering ? 1 : this.scale;
+            const mx = this.game.mouse.x, my = this.game.mouse.y, s = this.scale, os = this.upscaledRendering ? 1 : this.scale;
         
             this.context.save();
             if(this.game.currentCursor && this.game.currentCursor.isLoaded) {
@@ -334,7 +323,7 @@ import Timer from './timer.js';
         },
 
         drawScaledImage: function(ctx, image, x, y, w, h, dx, dy) {
-            var s = this.upscaledRendering ? 1 : this.scale;
+            const s = this.upscaledRendering ? 1 : this.scale;
             _.each(arguments, function(arg) {
                 if(_.isUndefined(arg) || _.isNaN(arg) || _.isNull(arg) || arg < 0) {
                     log.error("x:"+x+" y:"+y+" w:"+w+" h:"+h+" dx:"+dx+" dy:"+dy, true);
@@ -354,7 +343,7 @@ import Timer from './timer.js';
         },
 
         drawTile: function(ctx, tileid, tileset, setW, gridW, cellid) {
-            var s = this.upscaledRendering ? 1 : this.scale;
+            const s = this.upscaledRendering ? 1 : this.scale;
             if(tileid !== -1) { // -1 when tile is empty in Tiled. Don't attempt to draw it.
                 this.drawScaledImage(ctx,
                                      tileset,
@@ -368,46 +357,41 @@ import Timer from './timer.js';
         },
     
         clearTile: function(ctx, gridW, cellid) {
-            var s = this.scale,
-                ts = this.tilesize,
-                x = getX(cellid + 1, gridW) * ts * s,
-                y = Math.floor(cellid / gridW) * ts * s,
-                w = ts * s,
-                h = w;
+            const s = this.scale, ts = this.tilesize, x = getX(cellid + 1, gridW) * ts * s, y = Math.floor(cellid / gridW) * ts * s, w = ts * s, h = w;
         
             ctx.clearRect(x, y, h, w);
         },
 
         drawEntity: function(entity) {
-            var sprite = entity.sprite,
-                shadow = this.game.shadows["small"],
-                anim = entity.currentAnimation,
-                os = this.upscaledRendering ? 1 : this.scale,
-                ds = this.upscaledRendering ? this.scale : 1;
-        
+            const sprite = entity.sprite;
+            const shadow = this.game.shadows["small"];
+            let anim = entity.currentAnimation;
+            const os = this.upscaledRendering ? 1 : this.scale;
+            const ds = this.upscaledRendering ? this.scale : 1;
+
             if(anim && sprite) {
-                var	frame = anim.currentFrame,
-                    s = this.scale,
-                    x = frame.x * os,
-                    y = frame.y * os,
-                    w = sprite.width * os,
-                    h = sprite.height * os,
-                    ox = sprite.offsetX * s,
-                    oy = sprite.offsetY * s,
-                    dx = entity.x * s,
-                    dy = entity.y * s,
-                    dw = w * ds,
-                    dh = h * ds;
-            
+                let frame = anim.currentFrame;
+                const s = this.scale;
+                const x = frame.x * os;
+                const y = frame.y * os;
+                const w = sprite.width * os;
+                const h = sprite.height * os;
+                const ox = sprite.offsetX * s;
+                const oy = sprite.offsetY * s;
+                const dx = entity.x * s;
+                const dy = entity.y * s;
+                const dw = w * ds;
+                const dh = h * ds;
+
                 if(entity.isFading) {
                     this.context.save();
                     this.context.globalAlpha = entity.fadingAlpha;
                 }
-            
+
                 if(!this.mobile && !this.tablet) {
                     this.drawEntityName(entity);
                 }
-            
+
                 this.context.save();
                 if(entity.flipSpriteX) {
                     this.context.translate(dx + this.tilesize*s, dy);
@@ -420,7 +404,7 @@ import Timer from './timer.js';
                 else {
                     this.context.translate(dx, dy);
                 }
-            
+
                 if(entity.isVisible()) {
                     if(entity.hasShadow()) {
                         this.context.drawImage(shadow.image, 0, 0, shadow.width * os, shadow.height * os,
@@ -432,13 +416,13 @@ import Timer from './timer.js';
                     this.context.drawImage(sprite.image, x, y, w, h, ox, oy, dw, dh);
 
                     if(entity instanceof Item && entity.kind !== Types.Entities.CAKE) {
-                        var sparks = this.game.sprites["sparks"],
-                            anim = this.game.sparksAnimation,
-                            frame = anim.currentFrame,
-                            sx = sparks.width * frame.index * os,
-                            sy = sparks.height * anim.row * os,
-                            sw = sparks.width * os,
-                            sh = sparks.width * os;
+                        const sparks = this.game.sprites["sparks"];
+                        anim = this.game.sparksAnimation;
+                        frame = anim.currentFrame;
+                        const sx = sparks.width * frame.index * os;
+                        const sy = sparks.height * anim.row * os;
+                        const sw = sparks.width * os;
+                        const sh = sparks.width * os;
 
                         this.context.drawImage(sparks.image, sx, sy, sw, sh,
                                                sparks.offsetX * s,
@@ -446,17 +430,12 @@ import Timer from './timer.js';
                                                sw * ds, sh * ds);
                     }
                 }
-            
+
                 if(entity instanceof Character && !entity.isDead && entity.hasWeapon()) {
-                    var weapon = this.game.sprites[entity.getWeaponName()];
+                    const weapon = this.game.sprites[entity.getWeaponName()];
         
                     if(weapon) {
-                        var weaponAnimData = weapon.animationData[anim.name],
-                            index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length,
-                            wx = weapon.width * index * os,
-                            wy = weapon.height * anim.row * os,
-                            ww = weapon.width * os,
-                            wh = weapon.height * os;
+                        const weaponAnimData = weapon.animationData[anim.name], index = frame.index < weaponAnimData.length ? frame.index : frame.index % weaponAnimData.length, wx = weapon.width * index * os, wy = weapon.height * anim.row * os, ww = weapon.width * os, wh = weapon.height * os;
 
                         this.context.drawImage(weapon.image, wx, wy, ww, wh,
                                                weapon.offsetX * s,
@@ -464,9 +443,9 @@ import Timer from './timer.js';
                                                ww * ds, wh * ds);
                     }
                 }
-            
+
                 this.context.restore();
-            
+
                 if(entity.isFading) {
                     this.context.restore();
                 }
@@ -474,7 +453,7 @@ import Timer from './timer.js';
         },
 
         drawEntities: function(dirtyOnly) {
-            var self = this;
+            const self = this;
         
             this.game.forEachVisibleEntityByDepth(function(entity) {
                 if(entity.isLoaded) {
@@ -502,49 +481,48 @@ import Timer from './timer.js';
         },
     
         clearDirtyRects: function() {
-            var self = this,
-                count = 0;
-            
+            const self = this;
+            let count = 0;
+
             this.game.forEachVisibleEntityByDepth(function(entity) {
                 if(entity.isDirty && entity.oldDirtyRect) {
                     self.clearDirtyRect(entity.oldDirtyRect);
                     count += 1;
                 }
             });
-            
+
             this.game.forEachAnimatedTile(function(tile) {
                 if(tile.isDirty) {
                     self.clearDirtyRect(tile.dirtyRect);
                     count += 1;
                 }
             });
-            
+
             if(this.game.clearTarget && this.lastTargetPos) {
-                var last = this.lastTargetPos,
-                    rect = this.getTargetBoundingRect(last.x, last.y);
+                const last = this.lastTargetPos, rect = this.getTargetBoundingRect(last.x, last.y);
                 
                 this.clearDirtyRect(rect);
                 this.game.clearTarget = false;
                 count += 1;
             }
-            
+
             if(count > 0) {
                 //log.debug("count:"+count);
             }
         },
         
         getEntityBoundingRect: function(entity) {
-            var rect = {},
-                s = this.scale,
-                spr;
-                
+            const rect = {};
+            const s = this.scale;
+            let spr;
+
             if(entity instanceof Player && entity.hasWeapon()) {
-                var weapon = this.game.sprites[entity.getWeaponName()];
+                const weapon = this.game.sprites[entity.getWeaponName()];
                 spr = weapon;
             } else {
                 spr = entity.sprite;
             }
-    
+
             if(spr) {
                 rect.x = (entity.x + spr.offsetX - this.camera.x) * s;
                 rect.y = (entity.y + spr.offsetY - this.camera.y) * s;
@@ -559,11 +537,7 @@ import Timer from './timer.js';
         },
         
         getTileBoundingRect: function(tile) {
-            var rect = {},
-                gridW = this.game.map.width,
-                s = this.scale,
-                ts = this.tilesize,
-                cellid = tile.index;
+            const rect = {}, gridW = this.game.map.width, s = this.scale, ts = this.tilesize, cellid = tile.index;
             
             rect.x = ((getX(cellid + 1, gridW) * ts) - this.camera.x) * s;
             rect.y = ((Math.floor(cellid / gridW) * ts) - this.camera.y) * s;
@@ -578,11 +552,7 @@ import Timer from './timer.js';
         },
         
         getTargetBoundingRect: function(x, y) {
-            var rect = {},
-                s = this.scale,
-                ts = this.tilesize,
-                tx = x || this.game.selectedX,
-                ty = y || this.game.selectedY;
+            const rect = {}, s = this.scale, ts = this.tilesize, tx = x || this.game.selectedX, ty = y || this.game.selectedY;
             
             rect.x = ((tx * ts) - this.camera.x) * s;
             rect.y = ((ty * ts) - this.camera.y) * s;
@@ -606,7 +576,7 @@ import Timer from './timer.js';
         drawEntityName: function(entity) {
             this.context.save();
             if(entity.name && entity instanceof Player) {
-                var color = (entity.id === this.game.playerId) ? "#fcda5c" : "white";
+                const color = (entity.id === this.game.playerId) ? "#fcda5c" : "white";
                 this.drawText(entity.name,
                               (entity.x + 8) * this.scale,
                               (entity.y + entity.nameOffsetY) * this.scale,
@@ -617,9 +587,7 @@ import Timer from './timer.js';
         },
 
         drawTerrain: function() {
-            var self = this,
-                m = this.game.map,
-                tilesetwidth = this.tileset.width / m.tilesize;
+            const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.game.forEachVisibleTile(function (id, index) {
                 if(!m.isHighTile(id) && !m.isAnimatedTile(id)) { // Don't draw unnecessary tiles
@@ -629,9 +597,7 @@ import Timer from './timer.js';
         },
     
         drawAnimatedTiles: function(dirtyOnly) {
-            var self = this,
-                m = this.game.map,
-                tilesetwidth = this.tileset.width / m.tilesize;
+            const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.animatedTileCount = 0;
             this.game.forEachAnimatedTile(function (tile) {
@@ -652,9 +618,7 @@ import Timer from './timer.js';
         },
     
         drawHighTiles: function(ctx) {
-            var self = this,
-                m = this.game.map,
-                tilesetwidth = this.tileset.width / m.tilesize;
+            const self = this, m = this.game.map, tilesetwidth = this.tileset.width / m.tilesize;
         
             this.highTileCount = 0;
             this.game.forEachVisibleTile(function (id, index) {
@@ -671,8 +635,7 @@ import Timer from './timer.js';
         },
 
         drawFPS: function() {
-            var nowTime = new Date(),
-                diffTime = nowTime.getTime() - this.lastTime.getTime();
+            const nowTime = new Date(), diffTime = nowTime.getTime() - this.lastTime.getTime();
 
             if (diffTime >= 1000) {
                 this.realFPS = this.frameCount;
@@ -694,7 +657,7 @@ import Timer from './timer.js';
         },
     
         drawCombatInfo: function() {
-            var self = this;
+            const self = this;
         
             switch(this.scale) {
                 case 2: this.setFontSize(20); break;
@@ -718,30 +681,30 @@ import Timer from './timer.js';
         },
     
         getPlayerImage: function() {
-            var canvas = document.createElement('canvas'),
-    	        ctx = canvas.getContext('2d'),
-    	        os = this.upscaledRendering ? 1 : this.scale,
-    	        player = this.game.player,
-    	        sprite = player.getArmorSprite(),
-    	        spriteAnim = sprite.animationData["idle_down"],
-    	        // character
-    	        row = spriteAnim.row,
-                w = sprite.width * os,
-                h = sprite.height * os,
-    	        y = row * h,
-    	        // weapon
-    	        weapon = this.game.sprites[this.game.player.getWeaponName()],
-    	        ww = weapon.width * os,
-    	        wh = weapon.height * os,
-    	        wy = wh * row,
-    	        offsetX = (weapon.offsetX - sprite.offsetX) * os,
-    	        offsetY = (weapon.offsetY - sprite.offsetY) * os,
-    	        // shadow
-    	        shadow = this.game.shadows["small"],
-    	        sw = shadow.width * os,
-    	        sh = shadow.height * os,
-    	        ox = -sprite.offsetX * os,
-    	        oy = -sprite.offsetY * os;
+            const canvas = document.createElement('canvas'),
+                  ctx = canvas.getContext('2d'),
+                  os = this.upscaledRendering ? 1 : this.scale,
+                  player = this.game.player,
+                  sprite = player.getArmorSprite(),
+                  spriteAnim = sprite.animationData["idle_down"],
+                  // character
+                  row = spriteAnim.row,
+                  w = sprite.width * os,
+                  h = sprite.height * os,
+                  y = row * h,
+                  // weapon
+                  weapon = this.game.sprites[this.game.player.getWeaponName()],
+                  ww = weapon.width * os,
+                  wh = weapon.height * os,
+                  wy = wh * row,
+                  offsetX = (weapon.offsetX - sprite.offsetX) * os,
+                  offsetY = (weapon.offsetY - sprite.offsetY) * os,
+                  // shadow
+                  shadow = this.game.shadows["small"],
+                  sw = shadow.width * os,
+                  sh = shadow.height * os,
+                  ox = -sprite.offsetX * os,
+                  oy = -sprite.offsetY * os;
 	    
     	    canvas.width = w;
     	    canvas.height = h;
@@ -832,7 +795,7 @@ import Timer from './timer.js';
         }
     });
 
-    var getX = function(id, w) {
+    const getX = function(id, w) {
         if(id == 0) {
             return 0;
         }

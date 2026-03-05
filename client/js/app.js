@@ -2,7 +2,7 @@
 import Storage from './storage.js';
 import { resolveSprite } from './asset-resolver.js';
 
-    var App = Class.extend({
+    const App = Class.extend({
         init: function() {
             this.currentPage = 1;
             this.blinkInterval = null;
@@ -37,8 +37,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
         
         tryStartingGame: function(username, starting_callback) {
-            var self = this,
-                $play = this.$playButton;
+            const self = this, $play = this.$playButton;
             
             if(username !== '') {
                 if(!this.ready || !this.canStartGame()) {
@@ -47,7 +46,7 @@ import { resolveSprite } from './asset-resolver.js';
                         $play.addClass('loading');
                     }
                     this.$playDiv.unbind('click');
-                    var watchCanStart = setInterval(function() {
+                    const watchCanStart = setInterval(function() {
                         log.debug("waiting...");
                         if(self.canStartGame()) {
                             setTimeout(function() {
@@ -67,7 +66,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
         
         startGame: function(username, starting_callback) {
-            var self = this;
+            const self = this;
             
             if(starting_callback) {
                 starting_callback();
@@ -83,8 +82,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         start: function(username) {
-            var self = this,
-                firstTimePlaying = !self.storage.hasAlreadyPlayed();
+            const self = this, firstTimePlaying = !self.storage.hasAlreadyPlayed();
             
             if(username && !this.game.started) {
                 this.game.setServerOptions("localhost", 8000, username);
@@ -100,11 +98,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         setMouseCoordinates: function(event) {
-            var gamePos = $('#container').offset(),
-                scale = this.game.renderer.getScaleFactor(),
-                width = this.game.renderer.getWidth(),
-                height = this.game.renderer.getHeight(),
-                mouse = this.game.mouse;
+            const gamePos = $('#container').offset(), scale = this.game.renderer.getScaleFactor(), width = this.game.renderer.getWidth(), height = this.game.renderer.getHeight(), mouse = this.game.mouse;
 
             mouse.x = event.pageX - gamePos.left - (this.isMobile ? 0 : 5 * scale);
         	mouse.y = event.pageY - gamePos.top - (this.isMobile ? 0 : 7 * scale);
@@ -123,11 +117,10 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         initHealthBar: function() {
-            var scale = this.game.renderer.getScaleFactor(),
-                healthMaxWidth = $("#healthbar").width() - (12 * scale);
+            const scale = this.game.renderer.getScaleFactor(), healthMaxWidth = $("#healthbar").width() - (12 * scale);
 
         	this.game.onPlayerHealthChange(function(hp, maxHp) {
-        	    var barWidth = Math.round((healthMaxWidth / maxHp) * (hp > 0 ? hp : 0));
+        	    const barWidth = Math.round((healthMaxWidth / maxHp) * (hp > 0 ? hp : 0));
         	    $("#hitpoints").css('width', barWidth + "px");
         	});
 
@@ -135,7 +128,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         blinkHealthBar: function() {
-            var $hitpoints = $('#hitpoints');
+            const $hitpoints = $('#hitpoints');
 
             $hitpoints.addClass('white');
             setTimeout(function() {
@@ -144,8 +137,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         toggleButton: function() {
-            var name = $('#parchment input').val(),
-                $play = $('#createcharacter .play');
+            const name = $('#parchment input').val(), $play = $('#createcharacter .play');
     
             if(name && name.length > 0) {
                 $play.removeClass('disabled');
@@ -214,8 +206,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         resetPage: function() {
-            var self = this,
-                $achievements = $('#achievements');
+            const self = this, $achievements = $('#achievements');
 
             if($achievements.hasClass('active')) {
                 $achievements.bind(TRANSITIONEND, function() {
@@ -227,14 +218,14 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         initEquipmentIcons: function() {
-            var scale = this.game.renderer.getScaleFactor();
-            var getIconPath = function(spriteName) {
-                    return resolveSprite('item-' + spriteName, scale);
-                },
-                weapon = this.game.player.getWeaponName(),
-                armor = this.game.player.getSpriteName(),
-                weaponPath = getIconPath(weapon),
-                armorPath = getIconPath(armor);
+            const scale = this.game.renderer.getScaleFactor();
+            const getIconPath = function(spriteName) {
+                          return resolveSprite('item-' + spriteName, scale);
+                      },
+                  weapon = this.game.player.getWeaponName(),
+                  armor = this.game.player.getSpriteName(),
+                  weaponPath = getIconPath(weapon),
+                  armorPath = getIconPath(armor);
 
             $('#weapon').css('background-image', 'url("' + weaponPath + '")');
             if(armor !== 'firefox') {
@@ -260,9 +251,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         showAchievementNotification: function(id, name) {
-            var $notif = $('#achievement-notification'),
-                $name = $notif.find('.name'),
-                $button = $('#achievementsbutton');
+            const $notif = $('#achievement-notification'), $name = $notif.find('.name'), $button = $('#achievementsbutton');
 
             $notif.removeClass().addClass('active achievement' + id);
             $name.text(name);
@@ -278,9 +267,9 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         displayUnlockedAchievement: function(id) {
-            var $achievement = $('#achievements li.achievement' + id);
+            const $achievement = $('#achievements li.achievement' + id);
 
-            var achievement = this.game.getAchievementById(id);
+            const achievement = this.game.getAchievementById(id);
             if(achievement && achievement.hidden) {
                 this.setAchievementData($achievement, achievement.name, achievement.desc);
             }
@@ -291,23 +280,23 @@ import { resolveSprite } from './asset-resolver.js';
             this.showAchievementNotification(id, name);
             this.displayUnlockedAchievement(id);
 
-            var nb = parseInt($('#unlocked-achievements').text());
+            const nb = parseInt($('#unlocked-achievements').text());
             $('#unlocked-achievements').text(nb + 1);
         },
 
         initAchievementList: function(achievements) {
-            var self = this,
-                $lists = $('#lists'),
-                $page = $('#page-tmpl'),
-                $achievement = $('#achievement-tmpl'),
-                page = 0,
-                count = 0,
-                $p = null;
+            const self = this;
+            const $lists = $('#lists');
+            const $page = $('#page-tmpl');
+            const $achievement = $('#achievement-tmpl');
+            let page = 0;
+            let count = 0;
+            let $p = null;
 
             _.each(achievements, function(achievement) {
                 count++;
     
-                var $a = $achievement.clone();
+                const $a = $achievement.clone();
                 $a.removeAttr('id');
                 $a.addClass('achievement'+count);
                 if(!achievement.hidden) {
@@ -316,7 +305,7 @@ import { resolveSprite } from './asset-resolver.js';
                 $a.find('.twitter').attr('href', 'http://twitter.com/share?url=http%3A%2F%2Fbrowserquest.mozilla.org&text=I%20unlocked%20the%20%27'+ achievement.name +'%27%20achievement%20on%20Mozilla%27s%20%23BrowserQuest%21&related=glecollinet:Creators%20of%20BrowserQuest%2Cwhatthefranck');
                 $a.show();
                 $a.find('a').click(function() {
-                     var url = $(this).attr('href');
+                     const url = $(this).attr('href');
 
                     self.openPopup('twitter', url);
                     return false;
@@ -336,7 +325,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         initUnlockedAchievements: function(ids) {
-            var self = this;
+            const self = this;
             
             _.each(ids, function(id) {
                 self.displayUnlockedAchievement(id);
@@ -350,7 +339,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         toggleCredits: function() {
-            var currentState = $('#parchment').attr('class');
+            const currentState = $('#parchment').attr('class');
 
             if(this.game.started) {
                 this.hideChat();
@@ -386,7 +375,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
         
         toggleAbout: function() {
-            var currentState = $('#parchment').attr('class');
+            const currentState = $('#parchment').attr('class');
 
             if(this.game.started) {
                 this.hideChat();
@@ -443,12 +432,12 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         openPopup: function(type, url) {
-            var h = $(window).height(),
-                w = $(window).width(),
-                popupHeight,
-                popupWidth,
-                top,
-                left;
+            const h = $(window).height();
+            const w = $(window).width();
+            let popupHeight;
+            let popupWidth;
+            let top;
+            let left;
 
             switch(type) {
                 case 'twitter':
@@ -464,14 +453,14 @@ import { resolveSprite } from './asset-resolver.js';
             top = (h / 2) - (popupHeight / 2);
             left = (w / 2) - (popupWidth / 2);
 
-        	newwindow = window.open(url,'name','height=' + popupHeight + ',width=' + popupWidth + ',top=' + top + ',left=' + left);
-        	if (window.focus) {newwindow.focus()}
+            newwindow = window.open(url,'name','height=' + popupHeight + ',width=' + popupWidth + ',top=' + top + ',left=' + left);
+            if (window.focus) {newwindow.focus()}
         },
 
         animateParchment: function(origin, destination) {
-            var self = this,
-                $parchment = $('#parchment'),
-                duration = 1;
+            const self = this;
+            const $parchment = $('#parchment');
+            let duration = 1;
 
             if(this.isMobile) {
                 $parchment.removeClass(origin).addClass(destination);
@@ -498,13 +487,13 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         animateMessages: function() {
-            var $messages = $('#notifications div');
+            const $messages = $('#notifications div');
 
             $messages.addClass('top');
         },
 
         resetMessagesPosition: function() {
-            var message = $('#message2').text();
+            const message = $('#message2').text();
 
             $('#notifications div').removeClass('top');
             $('#message2').text('');
@@ -512,8 +501,7 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         showMessage: function(message) {
-            var $wrapper = $('#notifications div'),
-                $message = $('#notifications #message2');
+            const $wrapper = $('#notifications div'), $message = $('#notifications #message2');
 
             this.animateMessages();
             $message.text(message);
@@ -537,7 +525,7 @@ import { resolveSprite } from './asset-resolver.js';
                     this.initHealthBar();
                     this.game.updateBars();
                 } else {
-                    var newScale = this.game.renderer.getScaleFactor();
+                    const newScale = this.game.renderer.getScaleFactor();
                     this.game.renderer.rescale(newScale);
                 }
             }

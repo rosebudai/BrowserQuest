@@ -1,6 +1,6 @@
 import AStar from './lib/astar.js';
 
-    var Pathfinder = Class.extend({
+    const Pathfinder = Class.extend({
         init: function(width, height) {
             this.width = width;
             this.height = height;
@@ -11,21 +11,21 @@ import AStar from './lib/astar.js';
         },
 
         initBlankGrid_: function() {
-            for(var i=0; i < this.height; i += 1) {
+            for(let i=0; i < this.height; i += 1) {
                 this.blankGrid[i] = [];
-                for(var j=0; j < this.width; j += 1) {
+                for(let j=0; j < this.width; j += 1) {
                     this.blankGrid[i][j] = 0;
                 }
             }
         },
 
         findPath: function(grid, entity, x, y, findIncomplete) {
-            var start = [entity.gridX, entity.gridY],
-        		end = [x, y],
-        		path;
+            const start = [entity.gridX, entity.gridY];
+            const end = [x, y];
+            let path;
 
             this.grid = grid;
-        	this.applyIgnoreList_(true);
+            this.applyIgnoreList_(true);
             path = AStar(this.grid, start, end);
 
             if(path.length === 0 && findIncomplete === true) {
@@ -38,12 +38,11 @@ import AStar from './lib/astar.js';
         },
 
         findIncompletePath_: function(start, end) {
-            var perfect, x, y,
-                incomplete = [];
+            let perfect, x, y, incomplete = [];
 
             perfect = AStar(this.blankGrid, start, end);
 
-            for(var i=perfect.length-1; i > 0; i -= 1) {
+            for(let i=perfect.length-1; i > 0; i -= 1) {
                 x = perfect[i][0];
                 y = perfect[i][1];
 
@@ -62,8 +61,10 @@ import AStar from './lib/astar.js';
         },
 
         applyIgnoreList_: function(ignored) {
-            var self = this,
-                x, y, g;
+            const self = this;
+            let x;
+            let y;
+            let g;
 
             _.each(this.ignored, function(entity) {
                 x = entity.isMoving() ? entity.nextGridX : entity.gridX;

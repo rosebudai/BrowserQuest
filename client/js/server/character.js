@@ -2,7 +2,7 @@ import Entity from "./entity.js";
 import Messages from "./message.js";
 import Utils from "./utils.js";
 
-var Character = Entity.extend({
+const Character = Entity.extend({
     init: function(id, type, kind, x, y) {
         this._super(id, type, kind, x, y);
         
@@ -12,8 +12,7 @@ var Character = Entity.extend({
     },
     
     getState: function() {
-        var basestate = this._getBaseState(),
-            state = [];
+        const basestate = this._getBaseState(), state = [];
         
         state.push(this.orientation);
         if(this.target) {
@@ -29,8 +28,7 @@ var Character = Entity.extend({
     },
     
     regenHealthBy: function(value) {
-        var hp = this.hitPoints,
-            max = this.maxHitPoints;
+        const hp = this.hitPoints, max = this.maxHitPoints;
             
         if(hp < max) {
             if(hp + value <= max) {
@@ -84,7 +82,7 @@ var Character = Entity.extend({
     },
     
     forEachAttacker: function(callback) {
-        for(var id in this.attackers) {
+        for(const id in this.attackers) {
             callback(this.attackers[id]);
         }
     }

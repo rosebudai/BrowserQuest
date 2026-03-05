@@ -2,9 +2,9 @@ import Entity from './entity.js';
 import Transition from './transition.js';
 import Timer from './timer.js';
 
-    var Character = Entity.extend({
+    const Character = Entity.extend({
         init: function(id, kind) {
-    	    var self = this;
+    	    const self = this;
 
             this._super(id, kind);
 
@@ -66,8 +66,7 @@ import Timer from './timer.js';
     	},
 
     	animate: function(animation, speed, count, onEndCount) {
-    	    var oriented = ['atk', 'walk', 'idle'],
-    	        o = this.orientation;
+    	    const oriented = ['atk', 'walk', 'idle'], o = this.orientation;
 
             if(!(this.currentAnimation && this.currentAnimation.name === "death")) { // don't change animation if the character is dying
             	this.flipSpriteX = false;
@@ -116,7 +115,7 @@ import Timer from './timer.js';
                 this.continueTo(x, y);
             }
             else {
-                var path = this.requestPathfindingTo(x, y);
+                const path = this.requestPathfindingTo(x, y);
 
                 this.followPath(path);
             }
@@ -164,8 +163,7 @@ import Timer from './timer.js';
     	},
 
     	updateMovement: function() {
-    		var p = this.path,
-    			i = this.step;
+    		const p = this.path, i = this.step;
 
     		if(p[i][0] < p[i-1][0]) {
     			this.walk(Types.Orientations.LEFT);
@@ -186,8 +184,7 @@ import Timer from './timer.js';
     	},
 
     	nextStep: function() {
-            var stop = false,
-                x, y, path;
+            let stop = false, x, y, path;
 
     		if(this.isMoving()) {
     		    if(this.before_step_callback) {
@@ -265,7 +262,7 @@ import Timer from './timer.js';
         },
 
         isNear: function(character, distance) {
-            var dx, dy, near = false;
+            let dx, dy, near = false;
 
             dx = Math.abs(this.gridX - character.gridX);
             dy = Math.abs(this.gridY - character.gridY);
@@ -453,7 +450,7 @@ import Timer from './timer.js';
          * Removes the current attack target.
          */
         removeTarget: function() {
-            var self = this;
+            const self = this;
 
             if(this.target) {
                 if(this.target instanceof Character) {
@@ -532,7 +529,7 @@ import Timer from './timer.js';
     	},
 
     	hurt: function() {
-            var self = this;
+            const self = this;
 
             this.stopHurting();
             this.sprite = this.hurtSprite;

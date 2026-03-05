@@ -1,4 +1,4 @@
-var Utils = {};
+const Utils = {};
 
 function sanitize(str) {
     return String(str)
@@ -35,8 +35,9 @@ Utils.clamp = function(min, max, value) {
 };
 
 Utils.randomOrientation = function() {
-    var o, r = Utils.random(4);
-    
+    let o;
+    const r = Utils.random(4);
+
     if(r === 0)
         o = Types.Orientations.LEFT;
     if(r === 1)
@@ -45,13 +46,13 @@ Utils.randomOrientation = function() {
         o = Types.Orientations.UP;
     if(r === 3)
         o = Types.Orientations.DOWN;
-    
+
     return o;
 };
 
 Utils.Mixin = function(target, source) {
   if (source) {
-    for (var key, keys = Object.keys(source), l = keys.length; l--; ) {
+    for (let key, keys = Object.keys(source), l = keys.length; l--; ) {
       key = keys[l];
 
       if (source.hasOwnProperty(key)) {
@@ -63,8 +64,8 @@ Utils.Mixin = function(target, source) {
 };
 
 Utils.distanceTo = function(x, y, x2, y2) {
-    var distX = Math.abs(x - x2);
-    var distY = Math.abs(y - y2);
+    const distX = Math.abs(x - x2);
+    const distY = Math.abs(y - y2);
 
     return (distX > distY) ? distX : distY;
 };

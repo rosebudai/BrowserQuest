@@ -5,13 +5,13 @@ import manifest from './manifest.js';
 import { resolveSpriteData } from './asset-resolver.js';
 
 async function loadSprites() {
-    var spriteNames = Object.keys(manifest.spriteData);
-    var sprites = {};
-    var toFetch = [];
+    const spriteNames = Object.keys(manifest.spriteData);
+    const sprites = {};
+    const toFetch = [];
 
     // Separate inline data from paths that need fetching
     spriteNames.forEach(function(name) {
-        var entry = manifest.spriteData[name];
+        const entry = manifest.spriteData[name];
         if (typeof entry === 'object' && entry !== null && entry.id) {
             sprites[entry.id] = entry;
         } else {
@@ -20,7 +20,7 @@ async function loadSprites() {
     });
 
     if (toFetch.length > 0) {
-        var results = await Promise.all(
+        const results = await Promise.all(
             toFetch.map(function(name) {
                 return fetch(resolveSpriteData(name))
                     .then(function(r) {
@@ -45,8 +45,8 @@ async function loadSprites() {
             }
         });
 
-        var loaded = results.filter(function(r) { return r.ok; }).length;
-        var failed = results.length - loaded;
+        const loaded = results.filter(function(r) { return r.ok; }).length;
+        const failed = results.length - loaded;
         if (failed > 0) {
             log.warn('Sprite loading: ' + loaded + '/' + results.length + ' succeeded, ' + failed + ' failed');
         }

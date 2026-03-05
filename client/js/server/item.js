@@ -1,6 +1,6 @@
 import Entity from "./entity.js";
 
-var Item = Entity.extend({
+const Item = Entity.extend({
     init: function(id, kind, x, y) {
         this._super(id, "item", kind, x, y);
         this.isStatic = false;
@@ -8,7 +8,7 @@ var Item = Entity.extend({
     },
     
     handleDespawn: function(params) {
-        var self = this;
+        const self = this;
         
         this.blinkTimeout = setTimeout(function() {
             params.blinkCallback();
@@ -30,7 +30,7 @@ var Item = Entity.extend({
     },
     
     scheduleRespawn: function(delay) {
-        var self = this;
+        const self = this;
         setTimeout(function() {
             if(self.respawn_callback) {
                 self.respawn_callback();

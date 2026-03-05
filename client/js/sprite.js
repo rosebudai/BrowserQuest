@@ -1,7 +1,7 @@
 import Animation from './animation.js';
 import { resolveSprite } from './asset-resolver.js';
 
-    var Sprite = Class.extend({
+    const Sprite = Class.extend({
         init: function(name, scale, spriteData) {
         	this.name = name;
         	this.scale = scale;
@@ -24,7 +24,7 @@ import { resolveSprite } from './asset-resolver.js';
     	},
 
         load: function() {
-        	var self = this;
+        	const self = this;
 
         	this.image = new Image();
         	this.image.crossOrigin = "anonymous";
@@ -40,10 +40,10 @@ import { resolveSprite } from './asset-resolver.js';
         },
 
         createAnimations: function() {
-            var animations = {};
+            const animations = {};
 
-    	    for(var name in this.animationData) {
-    	        var a = this.animationData[name];
+    	    for(const name in this.animationData) {
+    	        const a = this.animationData[name];
     	        animations[name] = new Animation(name, a.length, a.row, this.width, this.height);
     	    }
 
@@ -51,22 +51,23 @@ import { resolveSprite } from './asset-resolver.js';
     	},
 
     	createHurtSprite: function() {
-    	    var canvas = document.createElement('canvas'),
-    	        ctx = canvas.getContext('2d'),
-    	        width = this.image.width,
-    		    height = this.image.height,
-    	        spriteData, data;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = this.image.width;
+            const height = this.image.height;
+            let spriteData;
+            let data;
 
-    	    canvas.width = width;
-    	    canvas.height = height;
-    	    ctx.drawImage(this.image, 0, 0, width, height);
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(this.image, 0, 0, width, height);
 
-    	    try {
+            try {
         	    spriteData = ctx.getImageData(0, 0, width, height);
 
         	    data = spriteData.data;
 
-        	    for(var i=0; i < data.length; i += 4) {
+        	    for(let i=0; i < data.length; i += 4) {
         	        data[i] = 255;
         	        data[i+1] = data[i+2] = 75;
         	    }
@@ -90,27 +91,29 @@ import { resolveSprite } from './asset-resolver.js';
     	},
 
     	createSilhouette: function() {
-    	    var canvas = document.createElement('canvas'),
-    	        ctx = canvas.getContext('2d'),
-    	        width = this.image.width,
-    		    height = this.image.height,
-    	        spriteData, finalData, data;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = this.image.width;
+            const height = this.image.height;
+            let spriteData;
+            let finalData;
+            let data;
 
-    	    canvas.width = width;
-    	    canvas.height = height;
+            canvas.width = width;
+            canvas.height = height;
 
-    	    try {
+            try {
     	    ctx.drawImage(this.image, 0, 0, width, height);
     	    data = ctx.getImageData(0, 0, width, height).data;
     	    finalData = ctx.getImageData(0, 0, width, height);
     	    fdata = finalData.data;
 
-    	    var getIndex = function(x, y) {
+    	    const getIndex = function(x, y) {
     	        return ((width * (y-1)) + x - 1) * 4;
     	    };
 
-    	    var getPosition = function(i) {
-    	        var x, y;
+    	    const getPosition = function(i) {
+    	        let x, y;
 
     	        i = (i / 4) + 1;
     	        x = i % width;
@@ -119,8 +122,8 @@ import { resolveSprite } from './asset-resolver.js';
     	        return { x: x, y: y };
     	    };
 
-    	    var hasAdjacentPixel = function(i) {
-    	        var pos = getPosition(i);
+    	    const hasAdjacentPixel = function(i) {
+    	        const pos = getPosition(i);
 
     	        if(pos.x < width && !isBlankPixel(getIndex(pos.x + 1, pos.y))) {
     	            return true;
@@ -137,14 +140,14 @@ import { resolveSprite } from './asset-resolver.js';
     	        return false;
     	    };
 
-    	    var isBlankPixel = function(i) {
+    	    const isBlankPixel = function(i) {
     	        if(i < 0 || i >= data.length) {
     	            return true;
     	        }
     	        return data[i] === 0 && data[i+1] === 0 && data[i+2] === 0 && data[i+3] === 0;
     	    };
 
-    	    for(var i=0; i < data.length; i += 4) {
+    	    for(let i=0; i < data.length; i += 4) {
     	        if(isBlankPixel(i) && hasAdjacentPixel(i)) {
     	            fdata[i] = fdata[i+1] = 255;
     	            fdata[i+2] = 150;
@@ -165,7 +168,7 @@ import { resolveSprite } from './asset-resolver.js';
     	    } catch(e) {
     	        log.debug("Error getting silhouette data for sprite : "+this.name+" - "+e.message);
     	    }
-    	}
+        }
     });
 
 export default Sprite;

@@ -1,5 +1,5 @@
 
-var Transition = Class.extend({
+const Transition = Class.extend({
     init: function() {
         this.startValue = 0;
         this.endValue = 0;
@@ -25,14 +25,14 @@ var Transition = Class.extend({
                 log.debug(currentTime + ": jumped frame");
             }
             else {
-                var elapsed = currentTime - this.startTime;
+                let elapsed = currentTime - this.startTime;
 
                 if(elapsed > this.duration) {
                     elapsed = this.duration;
                 }
 
-                var diff = this.endValue - this.startValue;
-                var i = this.startValue + ((diff / this.duration) * elapsed);
+                const diff = this.endValue - this.startValue;
+                let i = this.startValue + ((diff / this.duration) * elapsed);
 
                 i = Math.round(i);
 

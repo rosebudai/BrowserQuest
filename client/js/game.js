@@ -24,7 +24,7 @@ import Exceptions from './exceptions.js';
 import config from './config.js';
 import manifest from './manifest.js';
     
-    var Game = Class.extend({
+    const Game = Class.extend({
         init: function(app) {
             this.app = app;
             this.app.config = config;
@@ -92,7 +92,7 @@ import manifest from './manifest.js';
      		this.setRenderer(new Renderer(this, canvas, background, foreground));
      		this.setChatInput(input);
 
-            var self = this;
+            const self = this;
             this.spriteDataPromise = loadSprites().then(function(data) {
                 self.spriteData = data;
                 log.info("Sprite data loaded.");
@@ -125,13 +125,13 @@ import manifest from './manifest.js';
         },
 
         loadMap: function() {
-            var self = this;
+            const self = this;
     
             this.map = new Map(!this.renderer.upscaledRendering, this);
     
         	this.map.ready(function() {
                 log.info("Map loaded.");
-                var tilesetIndex = self.renderer.upscaledRendering ? 0 : self.renderer.scale - 1;
+                const tilesetIndex = self.renderer.upscaledRendering ? 0 : self.renderer.scale - 1;
                 self.renderer.setTileset(self.map.tilesets[tilesetIndex]);
                 self.renderer.camera.setMapBounds(self.map.width, self.map.height);
         	});
@@ -139,8 +139,8 @@ import manifest from './manifest.js';
     
         initPlayer: function() {
             if(this.storage.hasAlreadyPlayed()) {
-                var savedArmor = this.storage.data.player.armor;
-                var savedWeapon = this.storage.data.player.weapon;
+                const savedArmor = this.storage.data.player.armor;
+                const savedWeapon = this.storage.data.player.weapon;
                 if(savedArmor && this.sprites[savedArmor]) {
                     this.player.setSpriteName(savedArmor);
                 } else if(savedArmor) {
@@ -151,15 +151,15 @@ import manifest from './manifest.js';
                 }
             }
 
-            var spriteName = this.player.getSpriteName();
-            var sprite = this.sprites[spriteName];
+            const spriteName = this.player.getSpriteName();
+            let sprite = this.sprites[spriteName];
             if(!sprite) {
                 log.warn("Sprite '" + spriteName + "' not found, falling back to clotharmor");
                 sprite = this.sprites["clotharmor"];
             }
             if(!sprite) {
                 // Last resort: use first available sprite
-                var names = Object.keys(this.sprites);
+                const names = Object.keys(this.sprites);
                 if(names.length > 0) {
                     sprite = this.sprites[names[0]];
                     log.warn("clotharmor not found, using first available: " + names[0]);
@@ -195,7 +195,7 @@ import manifest from './manifest.js';
         },
     
         initHurtSprites: function() {
-            var self = this;
+            const self = this;
         
             Types.forEachArmorKind(function(kind, kindName) {
                 self.sprites[kindName].createHurtSprite();
@@ -203,7 +203,7 @@ import manifest from './manifest.js';
         },
     
         initSilhouettes: function() {
-            var self = this;
+            const self = this;
 
             Types.forEachMobOrNpcKind(function(kind, kindName) {
                 self.sprites[kindName].createSilhouette();
@@ -213,7 +213,7 @@ import manifest from './manifest.js';
         },
     
         initAchievements: function() {
-            var self = this;
+            const self = this;
         
             this.achievements = {
                 A_TRUE_WARRIOR: {
@@ -353,7 +353,7 @@ import manifest from './manifest.js';
         },
     
         getAchievementById: function(id) {
-            var found = null;
+            let found = null;
             _.each(this.achievements, function(achievement, key) {
                 if(achievement.id === parseInt(id)) {
                     found = achievement;
@@ -382,7 +382,7 @@ import manifest from './manifest.js';
         },
     
         setSpriteScale: function(scale) {
-            var self = this;
+            const self = this;
             
             if(this.renderer.upscaledRendering) {
                 this.sprites = this.spritesets[0];
@@ -461,7 +461,7 @@ import manifest from './manifest.js';
         },
 
         addEntity: function(entity) {
-            var self = this;
+            const self = this;
             
             if(this.entities[entity.id] === undefined) {
                 this.entities[entity.id] = entity;
@@ -515,9 +515,9 @@ import manifest from './manifest.js';
     
         initPathingGrid: function() {
             this.pathingGrid = [];
-            for(var i=0; i < this.map.height; i += 1) {
+            for(let i=0; i < this.map.height; i += 1) {
                 this.pathingGrid[i] = [];
-                for(var j=0; j < this.map.width; j += 1) {
+                for(let j=0; j < this.map.width; j += 1) {
                     this.pathingGrid[i][j] = this.map.grid[i][j];
                 }
             }
@@ -526,9 +526,9 @@ import manifest from './manifest.js';
     
         initEntityGrid: function() {
             this.entityGrid = [];
-            for(var i=0; i < this.map.height; i += 1) {
+            for(let i=0; i < this.map.height; i += 1) {
                 this.entityGrid[i] = [];
-                for(var j=0; j < this.map.width; j += 1) {
+                for(let j=0; j < this.map.width; j += 1) {
                     this.entityGrid[i][j] = {};
                 }
             }
@@ -537,9 +537,9 @@ import manifest from './manifest.js';
     
         initRenderingGrid: function() {
             this.renderingGrid = [];
-            for(var i=0; i < this.map.height; i += 1) {
+            for(let i=0; i < this.map.height; i += 1) {
                 this.renderingGrid[i] = [];
-                for(var j=0; j < this.map.width; j += 1) {
+                for(let j=0; j < this.map.width; j += 1) {
                     this.renderingGrid[i][j] = {};
                 }
             }
@@ -548,9 +548,9 @@ import manifest from './manifest.js';
     
         initItemGrid: function() {
             this.itemGrid = [];
-            for(var i=0; i < this.map.height; i += 1) {
+            for(let i=0; i < this.map.height; i += 1) {
                 this.itemGrid[i] = [];
-                for(var j=0; j < this.map.width; j += 1) {
+                for(let j=0; j < this.map.width; j += 1) {
                     this.itemGrid[i][j] = {};
                 }
             }
@@ -561,14 +561,12 @@ import manifest from './manifest.js';
          * 
          */
         initAnimatedTiles: function() {
-            var self = this,
-                m = this.map;
+            const self = this, m = this.map;
 
             this.animatedTiles = [];
             this.forEachVisibleTile(function (id, index) {
                 if(m.isAnimatedTile(id)) {
-                    var tile = new AnimatedTile(id, m.getTileAnimationLength(id), m.getTileAnimationDelay(id), index),
-                        pos = self.map.tileIndexToGridPosition(tile.index);
+                    const tile = new AnimatedTile(id, m.getTileAnimationLength(id), m.getTileAnimationDelay(id), index), pos = self.map.tileIndexToGridPosition(tile.index);
                     
                     tile.x = pos.x;
                     tile.y = pos.y;
@@ -648,8 +646,7 @@ import manifest from './manifest.js';
         },
     
         registerEntityPosition: function(entity) {
-            var x = entity.gridX,
-                y = entity.gridY;
+            const x = entity.gridX, y = entity.gridY;
         
             if(entity) {
                 if(entity instanceof Character || entity instanceof Chest) {
@@ -677,23 +674,23 @@ import manifest from './manifest.js';
         },
     
         initMusicAreas: function() {
-            var self = this;
+            const self = this;
             _.each(this.map.musicAreas, function(area) {
                 self.audioManager.addArea(area.x, area.y, area.w, area.h, area.id);
             });
         },
 
         run: function(started_callback) {
-            var self = this;
+            const self = this;
 
-            var startGame = function() {
+            const startGame = function() {
                 self.loadSprites();
                 self.setUpdater(new Updater(self));
                 self.camera = self.renderer.camera;
 
                 self.setSpriteScale(self.renderer.scale);
 
-	            var wait = setInterval(function() {
+	            const wait = setInterval(function() {
                     if(self.map.isLoaded && self.spritesLoaded()) {
                         self.ready = true;
                         log.debug('All sprites loaded.');
@@ -783,25 +780,25 @@ import manifest from './manifest.js';
         },
 
         connect: function(started_callback) {
-            var self = this,
-                connecting = false; // always in dispatcher mode in the build version
-    
+            const self = this; // always in dispatcher mode in the build version
+            let connecting = false;
+
             this.client = new GameClient(this.host, this.port);
-            
+
             //>>excludeStart("prodHost", pragmas.prodHost);
-            var config = this.app.config.local || this.app.config.dev;
+            const config = this.app.config.local || this.app.config.dev;
             if(config) {
                 this.client.connect(config.dispatcher); // false if the client connects directly to a game server
                 connecting = true;
             }
             //>>excludeEnd("prodHost");
-            
+
             //>>includeStart("prodHost", pragmas.prodHost);
             if(!connecting) {
                 this.client.connect(true); // always use the dispatcher in production
             }
             //>>includeEnd("prodHost");
-            
+
             this.client.onDispatched(function(host, port) {
                 log.debug("Dispatched to game server "+host+ ":"+port);
                 
@@ -809,7 +806,7 @@ import manifest from './manifest.js';
                 self.client.port = port;
                 self.client.connect(); // connect to actual game server
             });
-            
+
             this.client.onConnected(function() {
                 log.info("Starting client/server handshake");
                 
@@ -818,11 +815,9 @@ import manifest from './manifest.js';
             
                 self.sendHello(self.player);
             });
-        
+
             this.client.onEntityList(function(list) {
-                var entityIds = _.pluck(self.entities, 'id'),
-                    knownIds = _.intersection(entityIds, list),
-                    newIds = _.difference(list, knownIds);
+                const entityIds = _.pluck(self.entities, 'id'), knownIds = _.intersection(entityIds, list), newIds = _.difference(list, knownIds);
             
                 self.obsoleteEntities = _.reject(self.entities, function(entity) {
                     return _.include(knownIds, entity.id) || entity.id === self.player.id;
@@ -836,7 +831,7 @@ import manifest from './manifest.js';
                     self.client.sendWho(newIds);
                 }
             });
-        
+
             this.client.onWelcome(function(id, name, x, y, hp) {
                 log.info("Received player ID from server : "+ id);
                 self.player.id = id;
@@ -873,9 +868,7 @@ import manifest from './manifest.js';
                 }
         
                 self.player.onStartPathing(function(path) {
-                    var i = path.length - 1,
-                        x =  path[i][0],
-                        y =  path[i][1];
+                    const i = path.length - 1, x =  path[i][0], y =  path[i][1];
                 
                     if(self.player.isMovingToLoot()) {
                         self.player.isLootMoving = false;
@@ -914,7 +907,7 @@ import manifest from './manifest.js';
                 });
 
                 self.player.onBeforeStep(function() {
-                    var blockingEntity = self.getEntityAt(self.player.nextGridX, self.player.nextGridY);
+                    const blockingEntity = self.getEntityAt(self.player.nextGridX, self.player.nextGridY);
                     if(blockingEntity && blockingEntity.id !== self.playerId) {
                         log.debug("Blocked by " + blockingEntity.id);
                     }
@@ -973,7 +966,7 @@ import manifest from './manifest.js';
                     self.selectedCellVisible = false;
                 
                     if(self.isItemAt(x, y)) {
-                        var item = self.getItemAt(x, y);
+                        const item = self.getItemAt(x, y);
                     
                         try {
                             self.player.loot(item);
@@ -1018,7 +1011,7 @@ import manifest from './manifest.js';
                     }
                 
                     if(!self.player.hasTarget() && self.map.isDoor(x, y)) {
-                        var dest = self.map.getDoorDestination(x, y);
+                        const dest = self.map.getDoorDestination(x, y);
                     
                         self.player.setGridPosition(dest.x, dest.y);
                         self.player.nextGridX = dest.x;
@@ -1085,7 +1078,7 @@ import manifest from './manifest.js';
                 });
             
                 self.player.onRequestPath(function(x, y) {
-                    var ignored = [self.player]; // Always ignore self
+                    const ignored = [self.player]; // Always ignore self
                 
                     if(self.player.hasTarget()) {
                         ignored.push(self.player.target);
@@ -1206,11 +1199,10 @@ import manifest from './manifest.js';
                                             }
                                 
                                             if(entity instanceof Player) {
-                                                var gridX = entity.destination.gridX,
-                                                    gridY = entity.destination.gridY;
+                                                const gridX = entity.destination.gridX, gridY = entity.destination.gridY;
 
                                                 if(self.map.isDoor(gridX, gridY)) {
-                                                    var dest = self.map.getDoorDestination(gridX, gridY);
+                                                    const dest = self.map.getDoorDestination(gridX, gridY);
                                                     entity.setGridPosition(dest.x, dest.y);
                                                 }
                                             }
@@ -1227,15 +1219,16 @@ import manifest from './manifest.js';
                                     });
 
                                     entity.onRequestPath(function(x, y) {
-                                        var ignored = [entity], // Always ignore self
-                                            ignoreTarget = function(target) {
-                                                ignored.push(target);
+                                        const // Always ignore self
+                                              ignored = [entity],
+                                              ignoreTarget = function(target) {
+                                                  ignored.push(target);
 
-                                                // also ignore other attackers of the target entity
-                                                target.forEachAttacker(function(attacker) {
-                                                    ignored.push(attacker);
-                                                });
-                                            };
+                                                  // also ignore other attackers of the target entity
+                                                  target.forEachAttacker(function(attacker) {
+                                                      ignored.push(attacker);
+                                                  });
+                                              };
                                         
                                         if(entity.hasTarget()) {
                                             ignoreTarget(entity.target);
@@ -1293,7 +1286,7 @@ import manifest from './manifest.js';
 
                                     if(entity instanceof Mob) {
                                         if(targetId) {
-                                            var player = self.getEntityById(targetId);
+                                            const player = self.getEntityById(targetId);
                                             if(player) {
                                                 self.createAttackLink(entity, player);
                                             }
@@ -1311,7 +1304,7 @@ import manifest from './manifest.js';
                 });
 
                 self.client.onDespawnEntity(function(entityId) {
-                    var entity = self.getEntityById(entityId);
+                    const entity = self.getEntityById(entityId);
             
                     if(entity) {
                         log.info("Despawning " + Types.getKindAsString(entity.kind) + " (" + entity.id+ ")");
@@ -1339,7 +1332,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onItemBlink(function(id) {
-                    var item = self.getEntityById(id);
+                    const item = self.getEntityById(id);
 
                     if(item) {
                         item.blink(150);
@@ -1347,7 +1340,7 @@ import manifest from './manifest.js';
                 });
 
                 self.client.onEntityMove(function(id, x, y) {
-                    var entity = null;
+                    let entity = null;
 
                     if(id !== self.playerId) {
                         entity = self.getEntityById(id);
@@ -1364,7 +1357,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onEntityDestroy(function(id) {
-                    var entity = self.getEntityById(id);
+                    const entity = self.getEntityById(id);
                     if(entity) {
                         if(entity instanceof Item) {
                             self.removeItem(entity);
@@ -1376,7 +1369,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onPlayerMoveToItem(function(playerId, itemId) {
-                    var player, item;
+                    let player, item;
 
                     if(playerId !== self.playerId) {
                         player = self.getEntityById(playerId);
@@ -1389,8 +1382,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onEntityAttack(function(attackerId, targetId) {
-                    var attacker = self.getEntityById(attackerId),
-                        target = self.getEntityById(targetId);
+                    const attacker = self.getEntityById(attackerId), target = self.getEntityById(targetId);
                 
                     if(attacker && target && attacker.id !== self.playerId) {
                         log.debug(attacker.id + " attacks " + target.id);
@@ -1406,14 +1398,14 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onPlayerDamageMob(function(mobId, points) {
-                    var mob = self.getEntityById(mobId);
+                    const mob = self.getEntityById(mobId);
                     if(mob && points) {
                         self.infoManager.addDamageInfo(points, mob.x, mob.y - 15, "inflicted");
                     }
                 });
             
                 self.client.onPlayerKillMob(function(kind) {
-                    var mobName = Types.getKindAsString(kind);
+                    let mobName = Types.getKindAsString(kind);
                     
                     if(mobName === 'skeleton2') {
                         mobName = 'greater skeleton';
@@ -1456,10 +1448,10 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onPlayerChangeHealth(function(points, isRegen) {
-                    var player = self.player,
-                        diff,
-                        isHurt;
-                
+                    const player = self.player;
+                    let diff;
+                    let isHurt;
+
                     if(player && !player.isDead && !player.invincible) {
                         isHurt = points <= player.hitPoints;
                         diff = points - player.hitPoints;
@@ -1491,8 +1483,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onPlayerEquipItem(function(playerId, itemKind) {
-                    var player = self.getEntityById(playerId),
-                        itemName = Types.getKindAsString(itemKind);
+                    const player = self.getEntityById(playerId), itemName = Types.getKindAsString(itemKind);
                 
                     if(player) {
                         if(Types.isArmor(itemKind)) {
@@ -1504,8 +1495,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onPlayerTeleport(function(id, x, y) {
-                    var entity = null,
-                        currentOrientation;
+                    let entity = null, currentOrientation;
 
                     if(id !== self.playerId) {
                         entity = self.getEntityById(id);
@@ -1526,7 +1516,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onDropItem(function(item, mobId) {
-                    var pos = self.getDeadMobPosition(mobId);
+                    const pos = self.getDeadMobPosition(mobId);
                 
                     if(pos) {
                         self.addItem(item, pos.x, pos.y);
@@ -1535,7 +1525,7 @@ import manifest from './manifest.js';
                 });
             
                 self.client.onChatMessage(function(entityId, message) {
-                    var entity = self.getEntityById(entityId);
+                    const entity = self.getEntityById(entityId);
                     self.createBubble(entityId, message);
                     self.assignBubbleTo(entity);
                     self.audioManager.playSound("chat");
@@ -1596,15 +1586,7 @@ import manifest from './manifest.js';
          * @returns {Object} An object containing x and y properties.
          */
         getMouseGridPosition: function() {
-            var mx = this.mouse.x,
-                my = this.mouse.y,
-                c = this.renderer.camera,
-                s = this.renderer.scale,
-                ts = this.renderer.tilesize,
-                offsetX = mx % (ts * s),
-                offsetY = my % (ts * s),
-                x = ((mx - offsetX) / (ts * s)) + c.gridX,
-                y = ((my - offsetY) / (ts * s)) + c.gridY;
+            const mx = this.mouse.x, my = this.mouse.y, c = this.renderer.camera, s = this.renderer.scale, ts = this.renderer.tilesize, offsetX = mx % (ts * s), offsetY = my % (ts * s), x = ((mx - offsetX) / (ts * s)) + c.gridX, y = ((my - offsetY) / (ts * s)) + c.gridY;
         
                 return { x: x, y: y };
         },
@@ -1686,7 +1668,7 @@ import manifest from './manifest.js';
          *
          */
         makeNpcTalk: function(npc) {
-            var msg;
+            let msg;
         
             if(npc) {
                 msg = npc.talk();
@@ -1735,8 +1717,7 @@ import manifest from './manifest.js';
          * Note: This is used by the Renderer to know in which order to render entities.
          */
         forEachVisibleEntityByDepth: function(callback) {
-            var self = this,
-                m = this.map;
+            const self = this, m = this.map;
         
             this.camera.forEachVisiblePosition(function(x, y) {
                 if(!m.isOutOfBounds(x, y)) {
@@ -1753,8 +1734,8 @@ import manifest from './manifest.js';
          * 
          */    
         forEachVisibleTileIndex: function(callback, extra) {
-            var m = this.map;
-            var zone = this.activeCameraZone;
+            const m = this.map;
+            const zone = this.activeCameraZone;
 
             this.camera.forEachVisiblePosition(function(x, y) {
                 if(!m.isOutOfBounds(x, y)) {
@@ -1770,8 +1751,7 @@ import manifest from './manifest.js';
          * 
          */
         forEachVisibleTile: function(callback, extra) {
-            var self = this,
-                m = this.map;
+            const self = this, m = this.map;
         
             if(m.isLoaded) {
                 this.forEachVisibleTileIndex(function(tileIndex) {
@@ -1810,9 +1790,9 @@ import manifest from './manifest.js';
             if(this.map.isOutOfBounds(x, y) || !this.entityGrid) {
                 return null;
             }
-            
-            var entities = this.entityGrid[y][x],
-                entity = null;
+
+            const entities = this.entityGrid[y][x];
+            let entity = null;
             if(_.size(entities) > 0) {
                 entity = entities[_.keys(entities)[0]];
             } else {
@@ -1822,7 +1802,7 @@ import manifest from './manifest.js';
         },
 
         getMobAt: function(x, y) {
-            var entity = this.getEntityAt(x, y);
+            const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Mob)) {
                 return entity;
             }
@@ -1830,7 +1810,7 @@ import manifest from './manifest.js';
         },
 
         getNpcAt: function(x, y) {
-            var entity = this.getEntityAt(x, y);
+            const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Npc)) {
                 return entity;
             }
@@ -1838,7 +1818,7 @@ import manifest from './manifest.js';
         },
 
         getChestAt: function(x, y) {
-            var entity = this.getEntityAt(x, y);
+            const entity = this.getEntityAt(x, y);
             if(entity && (entity instanceof Chest)) {
                 return entity;
             }
@@ -1849,8 +1829,8 @@ import manifest from './manifest.js';
             if(this.map.isOutOfBounds(x, y) || !this.itemGrid) {
                 return null;
             }
-            var items = this.itemGrid[y][x],
-                item = null;
+            const items = this.itemGrid[y][x];
+            let item = null;
 
             if(_.size(items) > 0) {
                 // If there are potions/burgers stacked with equipment items on the same tile, always get expendable items first.
@@ -1897,15 +1877,15 @@ import manifest from './manifest.js';
          * The path will pass through any entity present in the ignore list.
          */
         findPath: function(character, x, y, ignoreList) {
-            var self = this,
-                grid = this.pathingGrid,
-                path = [],
-                isPlayer = (character === this.player);
-        
+            const self = this;
+            const grid = this.pathingGrid;
+            let path = [];
+            const isPlayer = (character === this.player);
+
             if(this.map.isColliding(x, y)) {
                 return path;
             }
-        
+
             if(this.pathfinder && character) {
                 if(ignoreList) {
                     _.each(ignoreList, function(entity) {
@@ -1950,9 +1930,7 @@ import manifest from './manifest.js';
          * 
          */
         movecursor: function() {
-            var mouse = this.getMouseGridPosition(),
-                x = mouse.x,
-                y = mouse.y;
+            const mouse = this.getMouseGridPosition(), x = mouse.x, y = mouse.y;
 
             if(this.player && !this.renderer.mobile && !this.renderer.tablet) {
                 this.hoveringCollidingTile = this.map.isColliding(x, y);
@@ -1963,7 +1941,7 @@ import manifest from './manifest.js';
                 this.hoveringChest = this.isChestAt(x, y);
         
                 if(this.hoveringMob || this.hoveringNpc || this.hoveringChest) {
-                    var entity = this.getEntityAt(x, y);
+                    const entity = this.getEntityAt(x, y);
             
                     if(!entity.isHighlighted && this.renderer.supportsSilhouettes) {
                         if(this.lastHovered) {
@@ -1984,17 +1962,17 @@ import manifest from './manifest.js';
          * Processes game logic when the user triggers a click/touch event during the game.
          */
         click: function() {
-            var pos = this.getMouseGridPosition(),
-                entity;
-            
+            const pos = this.getMouseGridPosition();
+            let entity;
+
             if(pos.x === this.previousClickPosition.x
             && pos.y === this.previousClickPosition.y) {
                 return;
             } else {
                 this.previousClickPosition = pos;
             }
-	        
-    	    if(this.started
+
+            if(this.started
     	    && this.player
     	    && !this.isZoning()
     	    && !this.isZoningTile(this.player.nextGridX, this.player.nextGridY)
@@ -2026,11 +2004,11 @@ import manifest from './manifest.js';
         },
         
         isMobOnSameTile: function(mob, x, y) {
-            var X = x || mob.gridX,
-                Y = y || mob.gridY,
-                list = this.entityGrid[Y][X],
-                result = false;
-            
+            const X = x || mob.gridX;
+            const Y = y || mob.gridY;
+            const list = this.entityGrid[Y][X];
+            let result = false;
+
             _.each(list, function(entity) {
                 if(entity instanceof Mob && entity.id !== mob.id) {
                     result = true;
@@ -2040,9 +2018,9 @@ import manifest from './manifest.js';
         },
         
         getFreeAdjacentNonDiagonalPosition: function(entity) {
-            var self = this,
-                result = null;
-            
+            const self = this;
+            let result = null;
+
             entity.forEachAdjacentNonDiagonalPosition(function(x, y, orientation) {
                 if(!result && !self.map.isColliding(x, y) && !self.isMobAt(x, y)) {
                     result = {x: x, y: y, o: orientation};
@@ -2052,13 +2030,12 @@ import manifest from './manifest.js';
         },
         
         tryMovingToADifferentTile: function(character) {
-            var attacker = character,
-                target = character.target;
+            const attacker = character, target = character.target;
             
             if(attacker && target && target instanceof Player) {
                 if(!target.isMoving() && attacker.getDistanceToEntity(target) === 0) {
-                    var pos;
-                    
+                    let pos;
+
                     switch(target.orientation) {
                         case Types.Orientations.UP:
                             pos = {x: target.gridX, y: target.gridY - 1, o: target.orientation}; break;
@@ -2069,7 +2046,7 @@ import manifest from './manifest.js';
                         case Types.Orientations.RIGHT:
                             pos = {x: target.gridX + 1, y: target.gridY, o: target.orientation}; break;
                     }
-                    
+
                     if(pos) {
                         attacker.previousTarget = target;
                         attacker.disengage();
@@ -2082,7 +2059,7 @@ import manifest from './manifest.js';
                 }
             
                 if(!target.isMoving() && attacker.isAdjacentNonDiagonal(target) && this.isMobOnSameTile(attacker)) {
-                    var pos = this.getFreeAdjacentNonDiagonalPosition(target);
+                    const pos = this.getFreeAdjacentNonDiagonalPosition(target);
             
                     // avoid stacking mobs on the same tile next to a player
                     // by making them go to adjacent tiles if they are available
@@ -2108,12 +2085,11 @@ import manifest from './manifest.js';
          * 
          */
         onCharacterUpdate: function(character) {
-            var time = this.currentTime,
-                self = this;
+            const time = this.currentTime, self = this;
             
             // If mob has finished moving to a different tile in order to avoid stacking, attack again from the new position.
             if(character.previousTarget && !character.isMoving() && character instanceof Mob) {
-                var t = character.previousTarget;
+                const t = character.previousTarget;
                 
                 if(this.getEntityById(t.id)) { // does it still exist?
                     character.previousTarget = null;
@@ -2123,7 +2099,7 @@ import manifest from './manifest.js';
             }
         
             if(character.isAttacking() && !character.previousTarget) {
-                var isMoving = this.tryMovingToADifferentTile(character); // Don't let multiple mobs stack on the same tile when attacking a player.
+                const isMoving = this.tryMovingToADifferentTile(character); // Don't let multiple mobs stack on the same tile when attacking a player.
                 
                 if(character.canAttack(time)) {
                     if(!isMoving) { // don't hit target if moving to a different tile.
@@ -2160,7 +2136,7 @@ import manifest from './manifest.js';
          * 
          */
         isZoningTile: function(x, y) {
-            var c = this.camera;
+            const c = this.camera;
         
             x = x - c.gridX;
             y = y - c.gridY;
@@ -2175,12 +2151,12 @@ import manifest from './manifest.js';
          * 
          */
         getZoningOrientation: function(x, y) {
-            var orientation = "",
-                c = this.camera;
+            let orientation = "";
+            const c = this.camera;
 
             x = x - c.gridX;
             y = y - c.gridY;
-       
+
             if(x === 0) {
                 orientation = Types.Orientations.LEFT;
             }
@@ -2193,7 +2169,7 @@ import manifest from './manifest.js';
             else if(y === c.gridH-1) {
                 orientation = Types.Orientations.DOWN;
             }
-        
+
             return orientation;
         },
     
@@ -2204,10 +2180,10 @@ import manifest from './manifest.js';
             // clear both the camera clamp and the tile-rendering filter so the
             // camera can scroll out and tiles outside the zone become visible.
             // endZoning() will re-check and re-apply if the player is still in a zone.
-            var zone = this.camera.activeZone;
+            const zone = this.camera.activeZone;
             if(zone) {
-                var o = this.zoningOrientation,
-                    c = this.camera;
+                const o = this.zoningOrientation;
+                const c = this.camera;
                 if((o === Types.Orientations.UP && c.gridY <= zone.y) ||
                    (o === Types.Orientations.DOWN && c.gridY + c.gridH >= zone.y + zone.height) ||
                    (o === Types.Orientations.LEFT && c.gridX <= zone.x) ||
@@ -2218,24 +2194,24 @@ import manifest from './manifest.js';
             }
 
             if(this.renderer.mobile || this.renderer.tablet) {
-                var z = this.zoningOrientation,
-                    c = this.camera,
-                    ts = this.renderer.tilesize,
-                    x = c.x,
-                    y = c.y,
-                    xoffset = (c.gridW - 2) * ts,
-                    yoffset = (c.gridH - 2) * ts;
-            
+                const z = this.zoningOrientation;
+                const c = this.camera;
+                const ts = this.renderer.tilesize;
+                let x = c.x;
+                let y = c.y;
+                const xoffset = (c.gridW - 2) * ts;
+                const yoffset = (c.gridH - 2) * ts;
+
                 if(z === Types.Orientations.LEFT || z === Types.Orientations.RIGHT) {
                     x = (z === Types.Orientations.LEFT) ? c.x - xoffset : c.x + xoffset;
                 } else if(z === Types.Orientations.UP || z === Types.Orientations.DOWN) {
                     y = (z === Types.Orientations.UP) ? c.y - yoffset : c.y + yoffset;
                 }
                 c.setPosition(x, y);
-            
+
                 this.renderer.clearScreen(this.renderer.context);
                 this.endZoning();
-                
+
                 // Force immediate drawing of all visible entities in the new zone
                 this.forEachVisibleEntityByDepth(function(entity) {
                     entity.setDirty();
@@ -2263,7 +2239,7 @@ import manifest from './manifest.js';
             // Don't re-apply zone if camera has scrolled outside it —
             // this happens when the player exits a zone via the boundary.
             if(this.activeCameraZone) {
-                var z = this.activeCameraZone, c = this.camera;
+                const z = this.activeCameraZone, c = this.camera;
                 if(c.gridX < z.x || c.gridX + c.gridW > z.x + z.width ||
                    c.gridY < z.y || c.gridY + c.gridH > z.y + z.height) {
                     this.activeCameraZone = null;
@@ -2275,7 +2251,7 @@ import manifest from './manifest.js';
             this.zoningQueue.shift();
             
             if(this.zoningQueue.length > 0) {
-                var pos = this.zoningQueue[0];
+                const pos = this.zoningQueue[0];
                 this.startZoningFrom(pos.x, pos.y);
             }
         },
@@ -2308,17 +2284,20 @@ import manifest from './manifest.js';
         },
     
         assignBubbleTo: function(character) {
-            var bubble = this.bubbleManager.getBubbleById(character.id);
+            const bubble = this.bubbleManager.getBubbleById(character.id);
         
             if(bubble) {
-                var s = this.renderer.scale,
-                    t = 16 * s, // tile size
-                    x = ((character.x - this.camera.x) * s),
-                    w = parseInt(bubble.element.css('width')) + 24,
-                    offset = (w / 2) - (t / 2),
-                    offsetY,
-                    y;
-            
+                const s = this.renderer.scale;
+
+                const // tile size
+                t = 16 * s;
+
+                const x = ((character.x - this.camera.x) * s);
+                const w = parseInt(bubble.element.css('width')) + 24;
+                const offset = (w / 2) - (t / 2);
+                let offsetY;
+                let y;
+
                 if(character instanceof Npc) {
                     offsetY = 0;
                 } else {
@@ -2332,9 +2311,9 @@ import manifest from './manifest.js';
                         offsetY = 12;
                     }
                 }
-            
+
                 y = ((character.y - this.camera.y) * s) - (t * 2) - offsetY;
-            
+
                 bubble.element.css('left', x - offset + 'px');
                 bubble.element.css('top', y + 'px');
             }
@@ -2401,10 +2380,7 @@ import manifest from './manifest.js';
         },
     
         resize: function() {
-            var x = this.camera.x,
-                y = this.camera.y,
-                currentScale = this.renderer.scale,
-                newScale = this.renderer.getScaleFactor();
+            const x = this.camera.x, y = this.camera.y, currentScale = this.renderer.scale, newScale = this.renderer.getScaleFactor();
     
                 this.renderer.rescale(newScale);
                 this.camera = this.renderer.camera;
@@ -2423,7 +2399,7 @@ import manifest from './manifest.js';
         },
     
         getDeadMobPosition: function(mobId) {
-            var position;
+            let position;
 
             if(mobId in this.deathpositions) {
                 position = this.deathpositions[mobId];
@@ -2438,7 +2414,7 @@ import manifest from './manifest.js';
         },
     
         tryUnlockingAchievement: function(name) {
-            var achievement = null;
+            let achievement = null;
             if(name in this.achievements) {
                 achievement = this.achievements[name];
             
@@ -2458,8 +2434,7 @@ import manifest from './manifest.js';
         },
 
         removeObsoleteEntities: function() {
-            var nb = _.size(this.obsoleteEntities),
-                self = this;
+            const nb = _.size(this.obsoleteEntities), self = this;
         
             if(nb > 0) {
                 _.each(this.obsoleteEntities, function(entity) {
@@ -2495,10 +2470,10 @@ import manifest from './manifest.js';
         },
     
         updatePlayerCheckpoint: function() {
-            var checkpoint = this.map.getCurrentCheckpoint(this.player);
+            const checkpoint = this.map.getCurrentCheckpoint(this.player);
         
             if(checkpoint) {
-                var lastCheckpoint = this.player.lastCheckpoint;
+                const lastCheckpoint = this.player.lastCheckpoint;
                 if(!lastCheckpoint || (lastCheckpoint && lastCheckpoint.id !== checkpoint.id)) {
                     this.player.lastCheckpoint = checkpoint;
                     this.client.sendCheck(checkpoint.id);
@@ -2507,7 +2482,7 @@ import manifest from './manifest.js';
         },
         
         checkUndergroundAchievement: function() {
-            var music = this.audioManager.getSurroundingMusic(this.player);
+            const music = this.audioManager.getSurroundingMusic(this.player);
 
             if(music) {
                 if(music.name === 'cave') {
@@ -2517,8 +2492,8 @@ import manifest from './manifest.js';
         },
         
         forEachEntityAround: function(x, y, r, callback) {
-            for(var i = x-r, max_i = x+r; i <= max_i; i += 1) {
-                for(var j = y-r, max_j = y+r; j <= max_j; j += 1) {
+            for(let i = x-r, max_i = x+r; i <= max_i; i += 1) {
+                for(let j = y-r, max_j = y+r; j <= max_j; j += 1) {
                     if(!this.map.isOutOfBounds(i, j)) {
                         _.each(this.renderingGrid[j][i], function(entity) {
                             callback(entity);
@@ -2529,14 +2504,14 @@ import manifest from './manifest.js';
         },
         
         checkOtherDirtyRects: function(r1, source, x, y) {
-            var r = this.renderer;
+            const r = this.renderer;
             
             this.forEachEntityAround(x, y, 2, function(e2) {
                 if(source && source.id && e2.id === source.id) {
                     return;
                 }
                 if(!e2.isDirty) {
-                    var r2 = r.getEntityBoundingRect(e2);
+                    const r2 = r.getEntityBoundingRect(e2);
                     if(r.isIntersecting(r1, r2)) {
                         e2.setDirty();
                     }
@@ -2546,7 +2521,7 @@ import manifest from './manifest.js';
             if(source && !(source.hasOwnProperty("index"))) {
                 this.forEachAnimatedTile(function(tile) {
                     if(!tile.isDirty) {
-                        var r2 = r.getTileBoundingRect(tile);
+                        const r2 = r.getTileBoundingRect(tile);
                         if(r.isIntersecting(r1, r2)) {
                             tile.isDirty = true;
                         }
@@ -2555,7 +2530,7 @@ import manifest from './manifest.js';
             }
             
             if(!this.drawTarget && this.selectedCellVisible) {
-                var targetRect = r.getTargetBoundingRect();
+                const targetRect = r.getTargetBoundingRect();
                 if(r.isIntersecting(r1, targetRect)) {
                     this.drawTarget = true;
                     this.renderer.targetRect = targetRect;

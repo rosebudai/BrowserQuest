@@ -2,7 +2,7 @@ import Messages from "./message.js";
 import Utils from "./utils.js";
 
 /* Uses global Class */
-var Entity = Class.extend({
+const Entity = Class.extend({
     init: function(id, type, kind, x, y) {
         this.id = parseInt(id);
         this.type = type;
@@ -42,12 +42,12 @@ var Entity = Class.extend({
     },
     
     getPositionNextTo: function(entity) {
-        var pos = null;
+        let pos = null;
         if(entity) {
             pos = {};
             // This is a quick & dirty way to give mobs a random position
             // close to another entity.
-            var r = Utils.random(4);
+            const r = Utils.random(4);
             
             pos.x = entity.x;
             pos.y = entity.y;

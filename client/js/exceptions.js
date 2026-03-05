@@ -1,5 +1,5 @@
 
-var Exceptions = {
+const Exceptions = {
 
     LootException: Class.extend({
         init: function(message) {

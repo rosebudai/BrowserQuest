@@ -1,7 +1,7 @@
 (function() {
     "use strict";
 
-    var LOCATIONS = {
+    const LOCATIONS = {
         spawn:  { x: 15, y: 210 },
         house:  { x: 126, y: 143 },
         cave:   { x: 157, y: 120 },
@@ -20,7 +20,7 @@
         return window.__game;
     }
 
-    var bq = {};
+    const bq = {};
 
     /**
      * Start the game by entering a player name and clicking play.
@@ -37,16 +37,16 @@
             }
 
             // Set name input and trigger the play button
-            var $input = $('#nameinput');
+            const $input = $('#nameinput');
             $input.val(name);
             $input[0].dispatchEvent(new Event('input', { bubbles: true }));
             $('.play div').click();
 
-            var elapsed = 0;
-            var interval = 200;
-            var timeout = 15000;
+            let elapsed = 0;
+            const interval = 200;
+            const timeout = 15000;
 
-            var poll = setInterval(function() {
+            const poll = setInterval(function() {
                 elapsed += interval;
                 if (window.__game && window.__game.started) {
                     clearInterval(poll);
@@ -63,7 +63,7 @@
      * Teleport to a named location from the LOCATIONS map.
      */
     bq.teleport = function(locationName) {
-        var loc = LOCATIONS[locationName];
+        const loc = LOCATIONS[locationName];
         if (!loc) {
             throw new Error("[bq-debug] Unknown location: '" + locationName + "'. Valid locations: " + Object.keys(LOCATIONS).join(", "));
         }
@@ -74,7 +74,7 @@
      * Teleport the player to an arbitrary grid position.
      */
     bq.teleportTo = function(gridX, gridY) {
-        var game = requireGame();
+        const game = requireGame();
 
         game.player.setGridPosition(gridX, gridY);
         game.player.nextGridX = gridX;
@@ -95,14 +95,14 @@
      * Sets game.mouse coordinates and calls game.click() directly.
      */
     bq.clickTile = function(gridX, gridY) {
-        var game = requireGame();
-        var scale = game.renderer.scale;
-        var ts = game.renderer.tilesize;
-        var camera = game.camera;
+        const game = requireGame();
+        const scale = game.renderer.scale;
+        const ts = game.renderer.tilesize;
+        const camera = game.camera;
 
         // Center of the tile in mouse-space
-        var mouseX = (gridX - camera.gridX) * ts * scale + (ts * scale / 2);
-        var mouseY = (gridY - camera.gridY) * ts * scale + (ts * scale / 2);
+        const mouseX = (gridX - camera.gridX) * ts * scale + (ts * scale / 2);
+        const mouseY = (gridY - camera.gridY) * ts * scale + (ts * scale / 2);
 
         // Set mouse coordinates directly on the game object and invoke click
         game.mouse.x = mouseX;
@@ -116,7 +116,7 @@
      * Return the current game state snapshot.
      */
     bq.state = function() {
-        var game = requireGame();
+        const game = requireGame();
 
         return {
             player: {
@@ -142,26 +142,26 @@
      */
     bq.doors = function(radius) {
         radius = (radius !== undefined) ? radius : 15;
-        var game = requireGame();
-        var map = game.map;
-        var playerX = game.player.gridX;
-        var playerY = game.player.gridY;
-        var result = [];
+        const game = requireGame();
+        const map = game.map;
+        const playerX = game.player.gridX;
+        const playerY = game.player.gridY;
+        const result = [];
 
         // map.doors is keyed by tile index: (y * width) + x + 1
-        for (var idx in map.doors) {
+        for (const idx in map.doors) {
             if (!map.doors.hasOwnProperty(idx)) {
                 continue;
             }
-            var numIdx = parseInt(idx, 10);
+            const numIdx = parseInt(idx, 10);
             // Reverse GridPositionToTileIndex: index = (y * width) + x + 1
-            var adjustedIdx = numIdx - 1;
-            var gridX = adjustedIdx % map.width;
-            var gridY = Math.floor(adjustedIdx / map.width);
+            const adjustedIdx = numIdx - 1;
+            const gridX = adjustedIdx % map.width;
+            const gridY = Math.floor(adjustedIdx / map.width);
 
-            var distance = Math.abs(gridX - playerX) + Math.abs(gridY - playerY);
+            const distance = Math.abs(gridX - playerX) + Math.abs(gridY - playerY);
             if (distance <= radius) {
-                var door = map.doors[idx];
+                const door = map.doors[idx];
                 result.push({
                     gridX: gridX,
                     gridY: gridY,
@@ -180,7 +180,7 @@
         });
 
         // Clean up internal _distance property
-        for (var i = 0; i < result.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             delete result[i]._distance;
         }
 

@@ -2,7 +2,7 @@ import Utils from "./utils.js";
 import Mob from "./mob.js";
 
 /* Uses global Class */
-var Area = Class.extend({
+const Area = Class.extend({
     init: function(id, x, y, width, height, world) {
         this.id = id;
         this.x = x;
@@ -15,9 +15,9 @@ var Area = Class.extend({
     },
     
     _getRandomPositionInsideArea: function() {
-        var pos = {},
-            valid = false;
-        
+        const pos = {};
+        let valid = false;
+
         while(!valid) {
             pos.x = this.x + Utils.random(this.width + 1);
             pos.y = this.y + Utils.random(this.height + 1);
@@ -27,7 +27,7 @@ var Area = Class.extend({
     },
     
     removeFromArea: function(entity) {
-        var i = _.indexOf(_.pluck(this.entities, 'id'), entity.id);
+        const i = _.indexOf(_.pluck(this.entities, 'id'), entity.id);
         this.entities.splice(i, 1);
         
         if(this.isEmpty() && this.hasCompletelyRespawned && this.empty_callback) {

@@ -1,6 +1,6 @@
 import Item from './item.js';
 
-    var Items = {
+    const Items = {
 
         Sword2: Item.extend({
             init: function(id) {

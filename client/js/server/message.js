@@ -1,7 +1,7 @@
-var Messages = {};
+const Messages = {};
 
 /* Uses global Class */
-var Message = Class.extend({
+const Message = Class.extend({
 });
 
 Messages.Spawn = Message.extend({
@@ -9,7 +9,7 @@ Messages.Spawn = Message.extend({
         this.entity = entity;
     },
     serialize: function() {
-        var spawn = [Types.Messages.SPAWN];
+        const spawn = [Types.Messages.SPAWN];
         return spawn.concat(this.entity.getState());
     }
 });
@@ -65,7 +65,7 @@ Messages.Health = Message.extend({
         this.isRegen = isRegen;
     },
     serialize: function() {
-        var health = [Types.Messages.HEALTH,
+        const health = [Types.Messages.HEALTH,
                       this.points];
         
         if(this.isRegen) {
@@ -103,7 +103,7 @@ Messages.Drop = Message.extend({
         this.item = item;
     },
     serialize: function() {
-        var drop = [Types.Messages.DROP,
+        const drop = [Types.Messages.DROP,
                     this.mob.id,
                     this.item.id,
                     this.item.kind,
@@ -176,7 +176,7 @@ Messages.List = Message.extend({
         this.ids = ids;
     },
     serialize: function() {
-        var list = this.ids;
+        const list = this.ids;
         
         list.unshift(Types.Messages.LIST);
         return list;

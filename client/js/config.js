@@ -1,5 +1,5 @@
 // Simplified config for single-player ESM build — no server connection needed
-var config = {
+const config = {
     dev: { host: "localhost", port: 8000, dispatcher: false },
     local: { host: "localhost", port: 8000, dispatcher: false }
 };

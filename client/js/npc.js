@@ -1,6 +1,6 @@
 import Character from './character.js';
 
-    var NpcTalk = {
+    const NpcTalk = {
         "guard": [
             "Hello there",
             "We don't need to see your identification",
@@ -150,7 +150,7 @@ import Character from './character.js';
         ]
     };
 
-    var Npc = Character.extend({
+    const Npc = Character.extend({
         init: function(id, kind) {
             this._super(id, kind, 1);
             this.itemKind = Types.getKindAsString(this.kind);
@@ -159,7 +159,7 @@ import Character from './character.js';
         },
     
         talk: function() {
-            var msg = null;
+            let msg = null;
         
             if(this.talkIndex > this.talkCount) {
                 this.talkIndex = 0;

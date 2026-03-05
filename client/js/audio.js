@@ -1,9 +1,9 @@
 import Area from './area.js';
 import { resolveSound, resolveMusic } from './asset-resolver.js';
 
-    var AudioManager = Class.extend({
+    const AudioManager = Class.extend({
         init: function(game) {
-            var self = this;
+            const self = this;
 
             this.enabled = true;
             this.extension = Detect.canPlayMP3() ? "mp3" : "ogg";
@@ -14,8 +14,8 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             this.musicNames = ["village", "beach", "forest", "cave", "desert", "lavaland", "boss"];
             this.soundNames = ["loot", "hit1", "hit2", "hurt", "heal", "chat", "revive", "death", "firefox", "achievement", "kill1", "kill2", "noloot", "teleport", "chest", "npc", "npc-end"];
 
-            var loadSoundFiles = function() {
-                var counter = _.size(self.soundNames);
+            const loadSoundFiles = function() {
+                let counter = _.size(self.soundNames);
                 log.info("Loading sound files...");
                 _.each(self.soundNames, function(name) { self.loadSound(name, function() {
                         counter -= 1;
@@ -28,7 +28,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
                 });
             };
 
-            var loadMusicFiles = function() {
+            const loadMusicFiles = function() {
                 if(!self.game.renderer.mobile) { // disable music on mobile devices
                     log.info("Loading music files...");
                     // Load the village music first, as players always start here
@@ -66,8 +66,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         load: function (path, name, loaded_callback, channels) {
-            var sound = document.createElement('audio'),
-                self = this;
+            const sound = document.createElement('audio'), self = this;
 
             sound.addEventListener('canplaythrough', function onCanPlay(e) {
                 this.removeEventListener('canplaythrough', onCanPlay, false);
@@ -96,7 +95,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         loadSound: function(name, handleLoaded) {
-            var path = resolveSound(name);
+            let path = resolveSound(name);
             if(this.extension !== "mp3") {
                 path = path.replace(".mp3", "." + this.extension);
             }
@@ -104,12 +103,12 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         loadMusic: function(name, handleLoaded) {
-            var path = resolveMusic(name);
+            let path = resolveMusic(name);
             if(this.extension !== "mp3") {
                 path = path.replace(".mp3", "." + this.extension);
             }
             this.load(path, name, handleLoaded, 1);
-            var music = this.sounds[name][0];
+            const music = this.sounds[name][0];
             music.loop = true;
             music.addEventListener('ended', function() { music.play() }, false);
         },
@@ -118,7 +117,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
             if(!this.sounds[name]) {
                 return null;
             }
-            var sound = _.detect(this.sounds[name], function(sound) {
+            let sound = _.detect(this.sounds[name], function(sound) {
                 return sound.ended || sound.paused;
             });
             if(sound && sound.ended) {
@@ -130,23 +129,24 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         playSound: function(name) {
-            var sound = this.enabled && this.getSound(name);
+            const sound = this.enabled && this.getSound(name);
             if(sound) {
                 sound.play();
             }
         },
 
         addArea: function(x, y, width, height, musicName) {
-            var area = new Area(x, y, width, height);
+            const area = new Area(x, y, width, height);
             area.musicName = musicName;
             this.areas.push(area);
         },
 
         getSurroundingMusic: function(entity) {
-            var music = null,
-                area = _.detect(this.areas, function(area) {
-                    return area.contains(entity);
-                });
+            let music = null;
+
+            const area = _.detect(this.areas, function(area) {
+                return area.contains(entity);
+            });
 
             if(area) {
                 music = { sound: this.getSound(area.musicName), name: area.musicName };
@@ -156,7 +156,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
 
         updateMusic: function() {
             if(this.enabled) {
-                var music = this.getSurroundingMusic(this.game.player);
+                const music = this.getSurroundingMusic(this.game.player);
 
                 if(music) {
                     if(!this.isCurrentMusic(music)) {
@@ -195,12 +195,11 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         fadeOutMusic: function(music, ended_callback) {
-            var self = this;
+            const self = this;
             if(music && !music.sound.fadingOut) {
                 this.clearFadeIn(music);
                 music.sound.fadingOut = setInterval(function() {
-                    var step = 0.02,
-                        volume = music.sound.volume - step;
+                    const step = 0.02, volume = music.sound.volume - step;
 
                     if(self.enabled && volume >= step) {
                         music.sound.volume = volume;
@@ -214,12 +213,11 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         fadeInMusic: function(music) {
-            var self = this;
+            const self = this;
             if(music && !music.sound.fadingIn) {
                 this.clearFadeOut(music);
                 music.sound.fadingIn = setInterval(function() {
-                    var step = 0.01,
-                        volume = music.sound.volume + step;
+                    const step = 0.01, volume = music.sound.volume + step;
 
                     if(self.enabled && volume < 1 - step) {
                         music.sound.volume = volume;
@@ -246,7 +244,7 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         },
 
         fadeOutCurrentMusic : function() {
-            var self = this;
+            const self = this;
             if(this.currentMusic) {
                 this.fadeOutMusic(this.currentMusic, function(music) {
                     self.resetMusic(music);

@@ -1,6 +1,6 @@
 import Timer from './timer.js';
 
-    var Bubble = Class.extend({
+    const Bubble = Class.extend({
         init: function(id, element, time) {
             this.id = id;
             this.element = element;
@@ -23,7 +23,7 @@ import Timer from './timer.js';
         }
     });
 
-    var BubbleManager = Class.extend({
+    const BubbleManager = Class.extend({
         init: function(container) {
             this.container = container;
             this.bubbles = {};
@@ -42,7 +42,7 @@ import Timer from './timer.js';
                 $("#"+id+" p").html(message);
             }
             else {
-                var el = $("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>"); //.attr('id', id);
+                const el = $("<div id=\""+id+"\" class=\"bubble\"><p>"+message+"</p><div class=\"thingy\"></div></div>"); //.attr('id', id);
                 $(el).appendTo(this.container);
 
                 this.bubbles[id] = new Bubble(id, el, time);
@@ -50,8 +50,7 @@ import Timer from './timer.js';
         },
 
         update: function(time) {
-            var self = this,
-                bubblesToDelete = [];
+            const self = this, bubblesToDelete = [];
 
             _.each(this.bubbles, function(bubble) {
                 if(bubble.isOver(time)) {
@@ -66,8 +65,7 @@ import Timer from './timer.js';
         },
 
         clean: function() {
-            var self = this,
-                bubblesToDelete = [];
+            const self = this, bubblesToDelete = [];
 
             _.each(this.bubbles, function(bubble) {
                 bubble.destroy();
@@ -82,7 +80,7 @@ import Timer from './timer.js';
         },
 
         destroyBubble: function(id) {
-            var bubble = this.getBubbleById(id);
+            const bubble = this.getBubbleById(id);
 
             if(bubble) {
                 bubble.destroy();

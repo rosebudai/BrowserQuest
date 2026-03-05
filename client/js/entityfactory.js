@@ -4,7 +4,7 @@ import NPCs from './npcs.js';
 import Warrior from './warrior.js';
 import Chest from './chest.js';
 
-    var EntityFactory = {};
+    const EntityFactory = {};
 
     EntityFactory.createEntity = function(kind, id, name) {
         if(!kind) {

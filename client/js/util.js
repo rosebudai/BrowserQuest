@@ -1,9 +1,9 @@
-var isInt = function(n) {
+const isInt = function(n) {
     return (n % 1) === 0;
 };
 window.isInt = isInt;
 
-var TRANSITIONEND = 'transitionend webkitTransitionEnd oTransitionEnd';
+const TRANSITIONEND = 'transitionend webkitTransitionEnd oTransitionEnd';
 window.TRANSITIONEND = TRANSITIONEND;
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/

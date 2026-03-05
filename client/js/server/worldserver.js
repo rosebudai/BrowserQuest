@@ -15,9 +15,9 @@ import { check } from './format.js';
 
 // ======= GAME SERVER ========
 
-var WorldServer = Class.extend({
+const WorldServer = Class.extend({
     init: function(id, maxPlayers, websocketServer) {
-        var self = this;
+        const self = this;
 
         this.id = id;
         this.maxPlayers = maxPlayers;
@@ -66,13 +66,13 @@ var WorldServer = Class.extend({
             self.pushToPlayer(player, new Messages.Population(self.playerCount));
             self.pushRelevantEntityListTo(player);
     
-            var move_callback = function(x, y) {
+            const move_callback = function(x, y) {
                 log.debug(player.name + " is moving to (" + x + ", " + y + ").");
                 
                 player.forEachAttacker(function(mob) {
-                    var target = self.getEntityById(mob.target);
+                    const target = self.getEntityById(mob.target);
                     if(target) {
-                        var pos = self.findPositionNextTo(mob, target);
+                        const pos = self.findPositionNextTo(mob, target);
                         if(mob.distanceToSpawningPoint(pos.x, pos.y) > 50) {
                             mob.clearTarget();
                             mob.forgetEveryone();
@@ -88,7 +88,7 @@ var WorldServer = Class.extend({
             player.onLootMove(move_callback);
             
             player.onZone(function() {
-                var hasChangedGroups = self.handleEntityGroupMembership(player);
+                const hasChangedGroups = self.handleEntityGroupMembership(player);
                 
                 if(hasChangedGroups) {
                     self.pushToPreviousGroups(player, new Messages.Destroy(player));
@@ -121,9 +121,9 @@ var WorldServer = Class.extend({
         
         // Called when an entity is attacked by another entity
         this.onEntityAttack(function(attacker) {
-            var target = self.getEntityById(attacker.target);
+            const target = self.getEntityById(attacker.target);
             if(target && attacker.type === "mob") {
-                var pos = self.findPositionNextTo(attacker, target);
+                const pos = self.findPositionNextTo(attacker, target);
                 self.moveEntity(attacker, pos.x, pos.y);
             }
         });
@@ -142,7 +142,7 @@ var WorldServer = Class.extend({
     },
     
     run: function(mapFilePath) {
-        var self = this;
+        const self = this;
         
         this.map = new ServerMap(mapFilePath);
 
@@ -154,7 +154,7 @@ var WorldServer = Class.extend({
             // Populate all mob "roaming" areas
             try {
                 _.each(self.map.mobAreas, function(a) {
-                    var area = new MobArea(a.id, a.nb, a.type, a.x, a.y, a.width, a.height, self);
+                    const area = new MobArea(a.id, a.nb, a.type, a.x, a.y, a.width, a.height, self);
                     area.spawnMobs();
                     area.onEmpty(self.handleEmptyMobArea.bind(self, area));
 
@@ -167,7 +167,7 @@ var WorldServer = Class.extend({
             // Create all chest areas
             try {
                 _.each(self.map.chestAreas, function(a) {
-                    var area = new ChestArea(a.id, a.x, a.y, a.w, a.h, a.tx, a.ty, a.i, self);
+                    const area = new ChestArea(a.id, a.x, a.y, a.w, a.h, a.tx, a.ty, a.i, self);
                     self.chestAreas.push(area);
                     area.onEmpty(self.handleEmptyChestArea.bind(self, area));
                 });
@@ -178,7 +178,7 @@ var WorldServer = Class.extend({
             // Spawn static chests
             try {
                 _.each(self.map.staticChests, function(chest) {
-                    var c = self.createChest(chest.x, chest.y, chest.i);
+                    const c = self.createChest(chest.x, chest.y, chest.i);
                     self.addStaticItem(c);
                 });
             } catch(e) {
@@ -206,8 +206,8 @@ var WorldServer = Class.extend({
             });
         });
         
-        var regenCount = this.ups * 2;
-        var updateCount = 0;
+        const regenCount = this.ups * 2;
+        let updateCount = 0;
         setInterval(function() {
             self.processGroups();
             self.processQueues();
@@ -254,7 +254,7 @@ var WorldServer = Class.extend({
     },
     
     pushRelevantEntityListTo: function(player) {
-        var entities;
+        let entities;
         
         if(player && (player.group in this.groups)) {
             entities = _.keys(this.groups[player.group].entities);
@@ -267,10 +267,10 @@ var WorldServer = Class.extend({
     },
     
     pushSpawnsToPlayer: function(player, ids) {
-        var self = this;
+        const self = this;
         
         _.each(ids, function(id) {
-            var entity = self.getEntityById(id);
+            const entity = self.getEntityById(id);
             if(entity) {
                 self.pushToPlayer(player, new Messages.Spawn(entity));
             }
@@ -288,8 +288,7 @@ var WorldServer = Class.extend({
     },
     
     pushToGroup: function(groupId, message, ignoredPlayer) {
-        var self = this,
-            group = this.groups[groupId];
+        const self = this, group = this.groups[groupId];
         
         if(group) {
             _.each(group.players, function(playerId) {
@@ -303,14 +302,14 @@ var WorldServer = Class.extend({
     },
     
     pushToAdjacentGroups: function(groupId, message, ignoredPlayer) {
-        var self = this;
+        const self = this;
         self.map.forEachAdjacentGroup(groupId, function(id) {
             self.pushToGroup(id, message, ignoredPlayer);
         });
     },
     
     pushToPreviousGroups: function(player, message) {
-        var self = this;
+        const self = this;
         
         // Push this message to all groups which are not going to be updated anymore,
         // since the player left them.
@@ -321,7 +320,7 @@ var WorldServer = Class.extend({
     },
     
     pushBroadcast: function(message, ignoredPlayer) {
-        for(var id in this.outgoingQueues) {
+        for(const id in this.outgoingQueues) {
             if(id != ignoredPlayer) {
                 this.outgoingQueues[id].push(message.serialize());
             }
@@ -329,16 +328,16 @@ var WorldServer = Class.extend({
     },
     
     processQueues: function() {
-        var self = this,
-            connection;
+        const self = this;
+        let connection;
 
-        for(var id in this.outgoingQueues) {
+        for(const id in this.outgoingQueues) {
             if(this.outgoingQueues[id].length > 0) {
                 connection = this.server.getConnection(id);
                 // Clear queue BEFORE sending to avoid re-entrancy bug:
                 // In local mode, send() is synchronous and may trigger new
                 // messages to be queued. Clearing after would wipe them.
-                var batch = this.outgoingQueues[id];
+                const batch = this.outgoingQueues[id];
                 this.outgoingQueues[id] = [];
                 connection.send(batch);
             }
@@ -392,7 +391,7 @@ var WorldServer = Class.extend({
     },
     
     addNpc: function(kind, x, y) {
-        var npc = new Npc('8'+x+''+y, kind, x, y);
+        const npc = new Npc('8'+x+''+y, kind, x, y);
         this.addEntity(npc);
         this.npcs[npc.id] = npc;
         
@@ -407,9 +406,9 @@ var WorldServer = Class.extend({
     },
 
     createItem: function(kind, x, y) {
-        var id = '9'+this.itemCount++,
-            item = null;
-        
+        const id = '9'+this.itemCount++;
+        let item = null;
+
         if(kind === Types.Entities.CHEST) {
             item = new Chest(id, x, y);
         } else {
@@ -419,7 +418,7 @@ var WorldServer = Class.extend({
     },
 
     createChest: function(x, y, items) {
-        var chest = this.createItem(Types.Entities.CHEST, x, y);
+        const chest = this.createItem(Types.Entities.CHEST, x, y);
         chest.setItems(items);
         return chest;
     },
@@ -432,7 +431,7 @@ var WorldServer = Class.extend({
     },
     
     addItemFromChest: function(kind, x, y) {
-        var item = this.createItem(kind, x, y);
+        const item = this.createItem(kind, x, y);
         item.isFromChest = true;
         
         return this.addItem(item);
@@ -442,7 +441,7 @@ var WorldServer = Class.extend({
      * The mob will no longer be registered as an attacker of its current target.
      */
     clearMobAggroLink: function(mob) {
-        var player = null;
+        let player = null;
         if(mob.target) {
             player = this.getEntityById(mob.target);
             if(player) {
@@ -452,10 +451,10 @@ var WorldServer = Class.extend({
     },
 
     clearMobHateLinks: function(mob) {
-        var self = this;
+        const self = this;
         if(mob) {
             _.each(mob.hatelist, function(obj) {
-                var player = self.getEntityById(obj.id);
+                const player = self.getEntityById(obj.id);
                 if(player) {
                     player.removeHater(mob);
                 }
@@ -464,19 +463,19 @@ var WorldServer = Class.extend({
     },
     
     forEachEntity: function(callback) {
-        for(var id in this.entities) {
+        for(const id in this.entities) {
             callback(this.entities[id]);
         }
     },
     
     forEachPlayer: function(callback) {
-        for(var id in this.players) {
+        for(const id in this.players) {
             callback(this.players[id]);
         }
     },
     
     forEachMob: function(callback) {
-        for(var id in this.mobs) {
+        for(const id in this.mobs) {
             callback(this.mobs[id]);
         }
     },
@@ -487,10 +486,10 @@ var WorldServer = Class.extend({
     },
     
     handleMobHate: function(mobId, playerId, hatePoints) {
-        var mob = this.getEntityById(mobId),
-            player = this.getEntityById(playerId),
-            mostHated;
-        
+        const mob = this.getEntityById(mobId);
+        const player = this.getEntityById(playerId);
+        let mostHated;
+
         if(player && mob) {
             mob.increaseHateFor(playerId, hatePoints);
             player.addHater(mob);
@@ -502,7 +501,7 @@ var WorldServer = Class.extend({
     },
     
     chooseMobTarget: function(mob, hateRank) {
-        var player = this.getEntityById(mob.getHatedPlayerId(hateRank));
+        const player = this.getEntityById(mob.getHatedPlayerId(hateRank));
         
         // If the mob is not already attacking the player, create an attack link between them.
         if(player && !(mob.id in player.attackers)) {
@@ -529,8 +528,8 @@ var WorldServer = Class.extend({
     },
     
     getPlayerCount: function() {
-        var count = 0;
-        for(var p in this.players) {
+        let count = 0;
+        for(const p in this.players) {
             if(this.players.hasOwnProperty(p)) {
                 count += 1;
             }
@@ -548,7 +547,7 @@ var WorldServer = Class.extend({
     },
     
     handleHurtEntity: function(entity, attacker, damage) {
-        var self = this;
+        const self = this;
         
         if(entity.type === 'player') {
             // A player is only aware of his own hitpoints
@@ -563,8 +562,7 @@ var WorldServer = Class.extend({
         // If the entity is about to die
         if(entity.hitPoints <= 0) {
             if(entity.type === "mob") {
-                var mob = entity,
-                    item = this.getDroppedItem(mob);
+                const mob = entity, item = this.getDroppedItem(mob);
 
                 this.pushToPlayer(attacker, new Messages.Kill(mob));
                 this.pushToAdjacentGroups(mob.group, mob.despawn()); // Despawn must be enqueued before the item drop
@@ -592,18 +590,17 @@ var WorldServer = Class.extend({
     },
     
     spawnStaticEntities: function() {
-        var self = this,
-            count = 0;
-        
+        const self = this;
+        let count = 0;
+
         _.each(this.map.staticEntities, function(kindName, tid) {
-            var kind = Types.getKindFromString(kindName),
-                pos = self.map.tileIndexToGridPosition(tid);
+            const kind = Types.getKindFromString(kindName), pos = self.map.tileIndexToGridPosition(tid);
             
             if(Types.isNpc(kind)) {
                 self.addNpc(kind, pos.x + 1, pos.y);
             }
             if(Types.isMob(kind)) {
-                var mob = new Mob('7' + kind + count++, kind, pos.x + 1, pos.y);
+                const mob = new Mob('7' + kind + count++, kind, pos.x + 1, pos.y);
                 mob.onRespawn(function() {
                     mob.isDead = false;
                     self.addMob(mob);
@@ -629,8 +626,7 @@ var WorldServer = Class.extend({
     },
     
     handlePlayerVanish: function(player) {
-        var self = this,
-            previousAttackers = [];
+        const self = this, previousAttackers = [];
         
         // When a player dies or teleports, all of his attackers go and attack their second most hated player.
         player.forEachAttacker(function(mob) {
@@ -662,14 +658,14 @@ var WorldServer = Class.extend({
     },
     
     getDroppedItem: function(mob) {
-        var kind = Types.getKindAsString(mob.kind),
-            drops = Properties[kind].drops,
-            v = Utils.random(100),
-            p = 0,
-            item = null;
-        
-        for(var itemName in drops) {
-            var percentage = drops[itemName];
+        const kind = Types.getKindAsString(mob.kind);
+        const drops = Properties[kind].drops;
+        const v = Utils.random(100);
+        let p = 0;
+        let item = null;
+
+        for(const itemName in drops) {
+            const percentage = drops[itemName];
             
             p += percentage;
             if(v <= p) {
@@ -677,7 +673,7 @@ var WorldServer = Class.extend({
                 break;
             }
         }
-        
+
         return item;
     },
     
@@ -687,8 +683,7 @@ var WorldServer = Class.extend({
     },
     
     findPositionNextTo: function(entity, target) {
-        var valid = false,
-            pos;
+        let valid = false, pos;
         
         while(!valid) {
             pos = entity.getPositionNextTo(target);
@@ -698,7 +693,7 @@ var WorldServer = Class.extend({
     },
     
     initZoneGroups: function() {
-        var self = this;
+        const self = this;
         
         this.map.forEachGroup(function(id) {
             self.groups[id] = { entities: {},
@@ -709,12 +704,11 @@ var WorldServer = Class.extend({
     },
     
     removeFromGroups: function(entity) {
-        var self = this,
-            oldGroups = [];
+        const self = this, oldGroups = [];
         
         if(entity && entity.group) {
             
-            var group = this.groups[entity.group];
+            const group = this.groups[entity.group];
             if(entity instanceof Player) {
                 group.players = _.reject(group.players, function(id) { return id === entity.id; });
             }
@@ -735,14 +729,11 @@ var WorldServer = Class.extend({
      * All players inside these groups will receive a Spawn message when WorldServer.processGroups is called.
      */
     addAsIncomingToGroup: function(entity, groupId) {
-        var self = this,
-            isChest = entity && entity instanceof Chest,
-            isItem = entity && entity instanceof Item,
-            isDroppedItem =  entity && isItem && !entity.isStatic && !entity.isFromChest;
+        const self = this, isChest = entity && entity instanceof Chest, isItem = entity && entity instanceof Item, isDroppedItem =  entity && isItem && !entity.isStatic && !entity.isFromChest;
         
         if(entity && groupId) {
             this.map.forEachAdjacentGroup(groupId, function(id) {
-                var group = self.groups[id];
+                const group = self.groups[id];
                 
                 if(group) {
                     if(!_.include(group.entities, entity.id)
@@ -756,8 +747,7 @@ var WorldServer = Class.extend({
     },
     
     addToGroup: function(entity, groupId) {
-        var self = this,
-            newGroups = [];
+        const self = this, newGroups = [];
         
         if(entity && groupId && (groupId in this.groups)) {
             this.map.forEachAdjacentGroup(groupId, function(id) {
@@ -781,14 +771,14 @@ var WorldServer = Class.extend({
     },
     
     handleEntityGroupMembership: function(entity) {
-        var hasChangedGroups = false;
+        let hasChangedGroups = false;
         if(entity) {
-            var groupId = this.map.getGroupIdFromPosition(entity.x, entity.y);
+            const groupId = this.map.getGroupIdFromPosition(entity.x, entity.y);
             if(!entity.group || (entity.group && entity.group !== groupId)) {
                 hasChangedGroups = true;
                 this.addAsIncomingToGroup(entity, groupId);
-                var oldGroups = this.removeFromGroups(entity);
-                var newGroups = this.addToGroup(entity, groupId);
+                const oldGroups = this.removeFromGroups(entity);
+                const newGroups = this.addToGroup(entity, groupId);
                 
                 if(_.size(oldGroups) > 0) {
                     entity.recentlyLeftGroups = _.difference(oldGroups, newGroups);
@@ -800,11 +790,11 @@ var WorldServer = Class.extend({
     },
     
     processGroups: function() {
-        var self = this;
+        const self = this;
         
         if(this.zoneGroupsReady) {
             this.map.forEachGroup(function(id) {
-                var spawns = [];
+                let spawns = [];
                 if(self.groups[id].incoming.length > 0) {
                     spawns = _.each(self.groups[id].incoming, function(entity) {
                         if(entity instanceof Player) {
@@ -827,7 +817,7 @@ var WorldServer = Class.extend({
     },
     
     handleItemDespawn: function(item) {
-        var self = this;
+        const self = this;
         
         if(item) {
             item.handleDespawn({
@@ -850,7 +840,7 @@ var WorldServer = Class.extend({
     
     handleEmptyChestArea: function(area) {
         if(area) {
-            var chest = this.addItem(this.createChest(area.chestX, area.chestY, area.items));
+            const chest = this.addItem(this.createChest(area.chestX, area.chestY, area.items));
             this.handleItemDespawn(chest);
         }
     },
@@ -859,9 +849,9 @@ var WorldServer = Class.extend({
         this.pushToAdjacentGroups(chest.group, chest.despawn());
         this.removeEntity(chest);
         
-        var kind = chest.getRandomItem();
+        const kind = chest.getRandomItem();
         if(kind) {
-            var item = this.addItemFromChest(kind, chest.x, chest.y);
+            const item = this.addItemFromChest(kind, chest.x, chest.y);
             this.handleItemDespawn(item);
         }
     },

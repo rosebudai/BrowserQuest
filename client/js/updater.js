@@ -1,7 +1,7 @@
 import Character from './character.js';
 import Timer from './timer.js';
 
-    var Updater = Class.extend({
+    const Updater = Class.extend({
         init: function(game) {
             this.game = game;
             this.playerAggroTimer = new Timer(1000);
@@ -19,10 +19,10 @@ import Timer from './timer.js';
         },
 
         updateCharacters: function() {
-            var self = this;
+            const self = this;
         
             this.game.forEachEntity(function(entity) {
-                var isCharacter = entity instanceof Character;
+                const isCharacter = entity instanceof Character;
             
                 if(entity.isLoaded) {
                     if(isCharacter) {
@@ -35,8 +35,7 @@ import Timer from './timer.js';
         },
         
         updatePlayerAggro: function() {
-            var t = this.game.currentTime,
-                player = this.game.player;
+            const t = this.game.currentTime, player = this.game.player;
             
             // Check player aggro every 1s when not moving nor attacking
             if(player && !player.isMoving() && !player.isAttacking()  && this.playerAggroTimer.isOver(t)) {
@@ -46,9 +45,7 @@ import Timer from './timer.js';
     
         updateEntityFading: function(entity) {
             if(entity && entity.isFading) {
-                var duration = 1000,
-                    t = this.game.currentTime,
-                    dt = t - entity.startFadingTime;
+                const duration = 1000, t = this.game.currentTime, dt = t - entity.startFadingTime;
             
                 if(dt > duration) {
                     this.isFading = false;
@@ -60,10 +57,10 @@ import Timer from './timer.js';
         },
 
         updateTransitions: function() {
-            var self = this,
-                m = null,
-                z = this.game.currentZoning;
-    
+            const self = this;
+            let m = null;
+            const z = this.game.currentZoning;
+
             this.game.forEachEntity(function(entity) {
                 m = entity.movement;
                 if(m) {
@@ -72,7 +69,7 @@ import Timer from './timer.js';
                     }
                 }
             });
-        
+
             if(z) {
                 if(z.inProgress) {
                     z.step(this.game.currentTime);
@@ -81,21 +78,16 @@ import Timer from './timer.js';
         },
     
         updateZoning: function() {
-            var g = this.game,
-                c = g.camera,
-                z = g.currentZoning,
-                s = 3,
-                ts = 16,
-                speed = 500;
+            const g = this.game, c = g.camera, z = g.currentZoning, s = 3, ts = 16, speed = 500;
         
             if(z && z.inProgress === false) {
-                var orientation = this.game.zoningOrientation,
-                    offset = 0,
-                    startValue = 0,
-                    endValue = 0,
-                    updateFunc = null,
-                    endFunc = null;
-            
+                const orientation = this.game.zoningOrientation;
+                let offset = 0;
+                let startValue = 0;
+                let endValue = 0;
+                let updateFunc = null;
+                let endFunc = null;
+
                 if(orientation === Types.Orientations.LEFT || orientation === Types.Orientations.RIGHT) {
                     offset = (c.gridW - 2) * ts;
                     startValue = (orientation === Types.Orientations.LEFT) ? c.x - ts : c.x + ts;
@@ -123,16 +115,16 @@ import Timer from './timer.js';
                         g.endZoning();
                     }
                 }
-            
+
                 z.start(this.game.currentTime, updateFunc, endFunc, startValue, endValue, speed);
             }
         },
 
         updateCharacter: function(c) {
-            var self = this;
+            const self = this;
     
             // Estimate of the movement distance for one update
-            var tick = Math.round(16 / Math.round((c.moveSpeed / (1000 / this.game.renderer.FPS))));
+            const tick = Math.round(16 / Math.round((c.moveSpeed / (1000 / this.game.renderer.FPS))));
     
             if(c.isMoving() && c.movement.inProgress === false) {
                 if(c.orientation === Types.Orientations.LEFT) {
@@ -199,10 +191,10 @@ import Timer from './timer.js';
         },
 
         updateAnimations: function() {
-            var t = this.game.currentTime;
+            const t = this.game.currentTime;
     
             this.game.forEachEntity(function(entity) {
-                var anim = entity.currentAnimation;
+                const anim = entity.currentAnimation;
                 
                 if(anim) {
                     if(anim.update(t)) {
@@ -211,20 +203,19 @@ import Timer from './timer.js';
                 }
             });
         
-            var sparks = this.game.sparksAnimation;
+            const sparks = this.game.sparksAnimation;
             if(sparks) {
                 sparks.update(t);
             }
     
-            var target = this.game.targetAnimation;
+            const target = this.game.targetAnimation;
             if(target) {
                 target.update(t);
             }
         },
     
         updateAnimatedTiles: function() {
-            var self = this,
-                t = this.game.currentTime;
+            const self = this, t = this.game.currentTime;
         
             this.game.forEachAnimatedTile(function (tile) {
                 if(tile.animate(t)) {
@@ -239,13 +230,13 @@ import Timer from './timer.js';
         },
     
         updateChatBubbles: function() {
-            var t = this.game.currentTime;
+            const t = this.game.currentTime;
         
             this.game.bubbleManager.update(t);
         },
     
         updateInfos: function() {
-            var t = this.game.currentTime;
+            const t = this.game.currentTime;
         
             this.game.infoManager.update(t);
         }

@@ -1,7 +1,7 @@
 import Mob from './mob.js';
 import Timer from './timer.js';
 
-    var Mobs = {
+    const Mobs = {
         Rat: Mob.extend({
             init: function(id) {
                 this._super(id, Types.Entities.RAT);

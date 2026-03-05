@@ -4,7 +4,7 @@ import Player from './player.js';
 import { resolveMap } from '../asset-resolver.js';
 
 /* Uses global Class */
-var LocalGameServer = Class.extend({
+const LocalGameServer = Class.extend({
     init: function() {
         this.isConnected = false;
         this.nextEntityId = 100;
@@ -23,9 +23,9 @@ var LocalGameServer = Class.extend({
     },
 
     connect: function() {
-        var self = this;
-        var serverMapPath = resolveMap('worldServer');
-        var map = new ServerMap(serverMapPath);
+        const self = this;
+        const serverMapPath = resolveMap('worldServer');
+        const map = new ServerMap(serverMapPath);
 
         map.ready(function() {
             self.worldServer = new WorldServer('local-1', 1, self);
@@ -55,8 +55,8 @@ var LocalGameServer = Class.extend({
     },
 
     waitForWorldReady: function(callback) {
-        var self = this;
-        var checkReady = function() {
+        const self = this;
+        const checkReady = function() {
             if(self.worldServer && self.worldServer.map && self.worldServer.map.isLoaded
                && self.worldServer.zoneGroupsReady && self.worldServer.populationComplete) {
                 callback();
@@ -69,11 +69,11 @@ var LocalGameServer = Class.extend({
     },
 
     createPlayerConnection: function() {
-        var self = this;
-        var connectionId = '5' + this.nextEntityId++;
-        var closed = false;
-        var suppressDelivery = true; // Suppress until connect_callback runs
-        var connection = {
+        const self = this;
+        const connectionId = '5' + this.nextEntityId++;
+        let closed = false;
+        let suppressDelivery = true; // Suppress until connect_callback runs
+        const connection = {
             id: connectionId,
             remoteAddress: '127.0.0.1',
             listen_callback: null,
@@ -134,7 +134,7 @@ var LocalGameServer = Class.extend({
     },
 
     send: function(data) {
-        var message;
+        let message;
 
         if(!this.playerConnection) {
             this.pendingMessages.push(data);
@@ -154,7 +154,7 @@ var LocalGameServer = Class.extend({
     },
 
     flushPendingMessages: function() {
-        var self = this;
+        const self = this;
 
         if(!this.playerConnection || this.pendingMessages.length === 0) {
             return;

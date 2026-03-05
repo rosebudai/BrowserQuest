@@ -1,6 +1,6 @@
 import Character from './character.js';
 
-    var Mob = Character.extend({
+    const Mob = Character.extend({
         init: function(id, kind) {
             this._super(id, kind);
 

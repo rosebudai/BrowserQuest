@@ -6,9 +6,9 @@ import Properties from "./properties.js";
 import Formulas from "./formulas.js";
 import { check, FormatChecker } from "./format.js";
 
-var Player = Character.extend({
+const Player = Character.extend({
     init: function(connection, worldServer) {
-        var self = this;
+        const self = this;
         
         this.server = worldServer;
         this.connection = connection;
@@ -23,7 +23,7 @@ var Player = Character.extend({
         this.disconnectTimeout = null;
         
         this.connection.listen(function(message) {
-            var action = parseInt(message[0]);
+            const action = parseInt(message[0]);
             
             log.debug("Received: "+message);
             if(!check(message)) {
@@ -43,7 +43,7 @@ var Player = Character.extend({
             self.resetTimeout();
             
             if(action === Types.Messages.HELLO) {
-                var name = Utils.sanitize(message[1]);
+                const name = Utils.sanitize(message[1]);
                 
                 // If name was cleared by the sanitizer, give a default name.
                 // Always ensure that the name is not longer than a maximum length.
@@ -72,7 +72,7 @@ var Player = Character.extend({
                 self.zone_callback();
             }
             else if(action === Types.Messages.CHAT) {
-                var msg = Utils.sanitize(message[1]);
+                let msg = Utils.sanitize(message[1]);
                 
                 // Sanitized messages may become empty. No need to broadcast empty chat messages.
                 if(msg && msg !== "") {
@@ -82,13 +82,13 @@ var Player = Character.extend({
             }
             else if(action === Types.Messages.MOVE) {
                 if(self.move_callback) {
-                    var x = message[1],
+                    const x = message[1],
                         y = message[2];
-                    
+
                     if(self.server.isValidPosition(x, y)) {
                         self.setPosition(x, y);
                         self.clearTarget();
-                        
+
                         self.broadcast(new Messages.Move(self));
                         self.move_callback(self.x, self.y);
                     }
@@ -97,8 +97,8 @@ var Player = Character.extend({
             else if(action === Types.Messages.LOOTMOVE) {
                 if(self.lootmove_callback) {
                     self.setPosition(message[1], message[2]);
-                    
-                    var item = self.server.getEntityById(message[3]);
+
+                    const item = self.server.getEntityById(message[3]);
                     if(item) {
                         self.clearTarget();
 
@@ -113,17 +113,17 @@ var Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.ATTACK) {
-                var mob = self.server.getEntityById(message[1]);
-                
+                const mob = self.server.getEntityById(message[1]);
+
                 if(mob) {
                     self.setTarget(mob);
                     self.server.broadcastAttacker(self);
                 }
             }
             else if(action === Types.Messages.HIT) {
-                var mob = self.server.getEntityById(message[1]);
+                const mob = self.server.getEntityById(message[1]);
                 if(mob) {
-                    var dmg = Formulas.dmg(self.weaponLevel, mob.armorLevel);
+                    const dmg = Formulas.dmg(self.weaponLevel, mob.armorLevel);
                     
                     if(dmg > 0) {
                         mob.receiveDamage(dmg, self.id);
@@ -133,7 +133,7 @@ var Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.HURT) {
-                var mob = self.server.getEntityById(message[1]);
+                const mob = self.server.getEntityById(message[1]);
                 if(mob && self.hitPoints > 0) {
                     self.hitPoints -= Formulas.dmg(mob.weaponLevel, self.armorLevel);
                     self.server.handleHurtEntity(self);
@@ -147,10 +147,10 @@ var Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.LOOT) {
-                var item = self.server.getEntityById(message[1]);
-                
+                const item = self.server.getEntityById(message[1]);
+
                 if(item) {
-                    var kind = item.kind;
+                    const kind = item.kind;
                     
                     if(Types.isItem(kind)) {
                         self.broadcast(item.despawn());
@@ -165,7 +165,7 @@ var Player = Character.extend({
                             }, 15000);
                             self.send(new Messages.HitPoints(self.maxHitPoints).serialize());
                         } else if(Types.isHealingItem(kind)) {
-                            var amount;
+                            let amount;
                             
                             switch(kind) {
                                 case Types.Entities.FLASK: 
@@ -188,9 +188,9 @@ var Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.TELEPORT) {
-                var x = message[1],
+                const x = message[1],
                     y = message[2];
-                
+
                 if(self.server.isValidPosition(x, y)) {
                     self.setPosition(x, y);
                     self.clearTarget();
@@ -202,13 +202,13 @@ var Player = Character.extend({
                 }
             }
             else if(action === Types.Messages.OPEN) {
-                var chest = self.server.getEntityById(message[1]);
+                const chest = self.server.getEntityById(message[1]);
                 if(chest && chest instanceof Chest) {
                     self.server.handleOpenedChest(chest, self);
                 }
             }
             else if(action === Types.Messages.CHECK) {
-                var checkpoint = self.server.map.getCheckpoint(message[1]);
+                const checkpoint = self.server.map.getCheckpoint(message[1]);
                 if(checkpoint) {
                     self.lastCheckpoint = checkpoint;
                 }
@@ -234,7 +234,7 @@ var Player = Character.extend({
     },
     
     destroy: function() {
-        var self = this;
+        const self = this;
         
         this.forEachAttacker(function(mob) {
             mob.clearTarget();
@@ -248,8 +248,7 @@ var Player = Character.extend({
     },
     
     getState: function() {
-        var basestate = this._getBaseState(),
-            state = [this.name, this.orientation, this.armor, this.weapon];
+        const basestate = this._getBaseState(), state = [this.name, this.orientation, this.armor, this.weapon];
 
         if(this.target) {
             state.push(this.target);
@@ -360,7 +359,7 @@ var Player = Character.extend({
     
     updatePosition: function() {
         if(this.requestpos_callback) {
-            var pos = this.requestpos_callback();
+            const pos = this.requestpos_callback();
             this.setPosition(pos.x, pos.y);
         }
     },

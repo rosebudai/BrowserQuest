@@ -1,7 +1,7 @@
 import Character from './character.js';
 import Exceptions from './exceptions.js';
 
-    var Player = Character.extend({
+    const Player = Character.extend({
         MAX_LEVEL: 10,
     
         init: function(id, name, kind) {
@@ -23,7 +23,7 @@ import Exceptions from './exceptions.js';
     
         loot: function(item) {
             if(item) {
-                var rank, currentRank, msg, currentArmorName;
+                let rank, currentRank, msg, currentArmorName;
             
                 if(this.currentArmorSprite) {
                     currentArmorName = this.currentArmorSprite.name;
@@ -73,7 +73,7 @@ import Exceptions from './exceptions.js';
         },
         
         getArmorName: function() {
-            var sprite = this.getArmorSprite();
+            const sprite = this.getArmorSprite();
             return sprite.id;
         },
         
@@ -98,22 +98,23 @@ import Exceptions from './exceptions.js';
         },
     
         switchWeapon: function(newWeaponName) {
-            var count = 14, 
-                value = false, 
-                self = this;
-        
-            var toggle = function() {
+            let count = 14;
+            let value = false;
+            const self = this;
+
+            const toggle = function() {
                 value = !value;
                 return value;
             };
-        
+
+            let blanking;
             if(newWeaponName !== this.getWeaponName()) {
                 if(this.isSwitchingWeapon) {
                     clearInterval(blanking);
                 }
-            
+
                 this.switchingWeapon = true;
-                var blanking = setInterval(function() {
+                blanking = setInterval(function() {
                     if(toggle()) {
                         self.setWeaponName(newWeaponName);
                     } else {
@@ -134,24 +135,25 @@ import Exceptions from './exceptions.js';
         },
     
         switchArmor: function(newArmorSprite) {
-            var count = 14, 
-                value = false, 
-                self = this;
-        
-            var toggle = function() {
+            let count = 14;
+            let value = false;
+            const self = this;
+
+            const toggle = function() {
                 value = !value;
                 return value;
             };
-        
+
+            let blanking;
             if(newArmorSprite && newArmorSprite.id !== this.getSpriteName()) {
                 if(this.isSwitchingArmor) {
                     clearInterval(blanking);
                 }
-            
+
                 this.isSwitchingArmor = true;
                 self.setSprite(newArmorSprite);
                 self.setSpriteName(newArmorSprite.id);
-                var blanking = setInterval(function() {
+                blanking = setInterval(function() {
                     self.setVisible(toggle());
 
                     count -= 1;
@@ -180,7 +182,7 @@ import Exceptions from './exceptions.js';
         },
 
         startInvincibility: function() {
-            var self = this;
+            const self = this;
         
             if(!this.invincible) {
                 this.currentArmorSprite = this.getSprite();

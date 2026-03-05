@@ -1,4 +1,4 @@
-var FormatChecker = Class.extend({
+const FormatChecker = Class.extend({
     init: function() {
         this.formats = [];
         this.formats[Types.Messages.HELLO] = ['s', 'n', 'n'],
@@ -17,9 +17,7 @@ var FormatChecker = Class.extend({
     },
     
     check: function(msg) {
-        var message = msg.slice(0),
-            type = message[0],
-            format = this.formats[type];
+        const message = msg.slice(0), type = message[0], format = this.formats[type];
         
         message.shift();
         
@@ -27,7 +25,7 @@ var FormatChecker = Class.extend({
             if(message.length !== format.length) {
                 return false;
             }
-            for(var i = 0, n = message.length; i < n; i += 1) {
+            for(let i = 0, n = message.length; i < n; i += 1) {
                 if(format[i] === 'n' && !_.isNumber(message[i])) {
                     return false;
                 }
@@ -48,7 +46,7 @@ var FormatChecker = Class.extend({
     }
 });
 
-var checker = new FormatChecker();
-var check = checker.check.bind(checker);
+const checker = new FormatChecker();
+const check = checker.check.bind(checker);
 
 export { FormatChecker, check };

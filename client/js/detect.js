@@ -1,5 +1,5 @@
 
-var Detect = {};
+const Detect = {};
 window.Detect = Detect;
 
 Detect.supportsWebSocket = function() {

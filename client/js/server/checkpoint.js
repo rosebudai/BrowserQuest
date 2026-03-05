@@ -1,7 +1,7 @@
 import Utils from "./utils.js";
 
 /* Uses global Class */
-var Checkpoint = Class.extend({
+const Checkpoint = Class.extend({
     init: function(id, x, y, width, height) {
         this.id = id;
         this.x = x;
@@ -11,7 +11,7 @@ var Checkpoint = Class.extend({
     },
     
     getRandomPosition: function() {
-        var pos = {};
+        const pos = {};
         
         pos.x = this.x + Utils.randomInt(0, this.width - 1);
         pos.y = this.y + Utils.randomInt(0, this.height - 1);

@@ -1,5 +1,5 @@
 
-var Storage = Class.extend({
+const Storage = Class.extend({
     init: function() {
         if(this.hasLocalStorage() && localStorage.data) {
             this.data = JSON.parse(localStorage.data);

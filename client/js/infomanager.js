@@ -1,5 +1,5 @@
 
-var InfoManager = Class.extend({
+const InfoManager = Class.extend({
     init: function(game) {
         this.game = game;
         this.infos = {};
@@ -7,10 +7,7 @@ var InfoManager = Class.extend({
     },
 
     addDamageInfo: function(value, x, y, type) {
-        var time = this.game.currentTime,
-            id = time+""+Math.abs(value)+""+x+""+y,
-            self = this,
-            info = new DamageInfo(id, value, x, y, DamageInfo.DURATION, type);
+        const time = this.game.currentTime, id = time+""+Math.abs(value)+""+x+""+y, self = this, info = new DamageInfo(id, value, x, y, DamageInfo.DURATION, type);
 
         info.onDestroy(function(id) {
             self.destroyQueue.push(id);
@@ -19,7 +16,7 @@ var InfoManager = Class.extend({
     },
 
     forEachInfo: function(callback) {
-        var self = this;
+        const self = this;
 
         _.each(this.infos, function(info, id) {
             callback(info);
@@ -27,7 +24,7 @@ var InfoManager = Class.extend({
     },
 
     update: function(time) {
-        var self = this;
+        const self = this;
 
         this.forEachInfo(function(info) {
             info.update(time);
@@ -41,7 +38,7 @@ var InfoManager = Class.extend({
 });
 
 
-var damageInfoColors = {
+const damageInfoColors = {
     "received": {
         fill: "rgb(255, 50, 50)",
         stroke: "rgb(255, 180, 180)"
@@ -57,7 +54,7 @@ var damageInfoColors = {
 };
 
 
-var DamageInfo = Class.extend({
+const DamageInfo = Class.extend({
     DURATION: 1000,
 
     init: function(id, value, x, y, duration, type) {

@@ -1,6 +1,6 @@
 import Entity from './entity.js';
 
-    var Chest = Entity.extend({
+    const Chest = Entity.extend({
         init: function(id, kind) {
     	    this._super(id, Types.Entities.CHEST);
         },

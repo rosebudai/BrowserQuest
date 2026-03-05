@@ -2,7 +2,7 @@ import Area from "./area.js";
 import Mob from "./mob.js";
 import Utils from "./utils.js";
 
-var MobArea = Area.extend({
+const MobArea = Area.extend({
     init: function(id, nb, kind, x, y, width, height, world) {
         this._super(id, x, y, width, height, world);
         this.nb = nb;
@@ -14,15 +14,13 @@ var MobArea = Area.extend({
     },
     
     spawnMobs: function() {
-        for(var i = 0; i < this.nb; i += 1) {
+        for(let i = 0; i < this.nb; i += 1) {
             this.addToArea(this._createMobInsideArea());
         }
     },
     
     _createMobInsideArea: function() {
-        var k = Types.getKindFromString(this.kind),
-            pos = this._getRandomPositionInsideArea(),
-            mob = new Mob('1' + this.id + ''+ k + ''+ this.entities.length, k, pos.x, pos.y);
+        const k = Types.getKindFromString(this.kind), pos = this._getRandomPositionInsideArea(), mob = new Mob('1' + this.id + ''+ k + ''+ this.entities.length, k, pos.x, pos.y);
         
         mob.onMove(this.world.onMobMoveCallback.bind(this.world));
 
@@ -30,12 +28,12 @@ var MobArea = Area.extend({
     },
     
     respawnMob: function(mob, delay) {
-        var self = this;
+        const self = this;
         
         this.removeFromArea(mob);
         
         setTimeout(function() {
-            var pos = self._getRandomPositionInsideArea();
+            const pos = self._getRandomPositionInsideArea();
             
             mob.x = pos.x;
             mob.y = pos.y;
@@ -46,13 +44,13 @@ var MobArea = Area.extend({
     },
 
     initRoaming: function(mob) {
-        var self = this;
+        const self = this;
         
         setInterval(function() {
             _.each(self.entities, function(mob) {
-                var canRoam = (Utils.random(20) === 1),
-                    pos;
-                
+                const canRoam = (Utils.random(20) === 1);
+                let pos;
+
                 if(canRoam) {
                     if(!mob.hasTarget() && !mob.isDead) {
                         pos = self._getRandomPositionInsideArea();
@@ -64,7 +62,7 @@ var MobArea = Area.extend({
     },
     
     createReward: function() {
-        var pos = this._getRandomPositionInsideArea();
+        const pos = this._getRandomPositionInsideArea();
         
         return { x: pos.x, y: pos.y, kind: Types.Entities.CHEST };
     }

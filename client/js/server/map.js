@@ -2,9 +2,9 @@ import Utils from "./utils.js";
 import Checkpoint from "./checkpoint.js";
 
 /* Uses global Class */
-var Map = Class.extend({    
+const Map = Class.extend({    
     init: function(filepath) {
-    	var self = this;
+    	const self = this;
     
     	this.isLoaded = false;
 
@@ -53,15 +53,14 @@ var Map = Class.extend({
     },
 
     tileIndexToGridPosition: function(tileNum) {
-        var x = 0,
-            y = 0;
+        let x = 0, y = 0;
         
-        var getX = function(num, w) {
+        const getX = function(num, w) {
             if(num == 0) {
                 return 0;
             }
             return (num % w == 0) ? w - 1 : (num % w) - 1;
-        }
+        };
     
         tileNum -= 1;
         x = getX(tileNum + 1, this.width);
@@ -78,8 +77,8 @@ var Map = Class.extend({
         this.grid = [];
     
         if(this.isLoaded) {
-            var tileIndex = 0;
-            for(var	j, i = 0; i < this.height; i++) {
+            let tileIndex = 0;
+            for(let j, i = 0; i < this.height; i++) {
                 this.grid[i] = [];
                 for(j = 0; j < this.width; j++) {
                     if(_.include(this.collisions, tileIndex)) {
@@ -106,40 +105,36 @@ var Map = Class.extend({
     },
     
     GroupIdToGroupPosition: function(id) {
-        var posArray = id.split('-');
+        const posArray = id.split('-');
         
         return pos(parseInt(posArray[0]), parseInt(posArray[1]));
     },
     
     forEachGroup: function(callback) {
-        var width = this.groupWidth,
-            height = this.groupHeight;
+        const width = this.groupWidth, height = this.groupHeight;
         
-        for(var x = 0; x < width; x += 1) {
-            for(var y = 0; y < height; y += 1) {
+        for(let x = 0; x < width; x += 1) {
+            for(let y = 0; y < height; y += 1) {
                 callback(x+'-'+y);
             }
         }
     },
     
     getGroupIdFromPosition: function(x, y) {
-        var w = this.zoneWidth,
-            h = this.zoneHeight,
-            gx = Math.floor((x - 1) / w),
-            gy = Math.floor((y - 1) / h);
+        const w = this.zoneWidth, h = this.zoneHeight, gx = Math.floor((x - 1) / w), gy = Math.floor((y - 1) / h);
 
         return gx+'-'+gy;
     },
     
     getAdjacentGroupPositions: function(id) {
-        var self = this,
-            position = this.GroupIdToGroupPosition(id),
-            x = position.x,
-            y = position.y,
-            // surrounding groups
-            list = [pos(x-1, y-1), pos(x, y-1), pos(x+1, y-1),
-                    pos(x-1, y),   pos(x, y),   pos(x+1, y),
-                    pos(x-1, y+1), pos(x, y+1), pos(x+1, y+1)];
+        const self = this,
+              position = this.GroupIdToGroupPosition(id),
+              x = position.x,
+              y = position.y,
+              // surrounding groups
+              list = [pos(x-1, y-1), pos(x, y-1), pos(x+1, y-1),
+                      pos(x-1, y),   pos(x, y),   pos(x+1, y),
+                      pos(x-1, y+1), pos(x, y+1), pos(x+1, y+1)];
         
         // groups connected via doors
         _.each(this.connectedGroups[id], function(position) {
@@ -163,13 +158,11 @@ var Map = Class.extend({
     },
     
     initConnectedGroups: function(doors) {
-        var self = this;
+        const self = this;
 
         this.connectedGroups = {};
         _.each(doors, function(door) {
-            var groupId = self.getGroupIdFromPosition(door.x, door.y),
-                connectedGroupId = self.getGroupIdFromPosition(door.tx, door.ty),
-                connectedPosition = self.GroupIdToGroupPosition(connectedGroupId);
+            const groupId = self.getGroupIdFromPosition(door.x, door.y), connectedGroupId = self.getGroupIdFromPosition(door.tx, door.ty), connectedPosition = self.GroupIdToGroupPosition(connectedGroupId);
             
             if(groupId in self.connectedGroups) {
                 self.connectedGroups[groupId].push(connectedPosition);
@@ -180,13 +173,13 @@ var Map = Class.extend({
     },
     
     initCheckpoints: function(cpList) {
-        var self = this;
+        const self = this;
         
         this.checkpoints = {};
         this.startingAreas = [];
         
         _.each(cpList, function(cp) {
-            var checkpoint = new Checkpoint(cp.id, cp.x, cp.y, cp.w, cp.h);
+            const checkpoint = new Checkpoint(cp.id, cp.x, cp.y, cp.w, cp.h);
             self.checkpoints[checkpoint.id] = checkpoint; 
             if(cp.s === 1) {
                 self.startingAreas.push(checkpoint);
@@ -199,19 +192,17 @@ var Map = Class.extend({
     },
     
     getRandomStartingPosition: function() {
-        var nbAreas = _.size(this.startingAreas),
-            i = Utils.randomInt(0, nbAreas-1),
-            area = this.startingAreas[i];
+        const nbAreas = _.size(this.startingAreas), i = Utils.randomInt(0, nbAreas-1), area = this.startingAreas[i];
         
         return area.getRandomPosition();
     }
 });
 
-var pos = function(x, y) {
+const pos = function(x, y) {
     return { x: x, y: y };
 };
 
-var equalPositions = function(pos1, pos2) {
+const equalPositions = function(pos1, pos2) {
     return pos1.x === pos2.x && pos1.y === pos2.y;
 };
 

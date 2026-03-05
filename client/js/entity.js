@@ -1,7 +1,7 @@
 
-var Entity = Class.extend({
+const Entity = Class.extend({
     init: function(id, kind) {
-	    var self = this;
+	    const self = this;
 
         this.id = id;
         this.kind = kind;
@@ -75,7 +75,7 @@ var Entity = Class.extend({
 	},
 
 	getAnimationByName: function(name) {
-        var animation = null;
+        let animation = null;
 
         if(name in this.animations) {
             animation = this.animations[name];
@@ -87,15 +87,14 @@ var Entity = Class.extend({
     },
 
 	setAnimation: function(name, speed, count, onEndCount) {
-	    var self = this;
+	    const self = this;
 
         if(this.isLoaded) {
 		    if(this.currentAnimation && this.currentAnimation.name === name) {
 		        return;
 		    }
 
-		    var s = this.sprite,
-                a = this.getAnimationByName(name);
+		    const s = this.sprite, a = this.getAnimationByName(name);
 
 			if(a) {
 				this.currentAnimation = a;
@@ -164,14 +163,14 @@ var Entity = Class.extend({
      *
      */
     getDistanceToEntity: function(entity) {
-        var distX = Math.abs(entity.gridX - this.gridX);
-        var distY = Math.abs(entity.gridY - this.gridY);
+        const distX = Math.abs(entity.gridX - this.gridX);
+        const distY = Math.abs(entity.gridY - this.gridY);
 
         return (distX > distY) ? distX : distY;
     },
 
     isCloseTo: function(entity) {
-        var dx, dy, d, close = false;
+        let dx, dy, d, close = false;
         if(entity) {
             dx = Math.abs(entity.gridX - this.gridX);
             dy = Math.abs(entity.gridY - this.gridY);
@@ -188,7 +187,7 @@ var Entity = Class.extend({
      * @returns {Boolean} Whether these two entities are adjacent.
      */
     isAdjacent: function(entity) {
-        var adjacent = false;
+        let adjacent = false;
 
         if(entity) {
             adjacent = this.getDistanceToEntity(entity) > 1 ? false : true;
@@ -200,7 +199,7 @@ var Entity = Class.extend({
      *
      */
     isAdjacentNonDiagonal: function(entity) {
-        var result = false;
+        let result = false;
 
         if(this.isAdjacent(entity) && !(this.gridX !== entity.gridX && this.gridY !== entity.gridY)) {
             result = true;
@@ -227,7 +226,7 @@ var Entity = Class.extend({
     },
 
     blink: function(speed, callback) {
-        var self = this;
+        const self = this;
 
         this.blinking = setInterval(function() {
             self.toggleVisibility();

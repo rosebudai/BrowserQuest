@@ -1,5 +1,5 @@
 
-var Animation = Class.extend({
+const Animation = Class.extend({
     init: function(name, length, row, width, height) {
         this.name = name;
     	this.length = length;
@@ -10,7 +10,7 @@ var Animation = Class.extend({
     },
 
     tick: function() {
-    	var i = this.currentFrame.index;
+    	let i = this.currentFrame.index;
 
 	    i = (i < this.length - 1) ? i + 1 : 0;
 

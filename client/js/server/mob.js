@@ -5,7 +5,7 @@ import Utils from "./utils.js";
 import MobArea from "./mobarea.js";
 import ChestArea from "./chestarea.js";
 
-var Mob = Character.extend({
+const Mob = Character.extend({
     init: function(id, kind, x, y) {
         this._super(id, "mob", kind, x, y);
         
@@ -65,10 +65,11 @@ var Mob = Character.extend({
     },
     
     getHatedPlayerId: function(hateRank) {
-        var i, playerId,
-            sorted = _.sortBy(this.hatelist, function(obj) { return obj.hate; }),
-            size = _.size(this.hatelist);
-        
+        let i;
+        let playerId;
+        const sorted = _.sortBy(this.hatelist, function(obj) { return obj.hate; });
+        const size = _.size(this.hatelist);
+
         if(hateRank && hateRank <= size) {
             i = size - hateRank;
         }
@@ -78,7 +79,7 @@ var Mob = Character.extend({
         if(sorted && sorted[i]) {
             playerId = sorted[i].id;
         }
-        
+
         return playerId;
     },
     
@@ -102,8 +103,7 @@ var Mob = Character.extend({
     },
     
     handleRespawn: function() {
-        var delay = 30000,
-            self = this;
+        const delay = 30000, self = this;
         
         if(this.area && this.area instanceof MobArea) {
             // Respawn inside the area if part of a MobArea
@@ -131,8 +131,7 @@ var Mob = Character.extend({
     },
     
     returnToSpawningPosition: function(waitDuration) {
-        var self = this,
-            delay = waitDuration || 4000;
+        const self = this, delay = waitDuration || 4000;
         
         this.clearTarget();
         

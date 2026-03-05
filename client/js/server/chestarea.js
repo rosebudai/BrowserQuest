@@ -1,6 +1,6 @@
 import Area from "./area.js";
 
-var ChestArea = Area.extend({
+const ChestArea = Area.extend({
     init: function(id, x, y, width, height, cx, cy, items, world) {
         this._super(id, x, y, width, height, world);
         this.items = items;

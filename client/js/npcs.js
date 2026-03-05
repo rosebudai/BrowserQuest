@@ -1,6 +1,6 @@
 import Npc from './npc.js';
 
-    var NPCs = {
+    const NPCs = {
 
         Guard: Npc.extend({
             init: function(id) {

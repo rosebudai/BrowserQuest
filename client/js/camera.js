@@ -1,5 +1,5 @@
 
-var Camera = Class.extend({
+const Camera = Class.extend({
     init: function(renderer) {
         this.renderer = renderer;
         this.x = 0;
@@ -14,17 +14,12 @@ var Camera = Class.extend({
     },
 
     rescale: function() {
-        var renderer = this.renderer,
-            scale = renderer.scale,
-            tilesize = renderer.tilesize;
+        const renderer = this.renderer, scale = renderer.scale, tilesize = renderer.tilesize;
 
-        var borderPad = 5 * scale,
-            barHeight = 17 * scale,
-            availW = window.innerWidth - 2 * borderPad,
-            availH = window.innerHeight - 2 * borderPad - barHeight;
+        const borderPad = 5 * scale, barHeight = 17 * scale, availW = window.innerWidth - 2 * borderPad, availH = window.innerHeight - 2 * borderPad - barHeight;
 
-        var gridW = Math.floor(availW / (tilesize * scale));
-        var gridH = Math.floor(availH / (tilesize * scale));
+        let gridW = Math.floor(availW / (tilesize * scale));
+        let gridH = Math.floor(availH / (tilesize * scale));
 
         // Ensure odd
         if (gridW % 2 === 0) { gridW -= 1; }
@@ -52,25 +47,25 @@ var Camera = Class.extend({
         this.x = x;
         this.y = y;
 
-        var zone = this.activeZone;
+        const zone = this.activeZone;
         if (zone) {
             // Zone-aware clamping (per axis)
             if (this.gridW >= zone.width) {
                 this.x = (zone.x - (this.gridW - zone.width) / 2) * 16;
             } else {
-                var minX = zone.x * 16,
-                    maxX = (zone.x + zone.width - this.gridW) * 16;
+                const minX = zone.x * 16;
+                const maxX = (zone.x + zone.width - this.gridW) * 16;
                 this.x = Math.max(minX, Math.min(this.x, maxX));
             }
             if (this.gridH >= zone.height) {
                 this.y = (zone.y - (this.gridH - zone.height) / 2) * 16;
             } else {
-                var minY = zone.y * 16,
-                    maxY = (zone.y + zone.height - this.gridH) * 16;
+                const minY = zone.y * 16;
+                const maxY = (zone.y + zone.height - this.gridH) * 16;
                 this.y = Math.max(minY, Math.min(this.y, maxY));
             }
         } else if (this.mapWidth !== null && this.mapHeight !== null) {
-            var maxX = (this.mapWidth - this.gridW) * 16,
+            const maxX = (this.mapWidth - this.gridW) * 16,
                 maxY = (this.mapHeight - this.gridH) * 16;
             this.x = Math.max(0, Math.min(this.x, maxX));
             this.y = Math.max(0, Math.min(this.y, maxY));
@@ -84,7 +79,7 @@ var Camera = Class.extend({
         this.gridX = x;
         this.gridY = y;
 
-        var zone = this.activeZone;
+        const zone = this.activeZone;
         if (zone) {
             if (this.gridW >= zone.width) {
                 this.gridX = Math.floor(zone.x - (this.gridW - zone.width) / 2);
@@ -106,17 +101,15 @@ var Camera = Class.extend({
     },
 
     lookAt: function(entity) {
-        var r = this.renderer,
-            x = Math.round( entity.x - (Math.floor(this.gridW / 2) * r.tilesize) ),
-            y = Math.round( entity.y - (Math.floor(this.gridH / 2) * r.tilesize) );
+        const r = this.renderer, x = Math.round( entity.x - (Math.floor(this.gridW / 2) * r.tilesize) ), y = Math.round( entity.y - (Math.floor(this.gridH / 2) * r.tilesize) );
 
         this.setPosition(x, y);
     },
 
     forEachVisiblePosition: function(callback, extra) {
-        var extra = extra || 0;
-        for(var y=this.gridY-extra, maxY=this.gridY+this.gridH+(extra*2); y < maxY; y += 1) {
-            for(var x=this.gridX-extra, maxX=this.gridX+this.gridW+(extra*2); x < maxX; x += 1) {
+        extra = extra || 0;
+        for(let y=this.gridY-extra, maxY=this.gridY+this.gridH+(extra*2); y < maxY; y += 1) {
+            for(let x=this.gridX-extra, maxX=this.gridX+this.gridW+(extra*2); x < maxX; x += 1) {
                 callback(x, y);
             }
         }
@@ -136,10 +129,7 @@ var Camera = Class.extend({
     },
 
     focusEntity: function(entity) {
-        var w = this.gridW - 2,
-            h = this.gridH - 2,
-            x = Math.floor((entity.gridX - 1) / w) * w,
-            y = Math.floor((entity.gridY - 1) / h) * h;
+        const w = this.gridW - 2, h = this.gridH - 2, x = Math.floor((entity.gridX - 1) / w) * w, y = Math.floor((entity.gridY - 1) / h) * h;
 
         this.setGridPosition(x, y);
     }

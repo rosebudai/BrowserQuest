@@ -1,4 +1,4 @@
-var manifest = {
+const manifest = {
     spriteData: {
         "agent": "sprites/agent.json",
         "arrow": "sprites/arrow.json",

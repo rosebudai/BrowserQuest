@@ -3,7 +3,7 @@ import Player from './player.js';
 import EntityFactory from './entityfactory.js';
 import LocalGameServer from './server/localgameserver.js';
 
-    var GameClient = Class.extend({
+    const GameClient = Class.extend({
         init: function(host, port) {
             this.connection = null;
             this.host = host;
@@ -46,7 +46,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
         
         connect: function(dispatcherMode) {
-            var self = this;
+            const self = this;
             
             log.info("Starting local game server...");
             
@@ -88,7 +88,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
 
         sendMessage: function(json) {
-            var data;
+            let data;
             if(this.connection.getReadyState() === 1) {
                 data = JSON.stringify(json);
                 this.connection.send(data);
@@ -96,7 +96,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
 
         receiveMessage: function(message) {
-            var data, action;
+            let data, action;
         
             if(this.isListening) {
                 data = JSON.parse(message);
@@ -116,7 +116,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveAction: function(data) {
-            var action = data[0];
+            const action = data[0];
             if(this.handlers[action] && _.isFunction(this.handlers[action])) {
                 this.handlers[action].call(this, data);
             }
@@ -126,7 +126,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveActionBatch: function(actions) {
-            var self = this;
+            const self = this;
 
             _.each(actions, function(action) {
                 self.receiveAction(action);
@@ -134,11 +134,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveWelcome: function(data) {
-            var id = data[1],
-                name = data[2],
-                x = data[3],
-                y = data[4],
-                hp = data[5];
+            const id = data[1], name = data[2], x = data[3], y = data[4], hp = data[5];
         
             if(this.welcome_callback) {
                 this.welcome_callback(id, name, x, y, hp);
@@ -146,9 +142,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveMove: function(data) {
-            var id = data[1],
-                x = data[2],
-                y = data[3];
+            const id = data[1], x = data[2], y = data[3];
         
             if(this.move_callback) {
                 this.move_callback(id, x, y);
@@ -156,8 +150,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveLootMove: function(data) {
-            var id = data[1], 
-                item = data[2];
+            const id = data[1], item = data[2];
         
             if(this.lootmove_callback) {
                 this.lootmove_callback(id, item);
@@ -165,8 +158,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveAttack: function(data) {
-            var attacker = data[1], 
-                target = data[2];
+            const attacker = data[1], target = data[2];
         
             if(this.attack_callback) {
                 this.attack_callback(attacker, target);
@@ -174,25 +166,22 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveSpawn: function(data) {
-            var id = data[1],
-                kind = data[2],
-                x = data[3],
-                y = data[4];
+            const id = data[1], kind = data[2], x = data[3], y = data[4];
         
             if(Types.isItem(kind)) {
-                var item = EntityFactory.createEntity(kind, id);
-            
+                const item = EntityFactory.createEntity(kind, id);
+
                 if(this.spawn_item_callback) {
                     this.spawn_item_callback(item, x, y);
                 }
             } else if(Types.isChest(kind)) {
-                var item = EntityFactory.createEntity(kind, id);
-            
+                const item = EntityFactory.createEntity(kind, id);
+
                 if(this.spawn_chest_callback) {
                     this.spawn_chest_callback(item, x, y);
                 }
             } else {
-                var name, orientation, target, weapon, armor;
+                let name, orientation, target, weapon, armor;
             
                 if(Types.isPlayer(kind)) {
                     name = data[5];
@@ -210,7 +199,7 @@ import LocalGameServer from './server/localgameserver.js';
                     }
                 }
 
-                var character = EntityFactory.createEntity(kind, id, name);
+                const character = EntityFactory.createEntity(kind, id, name);
             
                 if(character instanceof Player) {
                     character.weaponName = Types.getKindAsString(weapon);
@@ -224,7 +213,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveDespawn: function(data) {
-            var id = data[1];
+            const id = data[1];
         
             if(this.despawn_callback) {
                 this.despawn_callback(id);
@@ -232,21 +221,20 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveHealth: function(data) {
-            var points = data[1],
-                isRegen = false;
-        
+            const points = data[1];
+            let isRegen = false;
+
             if(data[2]) {
                 isRegen = true;
             }
-        
+
             if(this.health_callback) {
                 this.health_callback(points, isRegen);
             }
         },
     
         receiveChat: function(data) {
-            var id = data[1],
-                text = data[2];
+            const id = data[1], text = data[2];
         
             if(this.chat_callback) {
                 this.chat_callback(id, text);
@@ -254,8 +242,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveEquipItem: function(data) {
-            var id = data[1],
-                itemKind = data[2];
+            const id = data[1], itemKind = data[2];
         
             if(this.equip_callback) {
                 this.equip_callback(id, itemKind);
@@ -263,11 +250,9 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveDrop: function(data) {
-            var mobId = data[1],
-                id = data[2],
-                kind = data[3];
+            const mobId = data[1], id = data[2], kind = data[3];
         
-            var item = EntityFactory.createEntity(kind, id);
+            const item = EntityFactory.createEntity(kind, id);
             item.wasDropped = true;
             item.playersInvolved = data[4];
         
@@ -277,9 +262,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveTeleport: function(data) {
-            var id = data[1],
-                x = data[2],
-                y = data[3];
+            const id = data[1], x = data[2], y = data[3];
         
             if(this.teleport_callback) {
                 this.teleport_callback(id, x, y);
@@ -287,8 +270,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveDamage: function(data) {
-            var id = data[1],
-                dmg = data[2];
+            const id = data[1], dmg = data[2];
         
             if(this.dmg_callback) {
                 this.dmg_callback(id, dmg);
@@ -296,8 +278,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receivePopulation: function(data) {
-            var worldPlayers = data[1],
-                totalPlayers = data[2];
+            const worldPlayers = data[1], totalPlayers = data[2];
         
             if(this.population_callback) {
                 this.population_callback(worldPlayers, totalPlayers);
@@ -305,7 +286,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveKill: function(data) {
-            var mobKind = data[1];
+            const mobKind = data[1];
         
             if(this.kill_callback) {
                 this.kill_callback(mobKind);
@@ -321,7 +302,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveDestroy: function(data) {
-            var id = data[1];
+            const id = data[1];
         
             if(this.destroy_callback) {
                 this.destroy_callback(id);
@@ -329,7 +310,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveHitPoints: function(data) {
-            var maxHp = data[1];
+            const maxHp = data[1];
         
             if(this.hp_callback) {
                 this.hp_callback(maxHp);
@@ -337,7 +318,7 @@ import LocalGameServer from './server/localgameserver.js';
         },
     
         receiveBlink: function(data) {
-            var id = data[1];
+            const id = data[1];
         
             if(this.blink_callback) {
                 this.blink_callback(id);

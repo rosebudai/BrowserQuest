@@ -1,9 +1,9 @@
 
 import App from './app.js';
 import Game from './game.js';
-    var app, game;
+    let app, game;
 
-    var initApp = function() {
+    const initApp = function() {
         $(document).ready(function() {
         	app = new App();
         	window.__app = app;
@@ -95,7 +95,7 @@ import Game from './game.js';
             });
     
             $('#previous').click(function() {
-                var $achievements = $('#achievements');
+                const $achievements = $('#achievements');
         
                 if(app.currentPage === 1) {
                     return false;
@@ -106,9 +106,7 @@ import Game from './game.js';
             });
     
             $('#next').click(function() {
-                var $achievements = $('#achievements'),
-                    $lists = $('#lists'),
-                    nbPages = $lists.children('ul').length;
+                const $achievements = $('#achievements'), $lists = $('#lists'), nbPages = $lists.children('ul').length;
         
                 if(app.currentPage === nbPages) {
                     return false;
@@ -125,20 +123,20 @@ import Game from './game.js';
             });
         
             $('.twitter').click(function() {
-                var url = $(this).attr('href');
+                const url = $(this).attr('href');
 
                app.openPopup('twitter', url);
                return false;
             });
 
             $('.facebook').click(function() {
-                var url = $(this).attr('href');
+                const url = $(this).attr('href');
 
                app.openPopup('facebook', url);
                return false;
             });
         
-            var data = app.storage.data;
+            const data = app.storage.data;
     		if(data.hasAlreadyPlayed) {
     		    if(data.player.name && data.player.name !== "") {
 		            $('#playername').html(data.player.name);
@@ -149,9 +147,7 @@ import Game from './game.js';
     		}
     		
     		$('.play div').click(function(event) {
-                var nameFromInput = $('#nameinput').attr('value'),
-                    nameFromStorage = $('#playername').html(),
-                    name = nameFromInput || nameFromStorage;
+                const nameFromInput = $('#nameinput').attr('value'), nameFromStorage = $('#playername').html(), name = nameFromInput || nameFromStorage;
                 
                 app.tryStartingGame(name);
             });
@@ -162,7 +158,7 @@ import Game from './game.js';
             $('#resize-check').bind("webkitTransitionEnd", app.resizeUi.bind(app));
             $('#resize-check').bind("oTransitionEnd", app.resizeUi.bind(app));
 
-            var resizeTimeout;
+            let resizeTimeout;
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(function() {
@@ -178,12 +174,9 @@ import Game from './game.js';
         });
     };
     
-    var initGame = function() {
+    const initGame = function() {
             
-            var canvas = document.getElementById("entities"),
-        	    background = document.getElementById("background"),
-        	    foreground = document.getElementById("foreground"),
-        	    input = document.getElementById("chatinput");
+            const canvas = document.getElementById("entities"), background = document.getElementById("background"), foreground = document.getElementById("foreground"), input = document.getElementById("chatinput");
 
     		game = new Game(app);
     		window.__game = game;
@@ -220,13 +213,13 @@ import Game from './game.js';
     		});
 
     		game.onNbPlayersChange(function(worldPlayers, totalPlayers) {
-    		    var setWorldPlayersString = function(string) {
-        		        $("#instance-population").find("span:nth-child(2)").text(string);
-        		        $("#playercount").find("span:nth-child(2)").text(string);
-        		    },
-        		    setTotalPlayersString = function(string) {
-        		        $("#world-population").find("span:nth-child(2)").text(string);
-        		    };
+    		    const setWorldPlayersString = function(string) {
+                              $("#instance-population").find("span:nth-child(2)").text(string);
+                              $("#playercount").find("span:nth-child(2)").text(string);
+                          },
+                      setTotalPlayersString = function(string) {
+                          $("#world-population").find("span:nth-child(2)").text(string);
+                      };
     		    
     		    $("#playercount").find("span.count").text(worldPlayers);
     		    
@@ -279,7 +272,7 @@ import Game from './game.js';
 
             $('body').unbind('click');
             $('body').click(function(event) {
-                var hasClosedParchment = false;
+                let hasClosedParchment = false;
                 
                 if($('#parchment').hasClass('credits')) {
                     if(game.started) {
@@ -318,8 +311,7 @@ import Game from './game.js';
             });
 
             $(document).keydown(function(e) {
-            	var key = e.which,
-                    $chat = $('#chatinput');
+            	const key = e.which, $chat = $('#chatinput');
 
                 if(key === 13) {
                     if($('#chatbox').hasClass('active')) {
@@ -331,8 +323,7 @@ import Game from './game.js';
             });
             
             $('#chatinput').keydown(function(e) {
-                var key = e.which,
-                    $chat = $('#chatinput');
+                const key = e.which, $chat = $('#chatinput');
 
                 if(key === 13) {
                     if($chat.val() !== '') {
@@ -356,8 +347,7 @@ import Game from './game.js';
             });
 
             $('#nameinput').keypress(function(event) {
-                var $name = $('#nameinput'),
-                    name = $name.attr('value');
+                const $name = $('#nameinput'), name = $name.attr('value');
 
                 if(event.keyCode === 13) {
                     if(name !== '') {
@@ -376,8 +366,7 @@ import Game from './game.js';
             });
             
             $(document).bind("keydown", function(e) {
-            	var key = e.which,
-            	    $chat = $('#chatinput');
+            	const key = e.which, $chat = $('#chatinput');
 
                 if($('#chatinput:focus').size() == 0 && $('#nameinput:focus').size() == 0) {
                     if(key === 13) { // Enter
