@@ -1,5 +1,4 @@
 
-import Types from './gametypes.js';
 import log from './lib/log.js';
 import { TRANSITIONEND } from './util.js';
 import Detect from './detect.js';
@@ -23,7 +22,7 @@ import Game from './game.js';
                 document.body.classList.add('opera');
             }
 
-            document.body.addEventListener('click', function(event) {
+            document.body.addEventListener('click', function(_event) {
                 if(document.getElementById('parchment').classList.contains('credits')) {
                     app.toggleCredits();
                 }
@@ -173,7 +172,7 @@ import Game from './game.js';
     		    }
     		}
 
-    		app._bindPlayDiv(function(event) {
+    		app._bindPlayDiv(function(_event) {
                     const nameFromInput = document.getElementById('nameinput').value,
                           nameFromStorage = document.getElementById('playername').textContent,
                           name = nameFromInput || nameFromStorage;
@@ -254,21 +253,21 @@ import Game from './game.js';
     		    document.querySelector("#playercount span.count").textContent = worldPlayers;
 
     		    document.querySelector("#instance-population span").textContent = worldPlayers;
-    		    if(worldPlayers == 1) {
+    		    if(worldPlayers === 1) {
     		        setWorldPlayersString("player");
     		    } else {
     		        setWorldPlayersString("players");
     		    }
 
     		    document.querySelector("#world-population span").textContent = totalPlayers;
-    		    if(totalPlayers == 1) {
+    		    if(totalPlayers === 1) {
     		        setTotalPlayersString("player");
     		    } else {
     		        setTotalPlayersString("players");
     		    }
     		});
 
-    		game.onAchievementUnlock(function(id, name, description) {
+    		game.onAchievementUnlock(function(id, name, _description) {
     		    app.unlockAchievement(id, name);
     		});
 
@@ -305,7 +304,7 @@ import Game from './game.js';
             if(window._bodyClickHandler) {
                 document.body.removeEventListener('click', window._bodyClickHandler);
             }
-            window._bodyClickHandler = function(event) {
+            window._bodyClickHandler = function(_event) {
                 let hasClosedParchment = false;
 
                 if(document.getElementById('parchment').classList.contains('credits')) {
@@ -332,7 +331,7 @@ import Game from './game.js';
             };
             document.body.addEventListener('click', window._bodyClickHandler);
 
-            document.getElementById('respawn').addEventListener('click', function(event) {
+            document.getElementById('respawn').addEventListener('click', function(_event) {
                 game.audioManager.playSound("revive");
                 game.restart();
                 document.body.classList.remove('death');

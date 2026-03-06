@@ -1,7 +1,5 @@
 import Types from '../gametypes.js';
 import log from '../lib/log.js';
-import Entity from './entity.js';
-import Character from './character.js';
 import Mob from './mob.js';
 import ServerMap from './map.js';
 import Npc from './npc.js';
@@ -13,7 +11,6 @@ import Chest from './chest.js';
 import Messages from './message.js';
 import Properties from './properties.js';
 import Utils from './utils.js';
-import { check } from './format.js';
 
 // ======= GAME SERVER ========
 
@@ -260,7 +257,7 @@ class WorldServer {
         
         if(player && (player.group in this.groups)) {
             entities = Object.keys(this.groups[player.group].entities);
-            entities = entities.filter(function(id) { return id != player.id; });
+            entities = entities.filter(function(id) { return id !== String(player.id); });
             entities = entities.map(function(id) { return parseInt(id); });
             if(entities) {
                 this.pushToPlayer(player, new Messages.List(entities));
@@ -294,7 +291,7 @@ class WorldServer {
         
         if(group) {
             group.players.forEach(function(playerId) {
-                if(playerId != ignoredPlayer) {
+                if(playerId !== ignoredPlayer) {
                     self.pushToPlayer(self.getEntityById(playerId), message);
                 }
             });
@@ -323,14 +320,13 @@ class WorldServer {
     
     pushBroadcast(message, ignoredPlayer) {
         for(const id in this.outgoingQueues) {
-            if(id != ignoredPlayer) {
+            if(id !== String(ignoredPlayer)) {
                 this.outgoingQueues[id].push(message.serialize());
             }
         }
     }
     
     processQueues() {
-        const self = this;
         let connection;
 
         for(const id in this.outgoingQueues) {
@@ -490,8 +486,6 @@ class WorldServer {
     handleMobHate(mobId, playerId, hatePoints) {
         const mob = this.getEntityById(mobId);
         const player = this.getEntityById(playerId);
-        let mostHated;
-
         if(player && mob) {
             mob.increaseHateFor(playerId, hatePoints);
             player.addHater(mob);
@@ -549,8 +543,6 @@ class WorldServer {
     }
     
     handleHurtEntity(entity, attacker, damage) {
-        const self = this;
-        
         if(entity.type === 'player') {
             // A player is only aware of his own hitpoints
             this.pushToPlayer(entity, entity.health());
@@ -796,7 +788,6 @@ class WorldServer {
         
         if(this.zoneGroupsReady) {
             this.map.forEachGroup(function(id) {
-                let spawns = [];
                 if(self.groups[id].incoming.length > 0) {
                     self.groups[id].incoming.forEach(function(entity) {
                         if(entity instanceof Player) {
@@ -836,7 +827,7 @@ class WorldServer {
         }
     }
     
-    handleEmptyMobArea(area) {
+    handleEmptyMobArea(_area) {
 
     }
     
@@ -847,7 +838,7 @@ class WorldServer {
         }
     }
     
-    handleOpenedChest(chest, player) {
+    handleOpenedChest(chest, _player) {
         this.pushToAdjacentGroups(chest.group, chest.despawn());
         this.removeEntity(chest);
         

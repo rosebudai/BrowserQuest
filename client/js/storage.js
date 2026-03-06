@@ -28,7 +28,7 @@ class Storage {
     }
 
     hasLocalStorage() {
-        try { localStorage.setItem('__test', '__test'); localStorage.removeItem('__test'); return true; } catch(e) { return false; }
+        try { localStorage.setItem('__test', '__test'); localStorage.removeItem('__test'); return true; } catch { return false; }
     }
 
     save() {

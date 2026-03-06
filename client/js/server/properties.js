@@ -159,7 +159,7 @@ Properties.getArmorLevel = function(kind) {
         } else {
             return Types.getArmorRank(kind) + 1;
         }
-    } catch(e) {
+    } catch {
         log.error("No level found for armor: "+Types.getKindAsString(kind));
     }
 };
@@ -171,7 +171,7 @@ Properties.getWeaponLevel = function(kind) {
         } else {
             return Types.getWeaponRank(kind) + 1;
         }
-    } catch(e) {
+    } catch {
         log.error("No level found for weapon: "+Types.getKindAsString(kind));
     }
 };

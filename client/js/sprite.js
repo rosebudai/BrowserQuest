@@ -96,7 +96,6 @@ import { resolveSprite } from './asset-resolver.js';
             const ctx = canvas.getContext('2d');
             const width = this.image.width;
             const height = this.image.height;
-            let spriteData;
             let finalData;
             let data;
 

@@ -46,14 +46,14 @@ import LocalGameServer from './server/localgameserver.js';
             this.isListening = false;
         }
         
-        connect(dispatcherMode) {
+        connect(_dispatcherMode) {
             const self = this;
             
             log.info("Starting local game server...");
             
             this.connection = new LocalGameServer();
             
-            this.connection.onopen = function(e) {
+            this.connection.onopen = function(_e) {
                 log.info("Connected to local game server");
             };
             
@@ -97,7 +97,7 @@ import LocalGameServer from './server/localgameserver.js';
         }
 
         receiveMessage(message) {
-            let data, action;
+            let data;
         
             if(this.isListening) {
                 data = JSON.parse(message);

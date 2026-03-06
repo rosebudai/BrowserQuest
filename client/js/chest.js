@@ -2,7 +2,7 @@ import Types from './gametypes.js';
 import Entity from './entity.js';
 
 class Chest extends Entity {
-    constructor(id, kind) {
+    constructor(id, _kind) {
         super(id, Types.Entities.CHEST);
     }
 

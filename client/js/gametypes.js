@@ -290,7 +290,7 @@ Types.getOrientationAsString = function(orientation) {
     }
 };
 
-Types.getRandomItemKind = function(item) {
+Types.getRandomItemKind = function(_item) {
     const all = [...new Set([...this.rankedWeapons, ...this.rankedArmors])], forbidden = [Types.Entities.SWORD1, Types.Entities.CLOTHARMOR], itemKinds = all.filter(function(x) { return !forbidden.includes(x); }), i = Math.floor(Math.random() * itemKinds.length);
     
     return itemKinds[i];

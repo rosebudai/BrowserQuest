@@ -73,7 +73,7 @@ import Timer from './timer.js';
             return scale;
         }
     
-        rescale(factor) {
+        rescale(_factor) {
             this.scale = this.getScaleFactor();
         
             this.createCamera();
@@ -801,10 +801,10 @@ import Timer from './timer.js';
     }
 
     const getX = function(id, w) {
-        if(id == 0) {
+        if(id === 0) {
             return 0;
         }
-        return (id % w == 0) ? w - 1 : (id % w) - 1;
+        return (id % w === 0) ? w - 1 : (id % w) - 1;
     };
     
     export default Renderer;

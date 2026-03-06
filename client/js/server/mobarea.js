@@ -44,7 +44,7 @@ class MobArea extends Area {
         }, delay);
     }
 
-    initRoaming(mob) {
+    initRoaming(_mob) {
         const self = this;
 
         setInterval(function() {

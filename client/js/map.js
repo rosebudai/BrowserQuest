@@ -185,10 +185,10 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
             let x = 0, y = 0;
         
             const getX = function(num, w) {
-                if(num == 0) {
+                if(num === 0) {
                     return 0;
                 }
-                return (num % w == 0) ? w - 1 : (num % w) - 1;
+                return (num % w === 0) ? w - 1 : (num % w) - 1;
             };
     
             tileNum -= 1;
@@ -217,7 +217,7 @@ import { resolveTileset, resolveMap } from './asset-resolver.js';
         }
         
         _generateCollisionGrid() {
-            const tileIndex = 0, self = this;
+            const self = this;
 
             this.grid = [];
             for(let j, i = 0; i < this.height; i++) {

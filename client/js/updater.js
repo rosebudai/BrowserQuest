@@ -79,7 +79,7 @@ import Timer from './timer.js';
         }
     
         updateZoning() {
-            const g = this.game, c = g.camera, z = g.currentZoning, s = 3, ts = 16, speed = 500;
+            const g = this.game, c = g.camera, z = g.currentZoning, ts = 16, speed = 500;
         
             if(z && z.inProgress === false) {
                 const orientation = this.game.zoningOrientation;
@@ -122,8 +122,6 @@ import Timer from './timer.js';
         }
 
         updateCharacter(c) {
-            const self = this;
-    
             // Estimate of the movement distance for one update
             const tick = Math.round(16 / Math.round((c.moveSpeed / (1000 / this.game.renderer.FPS))));
     

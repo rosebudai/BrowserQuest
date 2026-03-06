@@ -70,14 +70,14 @@ import { resolveSound, resolveMusic } from './asset-resolver.js';
         load(path, name, loaded_callback, channels) {
             const sound = document.createElement('audio'), self = this;
 
-            sound.addEventListener('canplaythrough', function onCanPlay(e) {
+            sound.addEventListener('canplaythrough', function onCanPlay(_e) {
                 this.removeEventListener('canplaythrough', onCanPlay, false);
                 log.debug(path + " is ready to play.");
                 if(loaded_callback) {
                     loaded_callback();
                 }
             }, false);
-            sound.addEventListener('error', function (e) {
+            sound.addEventListener('error', function (_e) {
                 log.error("Error: "+ path +" could not be loaded.");
                 self.sounds[name] = null;
                 if(loaded_callback) {

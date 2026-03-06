@@ -107,7 +107,7 @@ import Timer from './timer.js';
             this.animate("walk", this.walkSpeed);
         }
 
-        moveTo_(x, y, callback) {
+        moveTo_(x, y, _callback) {
             this.destination = { gridX: x, gridY: y };
             this.adjacentTiles = {};
 
@@ -450,8 +450,6 @@ import Timer from './timer.js';
          * Removes the current attack target.
          */
         removeTarget() {
-            const self = this;
-
             if(this.target) {
                 if(this.target instanceof Character) {
                     this.target.removeAttacker(this);
@@ -529,8 +527,6 @@ import Timer from './timer.js';
         }
 
         hurt() {
-            const self = this;
-
             this.stopHurting();
             this.sprite = this.hurtSprite;
             this.hurting = setTimeout(this.stopHurting.bind(this), 75);

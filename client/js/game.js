@@ -1193,7 +1193,7 @@ import manifest from './manifest.js';
                                         }
                                     });
 
-                                    entity.onStopPathing(function(x, y) {
+                                    entity.onStopPathing(function(_x, _y) {
                                         if(!entity.isDying) {
                                             if(entity.hasTarget() && entity.isAdjacent(entity.target)) {
                                                 entity.lookAtTarget();
@@ -1752,7 +1752,7 @@ import manifest from './manifest.js';
          * 
          */
         forEachVisibleTile(callback, extra) {
-            const self = this, m = this.map;
+            const m = this.map;
         
             if(m.isLoaded) {
                 this.forEachVisibleTileIndex(function(tileIndex) {
@@ -1881,8 +1881,6 @@ import manifest from './manifest.js';
             const self = this;
             const grid = this.pathingGrid;
             let path = [];
-            const isPlayer = (character === this.player);
-
             if(this.map.isColliding(x, y)) {
                 return path;
             }
@@ -2086,7 +2084,7 @@ import manifest from './manifest.js';
          * 
          */
         onCharacterUpdate(character) {
-            const time = this.currentTime, self = this;
+            const time = this.currentTime;
             
             // If mob has finished moving to a different tile in order to avoid stacking, attack again from the new position.
             if(character.previousTarget && !character.isMoving() && character instanceof Mob) {
@@ -2381,7 +2379,7 @@ import manifest from './manifest.js';
         }
     
         resize() {
-            const x = this.camera.x, y = this.camera.y, currentScale = this.renderer.scale, newScale = this.renderer.getScaleFactor();
+            const x = this.camera.x, y = this.camera.y, newScale = this.renderer.getScaleFactor();
     
                 this.renderer.rescale(newScale);
                 this.camera = this.renderer.camera;
@@ -2439,7 +2437,7 @@ import manifest from './manifest.js';
 
             if(nb > 0) {
                 this.obsoleteEntities.forEach(function(entity) {
-                    if(entity.id != self.player.id) { // never remove yourself
+                    if(entity.id !== self.player.id) { // never remove yourself
                         self.removeEntity(entity);
                     }
                 });

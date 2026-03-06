@@ -64,7 +64,6 @@ import AStar from './lib/astar.js';
             const self = this;
             let x;
             let y;
-            let g;
 
             this.ignored.forEach(function(entity) {
                 x = entity.isMoving() ? entity.nextGridX : entity.gridX;
