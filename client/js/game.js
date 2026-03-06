@@ -2143,10 +2143,10 @@ import manifest from './manifest.js';
          */
         isZoningTile(x, y) {
             const c = this.camera;
-        
+
             x = x - c.gridX;
             y = y - c.gridY;
-            
+
             if(x === 0 || y === 0 || x === c.gridW-1 || y === c.gridH-1) {
                 return true;
             }
@@ -2157,30 +2157,40 @@ import manifest from './manifest.js';
          * 
          */
         getZoningOrientation(x, y) {
-            let orientation = "";
             const c = this.camera;
 
             x = x - c.gridX;
             y = y - c.gridY;
 
-            if(x === 0) {
-                orientation = Types.Orientations.LEFT;
-            }
-            else if(y === 0) {
-                orientation = Types.Orientations.UP;
-            }
-            else if(x === c.gridW-1) {
-                orientation = Types.Orientations.RIGHT;
-            }
-            else if(y === c.gridH-1) {
-                orientation = Types.Orientations.DOWN;
-            }
+            const atLeft = x === 0;
+            const atRight = x === c.gridW - 1;
+            const atTop = y === 0;
+            const atBottom = y === c.gridH - 1;
 
-            return orientation;
+            const edges = [];
+            if(atLeft) edges.push(Types.Orientations.LEFT);
+            if(atRight) edges.push(Types.Orientations.RIGHT);
+            if(atTop) edges.push(Types.Orientations.UP);
+            if(atBottom) edges.push(Types.Orientations.DOWN);
+
+            if(edges.length === 0) return "";
+            if(edges.length === 1) return edges[0];
+
+            // At a corner: prefer the player's movement direction
+            if(edges.indexOf(this.player.orientation) !== -1) {
+                return this.player.orientation;
+            }
+            return edges[0];
         }
     
         startZoningFrom(x, y) {
             this.zoningOrientation = this.getZoningOrientation(x, y);
+
+            if(!this.zoningOrientation) {
+                // Position is no longer at viewport edge (stale queue entry) — skip
+                this.endZoning();
+                return;
+            }
 
             // If camera is at the edge of the active zone in the zoning direction,
             // clear both the camera clamp and the tile-rendering filter so the
