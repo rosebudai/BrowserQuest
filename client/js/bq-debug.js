@@ -188,6 +188,31 @@
     };
 
     /**
+     * Show current player position and zone info. Shortcut for quick debugging.
+     */
+    bq.pos = function() {
+        const game = requireGame();
+        const p = game.player;
+        const zone = game.activeCameraZone;
+        const info = {
+            x: p.gridX,
+            y: p.gridY,
+            zone: zone ? { x: zone.x, y: zone.y, w: zone.width, h: zone.height } : null,
+            isDoor: game.map.isDoor(p.gridX, p.gridY)
+        };
+        if (zone) {
+            info.edgeDist = {
+                left: p.gridX - zone.x,
+                right: (zone.x + zone.width - 1) - p.gridX,
+                top: p.gridY - zone.y,
+                bottom: (zone.y + zone.height - 1) - p.gridY
+            };
+        }
+        console.log("[bq] (" + p.gridX + "," + p.gridY + ")" + (zone ? " zone(" + zone.x + "," + zone.y + " " + zone.width + "x" + zone.height + ")" : " open world"));
+        return info;
+    };
+
+    /**
      * List available named locations.
      */
     bq.locations = LOCATIONS;

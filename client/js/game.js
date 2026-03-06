@@ -1029,6 +1029,8 @@ import manifest from './manifest.js';
                         } else {
                             if(dest.portal) {
                                 self.assignBubbleTo(self.player);
+                                self.camera.focusEntity(self.player);
+                                self.resetZone();
                             } else {
                                 self.camera.focusEntity(self.player);
                                 self.resetZone();
@@ -1719,9 +1721,14 @@ import manifest from './manifest.js';
          */
         forEachVisibleEntityByDepth(callback) {
             const self = this, m = this.map;
-        
+            const zone = this.activeCameraZone;
+
             this.camera.forEachVisiblePosition(function(x, y) {
                 if(!m.isOutOfBounds(x, y)) {
+                    if(zone && (x < zone.x || x >= zone.x + zone.width
+                             || y < zone.y || y >= zone.y + zone.height)) {
+                        return;
+                    }
                     if(self.renderingGrid[y][x]) {
                         Object.values(self.renderingGrid[y][x]).forEach(function(entity) {
                             callback(entity);
