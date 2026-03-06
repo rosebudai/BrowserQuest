@@ -13,8 +13,8 @@ import { resolveSprite } from './asset-resolver.js';
             this.ready = false;
             this.storage = new Storage();
             this.watchNameInputInterval = setInterval(this.toggleButton.bind(this), 100);
-            this.$playButton = document.querySelector('.play');
-            this.$playDiv = document.querySelector('.play div');
+            this.playButton = document.querySelector('.play');
+            this.playDiv = document.querySelector('.play div');
         }
 
         setGame(game) {
@@ -39,13 +39,13 @@ import { resolveSprite } from './asset-resolver.js';
         }
 
         tryStartingGame(username, starting_callback) {
-            const self = this, $play = this.$playButton;
+            const self = this, playEl = this.playButton;
 
             if(username !== '') {
                 if(!this.ready || !this.canStartGame()) {
                     if(!this.isMobile) {
                         // on desktop and tablets, add a spinner to the play button
-                        $play.classList.add('loading');
+                        playEl.classList.add('loading');
                     }
                     this._unbindPlayDiv();
                     const watchCanStart = setInterval(function() {
@@ -53,7 +53,7 @@ import { resolveSprite } from './asset-resolver.js';
                         if(self.canStartGame()) {
                             setTimeout(function() {
                                 if(!self.isMobile) {
-                                    $play.classList.remove('loading');
+                                    playEl.classList.remove('loading');
                                 }
                             }, 1500);
                             clearInterval(watchCanStart);
@@ -69,7 +69,7 @@ import { resolveSprite } from './asset-resolver.js';
 
         _unbindPlayDiv() {
             if(this._playDivHandler) {
-                this.$playDiv.removeEventListener('click', this._playDivHandler);
+                this.playDiv.removeEventListener('click', this._playDivHandler);
                 this._playDivHandler = null;
             }
         }
@@ -77,7 +77,7 @@ import { resolveSprite } from './asset-resolver.js';
         _bindPlayDiv(fn) {
             this._unbindPlayDiv();
             this._playDivHandler = fn;
-            this.$playDiv.addEventListener('click', fn);
+            this.playDiv.addEventListener('click', fn);
         }
 
         startGame(username, starting_callback) {
@@ -294,6 +294,7 @@ import { resolveSprite } from './asset-resolver.js';
 
         displayUnlockedAchievement(id) {
             const achievement = document.querySelector('#achievements li.achievement' + id);
+            if(!achievement) return;
 
             const achievementData = this.game.getAchievementById(id);
             if(achievementData && achievementData.hidden) {

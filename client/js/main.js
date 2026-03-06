@@ -164,7 +164,7 @@ import Game from './game.js';
             const data = app.storage.data;
     		if(data.hasAlreadyPlayed) {
     		    if(data.player.name && data.player.name !== "") {
-		            document.getElementById('playername').innerHTML = data.player.name;
+		            document.getElementById('playername').textContent = data.player.name;
     		        if(data.player.image) {
     		            const playerImage = document.getElementById('playerimage');
     		            playerImage.setAttribute('src', data.player.image);
@@ -173,15 +173,13 @@ import Game from './game.js';
     		    }
     		}
 
-    		document.querySelectorAll('.play div').forEach(function(el) {
-    		    el.addEventListener('click', function(event) {
-                    const nameFromInput = document.getElementById('nameinput').getAttribute('value'),
-                          nameFromStorage = document.getElementById('playername').innerHTML,
+    		app._bindPlayDiv(function(event) {
+                    const nameFromInput = document.getElementById('nameinput').value,
+                          nameFromStorage = document.getElementById('playername').textContent,
                           name = nameFromInput || nameFromStorage;
 
                     app.tryStartingGame(name);
                 });
-    		});
 
             document.addEventListener("touchstart", function() {},false);
 

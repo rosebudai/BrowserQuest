@@ -28,7 +28,7 @@ Detect.isChromeOnWindows = function() {
 };
 
 Detect.canPlayMP3 = function() {
-    var a = document.createElement('audio');
+    const a = document.createElement('audio');
     return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/^no$/, ''));
 };
 

@@ -2294,7 +2294,7 @@ import manifest from './manifest.js';
                 t = 16 * s;
 
                 const x = ((character.x - this.camera.x) * s);
-                const w = parseInt(bubble.element.css('width')) + 24;
+                const w = bubble.element.offsetWidth + 24;
                 const offset = (w / 2) - (t / 2);
                 let offsetY;
                 let y;
@@ -2315,8 +2315,8 @@ import manifest from './manifest.js';
 
                 y = ((character.y - this.camera.y) * s) - (t * 2) - offsetY;
 
-                bubble.element.css('left', x - offset + 'px');
-                bubble.element.css('top', y + 'px');
+                bubble.element.style.left = (x - offset) + 'px';
+                bubble.element.style.top = y + 'px';
             }
         }
     
