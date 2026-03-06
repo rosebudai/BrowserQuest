@@ -13,8 +13,8 @@ import { resolveSprite } from './asset-resolver.js';
             this.ready = false;
             this.storage = new Storage();
             this.watchNameInputInterval = setInterval(this.toggleButton.bind(this), 100);
-            this.playButton = document.querySelector('.play');
-            this.playDiv = document.querySelector('.play div');
+            this.playButtons = document.querySelectorAll('.play');
+            this.playDivs = document.querySelectorAll('.play div');
         }
 
         setGame(game) {
@@ -39,13 +39,13 @@ import { resolveSprite } from './asset-resolver.js';
         }
 
         tryStartingGame(username, starting_callback) {
-            const self = this, playEl = this.playButton;
+            const self = this;
 
             if(username !== '') {
                 if(!this.ready || !this.canStartGame()) {
                     if(!this.isMobile) {
                         // on desktop and tablets, add a spinner to the play button
-                        playEl.classList.add('loading');
+                        this.playButtons.forEach(function(el) { el.classList.add('loading'); });
                     }
                     this._unbindPlayDiv();
                     const watchCanStart = setInterval(function() {
@@ -53,7 +53,7 @@ import { resolveSprite } from './asset-resolver.js';
                         if(self.canStartGame()) {
                             setTimeout(function() {
                                 if(!self.isMobile) {
-                                    playEl.classList.remove('loading');
+                                    self.playButtons.forEach(function(el) { el.classList.remove('loading'); });
                                 }
                             }, 1500);
                             clearInterval(watchCanStart);
@@ -69,7 +69,7 @@ import { resolveSprite } from './asset-resolver.js';
 
         _unbindPlayDiv() {
             if(this._playDivHandler) {
-                this.playDiv.removeEventListener('click', this._playDivHandler);
+                this.playDivs.forEach(function(el) { el.removeEventListener('click', this._playDivHandler); }.bind(this));
                 this._playDivHandler = null;
             }
         }
@@ -77,7 +77,7 @@ import { resolveSprite } from './asset-resolver.js';
         _bindPlayDiv(fn) {
             this._unbindPlayDiv();
             this._playDivHandler = fn;
-            this.playDiv.addEventListener('click', fn);
+            this.playDivs.forEach(function(el) { el.addEventListener('click', fn); });
         }
 
         startGame(username, starting_callback) {
