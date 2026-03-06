@@ -998,7 +998,7 @@ import manifest from './manifest.js';
                                 self.audioManager.playSound("loot");
                             }
                             
-                            if(item.wasDropped && !_(item.playersInvolved).include(self.playerId)) {
+                            if(item.wasDropped && !item.playersInvolved.includes(self.playerId)) {
                                 self.tryUnlockingAchievement("NINJA_LOOT");
                             }
                         } catch(e) {
