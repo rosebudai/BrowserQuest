@@ -107,7 +107,7 @@ import { resolveSprite } from './asset-resolver.js';
     	    ctx.drawImage(this.image, 0, 0, width, height);
     	    data = ctx.getImageData(0, 0, width, height).data;
     	    finalData = ctx.getImageData(0, 0, width, height);
-    	    fdata = finalData.data;
+    	    const fdata = finalData.data;
 
     	    const getIndex = function(x, y) {
     	        return ((width * (y-1)) + x - 1) * 4;

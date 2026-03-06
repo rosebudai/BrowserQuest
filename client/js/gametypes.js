@@ -283,10 +283,10 @@ Types.forEachArmorKind = function(callback) {
 
 Types.getOrientationAsString = function(orientation) {
     switch(orientation) {
-        case Types.Orientations.LEFT: return "left"; break;
-        case Types.Orientations.RIGHT: return "right"; break;
-        case Types.Orientations.UP: return "up"; break;
-        case Types.Orientations.DOWN: return "down"; break;
+        case Types.Orientations.LEFT: return "left";
+        case Types.Orientations.RIGHT: return "right";
+        case Types.Orientations.UP: return "up";
+        case Types.Orientations.DOWN: return "down";
     }
 };
 

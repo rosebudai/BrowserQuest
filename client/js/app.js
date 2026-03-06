@@ -484,8 +484,8 @@ import { resolveSprite } from './asset-resolver.js';
             top = (h / 2) - (popupHeight / 2);
             left = (w / 2) - (popupWidth / 2);
 
-            newwindow = window.open(url,'name','height=' + popupHeight + ',width=' + popupWidth + ',top=' + top + ',left=' + left);
-            if (window.focus) {newwindow.focus()}
+            const newwindow = window.open(url,'name','height=' + popupHeight + ',width=' + popupWidth + ',top=' + top + ',left=' + left);
+            if (window.focus && newwindow) {newwindow.focus()}
         }
 
         animateParchment(origin, destination) {

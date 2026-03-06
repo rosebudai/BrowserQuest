@@ -1,14 +1,11 @@
 {
-    "name": "BrowserQuest"
-  , "version": "0.0.1"
-  , "private": false 
-  , "dependencies": {
-    "underscore": ">0"
-    , "log": ">0"
-    , "bison": ">0"
-    , "websocket": ">0"
-    , "websocket-server": ">0"
-    , "sanitizer": ">0"
-    , "memcache": ">0"
-  }
+    "name": "browserquest",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "lint": "npx eslint client/js/",
+        "test": "node --test client/tests/unit/*.test.cjs",
+        "check": "npm run lint && npm run test"
+    }
 }

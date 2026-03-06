@@ -2,6 +2,18 @@
 
 BrowserQuest is an HTML5 canvas MMORPG running in the browser with a local in-browser game server that emulates the multiplayer protocol. The modernized codebase uses native ES modules and ES6 classes end-to-end, with config-driven entity behavior for mobs, NPCs, and items. Client runtime, world simulation, assets, and map data are all wired through explicit imports and manifest-based path resolution.
 
+## Commands
+
+| Command | What it does |
+|---------|-------------|
+| `npm run lint` | ESLint — catches undeclared refs, `var`, dead code |
+| `npm test` | Unit tests (node:test) — config tables, formulas, gametypes |
+| `npm run check` | Lint + tests combined |
+| `python3 -m http.server 8080 --directory client` | Serve for browser playtesting |
+| `NODE_PATH=/usr/local/share/npm-global/lib/node_modules node client/tests/smoke-test.cjs` | Headless Playwright smoke test |
+
+Run `npm run check` before committing. Lint must have **0 errors** (warnings are acceptable).
+
 ## File Map
 
 ### Core Game Loop
